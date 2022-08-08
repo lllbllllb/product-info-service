@@ -1,0 +1,4 @@
+spring:
+  codec:
+    max-in-memory-size: 2MB
+

@@ -1,0 +1,6 @@
+server:
+  shutdown: graceful
+
+product-info-service:
+  core:
+    refresh-interval: 2s

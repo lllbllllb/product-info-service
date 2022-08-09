@@ -5,7 +5,6 @@ import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
@@ -13,12 +12,12 @@ public class ProductInfoServiceCoreScheduler {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
-    private final ProductInfoServiceCoreBuildsProcessor buildsProcessor;
+    private final ProductInfoServiceCoreProductInfoDataCollector productInfoDataCollector;
 
     @PostConstruct
     public void init() {
         Flux.interval(properties.getRefreshInterval())
-            .subscribeOn(Schedulers.boundedElastic())
-            .subscribe(t -> buildsProcessor.process());
+//            .subscribeOn(Schedulers.boundedElastic())
+            .subscribe(t -> productInfoDataCollector.collect());
     }
 }

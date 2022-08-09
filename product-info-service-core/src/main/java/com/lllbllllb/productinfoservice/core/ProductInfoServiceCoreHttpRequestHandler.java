@@ -8,11 +8,14 @@ import reactor.core.publisher.Mono;
 
 import static com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreHttpRoutes.BUILD_NUMBER;
 import static com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreHttpRoutes.PRODUCT_CODE;
+import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Service
 @RequiredArgsConstructor
 public class ProductInfoServiceCoreHttpRequestHandler {
+
+    private final ProductInfoServiceCoreProductInfoDataCollector productInfoDataCollector;
 
     public Mono<ServerResponse> root(ServerRequest request) {
 
@@ -37,12 +40,14 @@ public class ProductInfoServiceCoreHttpRequestHandler {
     }
 
     public Mono<ServerResponse> refresh(ServerRequest request) {
-        return ok().bodyValue("Hello from refresh!");
+        return Mono.fromRunnable(productInfoDataCollector::collect)
+            .then(noContent().build());
     }
 
     public Mono<ServerResponse> refreshByCode(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
 
-        return ok().bodyValue("Refresh PC: " + productCode);
+        return Mono.fromRunnable(() -> productInfoDataCollector.collect(productCode))
+            .then(noContent().build());
     }
 }

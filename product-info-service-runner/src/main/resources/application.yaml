@@ -1,4 +1,8 @@
+server:
+  shutdown: graceful
+
 spring:
   codec:
     max-in-memory-size: 2MB
-
+  lifecycle:
+    timeout-per-shutdown-phase: 1m

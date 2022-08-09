@@ -1,11 +1,14 @@
-package com.lllbllllb.productinfoservice.core.model;
+package com.lllbllllb.productinfoservice.core.model.updatesxml;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.lllbllllb.productinfoservice.core.jaxb.LocalDateJaxbAdapter;
 import lombok.Data;
 
 @Data
@@ -13,13 +16,14 @@ import lombok.Data;
 public class Build {
 
     @XmlAttribute
-    private Double number;
+    private String number;
 
     @XmlAttribute
     private String version;
 
     @XmlAttribute
-    private String releaseDate;
+    @XmlJavaTypeAdapter(LocalDateJaxbAdapter.class)
+    private LocalDate releaseDate;
 
     @XmlAttribute
     private String fullNumber;

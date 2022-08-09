@@ -13,6 +13,7 @@ import static com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreHttpRo
 import static com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreHttpRoutes.PRODUCT_CODE_URL;
 import static com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreHttpRoutes.REFRESH_PRODUCT_CODE_URL;
 import static com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreHttpRoutes.REFRESH_URL;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_XHTML_XML;
 import static org.springframework.http.MediaType.APPLICATION_XML;
 import static org.springframework.http.MediaType.TEXT_XML;
@@ -33,17 +34,32 @@ public class ProductInfoServiceCoreAutoConfiguration {
     }
 
     @Bean
-    WebClient buildsListClient(
+    WebClient updatesXmlClient(
         WebClient.Builder webClientBuilder,
         ProductInfoServiceCoreConfigurationProperties properties
     ) {
         return webClientBuilder.clone()
-            .baseUrl(properties.getBuildsListUrl())
-            .defaultHeaders(httpHeaders -> {
-                httpHeaders.setAccept(List.of(TEXT_XML, APPLICATION_XML, APPLICATION_XHTML_XML));
-            })
+            .baseUrl(properties.getUpdatesXmlUrl())
+            .defaultHeaders(httpHeaders -> httpHeaders.setAccept(List.of(TEXT_XML, APPLICATION_XML, APPLICATION_XHTML_XML)))
             .build();
     }
+
+    @Bean
+    WebClient releasesCodeClient(
+        WebClient.Builder webClientBuilder,
+        ProductInfoServiceCoreConfigurationProperties properties
+    ) {
+        return webClientBuilder.clone()
+            .baseUrl(properties.getReleasesCodeUrl())
+            .defaultHeaders(httpHeaders -> httpHeaders.setAccept(List.of(APPLICATION_JSON)))
+            .build();
+    }
+
+    @Bean
+    WebClient webClient() {
+        return WebClient.builder().build();
+    }
+
 
     @Bean
     Clock clock() {

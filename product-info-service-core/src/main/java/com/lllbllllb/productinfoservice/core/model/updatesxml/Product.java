@@ -1,6 +1,7 @@
-package com.lllbllllb.productinfoservice.core.model;
+package com.lllbllllb.productinfoservice.core.model.updatesxml;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -14,6 +15,8 @@ public class Product {
 
     @XmlAttribute
     private String name;
+
+    private Set<String> code;
 
     private List<Channel> channel;
 }

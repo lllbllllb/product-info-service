@@ -1,4 +1,6 @@
-package com.lllbllllb.productinfoservice.core.model;
+package com.lllbllllb.productinfoservice.core.model.updatesxml;
+
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,14 +10,19 @@ import lombok.Data;
 
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Button {
+public class Channel {
+
+    @XmlAttribute
+    private String id;
 
     @XmlAttribute
     private String name;
 
     @XmlAttribute
-    private String url;
+    private String status;
+
+    private List<Build> build;
 
     @XmlAttribute
-    private boolean download;
+    private String url;
 }

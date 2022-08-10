@@ -9,9 +9,9 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductInfoServiceCoreStatusService {
 
-    private final ProductInfoServiceCoreBuildDownloadService downloadService;
+    private final ProductInfoServiceCoreProgressTrackerService progressTrackerService;
 
     public Mono<ServiceStatus> getServiceStatus() {
-        return Mono.fromCallable(() -> new ServiceStatus(downloadService.getProgressMap()));
+        return Mono.fromCallable(() -> new ServiceStatus(progressTrackerService.getProgress()));
     }
 }

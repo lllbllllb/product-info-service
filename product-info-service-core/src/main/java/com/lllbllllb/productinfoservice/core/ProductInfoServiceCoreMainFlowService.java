@@ -23,6 +23,8 @@ public class ProductInfoServiceCoreMainFlowService {
 
     private final ProductInfoServiceCoreBuildInfoService buildInfoService;
 
+    private final ProductInfoServiceCoreHashValidatorService hashValidatorService;
+
     public Mono<List<BuildInfo>> collect() {
         return process(buildInfoService.getAllBuildInfo());
     }
@@ -44,6 +46,8 @@ public class ProductInfoServiceCoreMainFlowService {
             .log("3 Build downloaded ")
             .flatMap(pair -> fileService.writeToFile(pair.getFirst(), pair.getSecond()))
             .log("4 Write to file ")
+            .flatMap(pair -> hashValidatorService.validateSha256(pair.getLeft(), pair.getRight()))
+            .log("4.1 SHA256 OK ")
             .flatMap(pair -> tarGzService.extractFileFromPath(pair.getRight())
                 .map(file -> Pair.of(pair.getLeft(), file)))
             .log("5 File extracted ", Level.FINE)

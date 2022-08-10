@@ -1,12 +1,9 @@
 package com.lllbllllb.productinfoservice.core;
 
 import java.net.URI;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.lllbllllb.productinfoservice.core.model.BuildInfo;
 import com.lllbllllb.productinfoservice.core.model.ProgressStatus;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -23,12 +20,11 @@ public class ProductInfoServiceCoreBuildDownloadService {
 
     private final WebClient redirectedWebClient;
 
-    @Getter
-    private final Map<BuildInfo, ProgressStatus> progressMap = new ConcurrentHashMap<>();
+    private final ProductInfoServiceCoreProgressTrackerService progressTrackerService;
 
     @SneakyThrows
     public Mono<Pair<BuildInfo, Flux<DataBuffer>>> downloadBuild(BuildInfo buildInfo) {
-        progressMap.put(buildInfo, ProgressStatus.RUNNING);
+        progressTrackerService.updateProgress(buildInfo, ProgressStatus.RUNNING);
 
         var stream = redirectedWebClient.get()
             .uri(URI.create(buildInfo.link()))
@@ -38,8 +34,8 @@ public class ProductInfoServiceCoreBuildDownloadService {
             .bodyToFlux(DataBuffer.class)
             .doFinally(signal -> {
                 switch (signal) {
-                    case CANCEL, ON_COMPLETE -> progressMap.put(buildInfo, ProgressStatus.FINISHED);
-                    case ON_ERROR -> progressMap.put(buildInfo, ProgressStatus.FAILED);
+                    case CANCEL, ON_COMPLETE -> progressTrackerService.updateProgress(buildInfo, ProgressStatus.FINISHED);
+                    case ON_ERROR -> progressTrackerService.updateProgress(buildInfo, ProgressStatus.FAILED);
                     default -> throw new RuntimeException(String.format("Download of the [%s] was aborted due to signal [%s]", buildInfo, signal));
                 }
             });

@@ -18,6 +18,7 @@ public class ProductInfoServiceCoreScheduler {
     public void init() {
         Flux.interval(properties.getDelay(), properties.getRefreshInterval())
             .flatMap(t -> mainFlowService.collect())
+            .log("Build infos ")
             .subscribe();
     }
 }

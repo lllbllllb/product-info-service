@@ -3,6 +3,7 @@ package com.lllbllllb.productinfoservice.core;
 import java.time.Clock;
 import java.util.List;
 
+import com.lllbllllb.productinfoservice.core.handler.ProductInfoServiceCoreHttpRequestHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;

@@ -3,6 +3,7 @@ package com.lllbllllb.productinfoservice.core;
 import java.time.Duration;
 import java.time.Period;
 
+import com.lllbllllb.productinfoservice.core.model.ProductInfoServiceMode;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

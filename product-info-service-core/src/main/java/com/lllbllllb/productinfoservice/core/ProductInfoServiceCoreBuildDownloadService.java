@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.lllbllllb.productinfoservice.core.model.BuildInfo;
+import com.lllbllllb.productinfoservice.core.model.ProgressStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

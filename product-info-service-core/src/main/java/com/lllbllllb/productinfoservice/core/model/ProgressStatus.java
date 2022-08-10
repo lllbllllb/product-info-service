@@ -1,4 +1,4 @@
-package com.lllbllllb.productinfoservice.core;
+package com.lllbllllb.productinfoservice.core.model;
 
 public enum ProgressStatus {
     RUNNING,

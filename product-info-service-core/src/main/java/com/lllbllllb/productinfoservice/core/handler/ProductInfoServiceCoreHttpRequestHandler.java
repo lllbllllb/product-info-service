@@ -1,7 +1,9 @@
-package com.lllbllllb.productinfoservice.core;
+package com.lllbllllb.productinfoservice.core.handler;
 
 import java.util.List;
 
+import com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreMainFlowService;
+import com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreStatusService;
 import com.lllbllllb.productinfoservice.core.model.BuildInfo;
 import com.lllbllllb.productinfoservice.core.model.ServiceStatus;
 import lombok.RequiredArgsConstructor;

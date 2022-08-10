@@ -1,6 +1,11 @@
 package com.lllbllllb.productinfoservice.core;
 
+import java.util.List;
+
+import com.lllbllllb.productinfoservice.core.model.BuildInfo;
+import com.lllbllllb.productinfoservice.core.model.ServiceStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -8,14 +13,15 @@ import reactor.core.publisher.Mono;
 
 import static com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreHttpRoutes.BUILD_NUMBER;
 import static com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreHttpRoutes.PRODUCT_CODE;
-import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Service
 @RequiredArgsConstructor
 public class ProductInfoServiceCoreHttpRequestHandler {
 
-    private final ProductInfoServiceCoreProductInfoDataCollector productInfoDataCollector;
+    private final ProductInfoServiceCoreMainFlowService mainFlowService;
+
+    private final ProductInfoServiceCoreStatusService statusService;
 
     public Mono<ServerResponse> root(ServerRequest request) {
 
@@ -23,7 +29,7 @@ public class ProductInfoServiceCoreHttpRequestHandler {
     }
 
     public Mono<ServerResponse> getStatus(ServerRequest request) {
-        return ok().bodyValue("Hello from status!");
+        return ok().body(statusService.getServiceStatus(), ServiceStatus.class);
     }
 
     public Mono<ServerResponse> getProductCode(ServerRequest request) {
@@ -40,14 +46,17 @@ public class ProductInfoServiceCoreHttpRequestHandler {
     }
 
     public Mono<ServerResponse> refresh(ServerRequest request) {
-        return Mono.fromRunnable(productInfoDataCollector::collect)
-            .then(noContent().build());
+        var tr = new ParameterizedTypeReference<List<BuildInfo>>() {
+        };
+
+        return ok().body(mainFlowService.collect(), tr);
     }
 
     public Mono<ServerResponse> refreshByCode(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
+        var tr = new ParameterizedTypeReference<List<BuildInfo>>() {
+        };
 
-        return Mono.fromRunnable(() -> productInfoDataCollector.collect(productCode))
-            .then(noContent().build());
+        return ok().body(mainFlowService.collect(productCode), tr);
     }
 }

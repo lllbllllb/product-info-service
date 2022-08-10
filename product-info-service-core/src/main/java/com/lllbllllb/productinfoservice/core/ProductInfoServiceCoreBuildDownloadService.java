@@ -1,99 +1,48 @@
 package com.lllbllllb.productinfoservice.core;
 
-import java.io.IOException;
-import java.nio.channels.AsynchronousFileChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.time.Duration;
+import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.lllbllllb.productinfoservice.core.model.BuildInfo;
-import io.netty.channel.ChannelException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.scheduler.Schedulers;
-import reactor.util.retry.Retry;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class ProductInfoServiceCoreBuildDownloadService {
 
-    private final WebClient webClient;
+    private final WebClient redirectedWebClient;
 
-    private final ProductInfoServiceCoreConfigurationProperties properties;
-
+    @Getter
     private final Map<BuildInfo, ProgressStatus> progressMap = new ConcurrentHashMap<>();
 
     @SneakyThrows
-    public void downloadBuild(BuildInfo buildInfo) {
+    public Mono<Pair<BuildInfo, Flux<DataBuffer>>> downloadBuild(BuildInfo buildInfo) {
         progressMap.put(buildInfo, ProgressStatus.RUNNING);
 
-        var dataStream = webClient.get()
-            .uri(buildInfo.link())
+        var stream = redirectedWebClient.get()
+            .uri(URI.create(buildInfo.link()))
             .accept(MediaType.APPLICATION_OCTET_STREAM)
-            .header("Range", String.format("bytes=%d-", buildInfo.size()))
+//            .header("Range", String.format("bytes=%d-", buildInfo.size()))
             .retrieve()
             .bodyToFlux(DataBuffer.class)
-            .doOnError(err -> {
-                progressMap.put(buildInfo, ProgressStatus.FAILED);
-                System.out.println(progressMap);
-            })
-            .doOnNext(ddb -> System.out.println(progressMap));
+            .doFinally(signal -> {
+                switch (signal) {
+                    case CANCEL, ON_COMPLETE -> progressMap.put(buildInfo, ProgressStatus.FINISHED);
+                    case ON_ERROR -> progressMap.put(buildInfo, ProgressStatus.FAILED);
+                    default -> throw new RuntimeException(String.format("Download of the [%s] was aborted due to signal [%s]", buildInfo, signal));
+                }
+            });
 
-        var path = Path.of(properties.getPathToSave(), getFileName(buildInfo));
-        var fileChannel = AsynchronousFileChannel.open(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-        DataBufferUtils.write(dataStream, fileChannel)
-            .publishOn(Schedulers.boundedElastic())
-            .map(DataBufferUtils::release)
-            .doOnError(throwable -> {
-                try {
-                    fileChannel.force(true);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            })
-//            .retryWhen(Retry.any().fixedBackoff(Duration.ofSeconds(5)).retryMax(5))
-            .doOnComplete(() -> {
-                try {
-                    fileChannel.force(true);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            })
-            .doOnError(e -> !(e instanceof ChannelException), e -> {
-                try {
-                    Files.deleteIfExists(path);
-                } catch (IOException exc) {
-                    exc.printStackTrace();
-                }
-            })
-            .doOnError(ChannelException.class, e -> {
-                try {
-                    Files.deleteIfExists(path);
-                } catch (IOException exc) {
-                    exc.printStackTrace();
-                }
-            })
-            .doOnTerminate(() -> {
-                try {
-                    fileChannel.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            })
-            .share()
-            .blockLast();
-    }
-
-    private String getFileName(BuildInfo buildInfo) {
-        var metadata = buildInfo.buildMetadata();
-        return String.format("%s-%s-%s.tar.gz", metadata.productName(), metadata.releaseDate(), metadata.fullNumber());
+        return Mono.just(Pair.of(buildInfo, stream));
     }
 }

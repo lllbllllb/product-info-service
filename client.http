@@ -1,0 +1,10 @@
+http://localhost:8080/
+
+###
+http://localhost:8080/status
+
+###
+POST http://localhost:8080/refresh
+
+###
+POST http://localhost:8080/refresh/IC

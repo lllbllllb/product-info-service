@@ -3,6 +3,6 @@ server:
 
 spring:
   codec:
-    max-in-memory-size: 2MB
+    max-in-memory-size: 1MB
   lifecycle:
     timeout-per-shutdown-phase: 1m

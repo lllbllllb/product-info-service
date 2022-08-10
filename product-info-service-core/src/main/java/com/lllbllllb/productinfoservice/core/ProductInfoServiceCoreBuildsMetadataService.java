@@ -1,11 +1,15 @@
 package com.lllbllllb.productinfoservice.core;
 
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.annotation.PostConstruct;
 
@@ -22,64 +26,63 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class ProductInfoServiceCoreProductInfoDataCollector {
+public class ProductInfoServiceCoreBuildsMetadataService {
 
     private final WebClient updatesXmlClient;
 
     private final Clock clock;
 
-    private final ProductInfoServiceCoreBuildInfoProvider downloadInfoProvider;
-
     private final ProductInfoServiceCoreConfigurationProperties properties;
-
-    private final ProductInfoServiceCoreBuildDownloadService buildDownloadService;
-
-    private volatile ZonedDateTime lastCheck;
-
 
     @PostConstruct
     public void init() {
-        lastCheck = ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, clock.getZone());
+        lastCheck = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), clock.getZone());
     }
 
-    public void collect() {
-        collect(null);
-    }
+    private volatile ZonedDateTime lastCheck;
 
-    public void collect(String productCode) {
-        updatesXmlClient.get()
-//            .ifModifiedSince(lastCheck)
-            .retrieve()
-            .onStatus(HttpStatus::is3xxRedirection, clientResponse -> Mono.empty())
-            .bodyToMono(Products.class)
-            .doOnNext(products -> lastCheck = ZonedDateTime.now(clock))
-            .subscribe(products -> {
+    public Mono<Collection<Map.Entry<String, Set<BuildMetadata>>>> getBuildsMetadataByProduct(String productCode) {
+        return getProducts()
+            .map(products -> {
                 var codeToBuildNumbersMap = new HashMap<String, Set<BuildMetadata>>();
+                var targetProduct = products.getProduct().stream()
+                    .filter(product -> product.getCode().contains(productCode))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown product code [%s]", productCode)));
+                var builds = extractBuildInfos(targetProduct);
 
-                if (productCode != null) {
-                    var targetProduct = products.getProduct().stream()
-                        .filter(product -> product.getCode().contains(productCode))
-                        .findAny()
-                        .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown product code [%s]", productCode)));
-                    var builds = extractBuildInfos(targetProduct);
+                codeToBuildNumbersMap.put(productCode, builds);
 
-                    codeToBuildNumbersMap.put(productCode, builds);
-                } else {
-                    products.getProduct().forEach(product -> {
-                        var builds = extractBuildInfos(product);
-
-                        product.getCode().forEach(code -> codeToBuildNumbersMap.put(code, builds));
-                    });
-
-                }
-
-                codeToBuildNumbersMap.forEach((code, builds) -> downloadInfoProvider.getBuildInfos(code, builds)
-                    .subscribe(buildDownloadService::downloadBuild));
+                return codeToBuildNumbersMap.entrySet();
             });
     }
 
-    private Set<BuildMetadata> extractBuildInfos(Product product) {
+    public Mono<Collection<Map.Entry<String, Set<BuildMetadata>>>> getAllBuildsMetadata() {
+        return getProducts()
+            .map(products -> {
+                var codeToBuildNumbersMap = new HashMap<String, Set<BuildMetadata>>();
 
+                products.getProduct().forEach(product -> {
+                    var builds = extractBuildInfos(product);
+
+                    product.getCode().forEach(code -> codeToBuildNumbersMap.put(code, builds));
+                });
+
+                return codeToBuildNumbersMap.entrySet();
+            });
+    }
+
+    private Mono<Products> getProducts() {
+        return updatesXmlClient.get()
+            .ifModifiedSince(lastCheck)
+            .retrieve()
+            .onStatus(HttpStatus::is3xxRedirection, clientResponse -> Mono.empty())
+            .bodyToMono(Products.class)
+            .log("0 Products ", Level.FINE)
+            .doOnNext(products -> lastCheck = ZonedDateTime.now(clock));
+    }
+
+    private Set<BuildMetadata> extractBuildInfos(Product product) {
         var buildInfos = new HashSet<BuildMetadata>();
 
         for (Channel channel : product.getChannel()) {

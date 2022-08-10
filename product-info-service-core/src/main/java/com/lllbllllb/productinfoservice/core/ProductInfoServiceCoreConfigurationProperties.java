@@ -14,6 +14,8 @@ public class ProductInfoServiceCoreConfigurationProperties {
 
     private Duration refreshInterval = Duration.ofHours(1);
 
+    private Duration delay = Duration.ofHours(1);
+
     private String targetFileName = "product-info.json";
 
     private String updatesXmlUrl = "https://www.jetbrains.com/updates/updates.xml";

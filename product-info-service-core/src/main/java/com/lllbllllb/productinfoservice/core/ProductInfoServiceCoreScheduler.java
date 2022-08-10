@@ -12,12 +12,12 @@ public class ProductInfoServiceCoreScheduler {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
-    private final ProductInfoServiceCoreProductInfoDataCollector productInfoDataCollector;
+    private final ProductInfoServiceCoreMainFlowService mainFlowService;
 
     @PostConstruct
     public void init() {
-        Flux.interval(properties.getRefreshInterval())
-//            .subscribeOn(Schedulers.boundedElastic())
-            .subscribe(t -> productInfoDataCollector.collect());
+        Flux.interval(properties.getDelay(), properties.getRefreshInterval())
+            .flatMap(t -> mainFlowService.collect())
+            .subscribe();
     }
 }

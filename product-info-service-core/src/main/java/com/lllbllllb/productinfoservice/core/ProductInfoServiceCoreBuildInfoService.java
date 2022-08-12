@@ -2,10 +2,10 @@ package com.lllbllllb.productinfoservice.core;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,6 +26,8 @@ public class ProductInfoServiceCoreBuildInfoService {
     private final WebClient releasesCodeClient;
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
+
+    private final ProductInfoServiceCoreChecksumService checksumService;
 
     public Flux<BuildInfo> getAllBuildInfo() {
         return process(buildsMetadataService.getAllBuildsMetadata());
@@ -49,35 +51,43 @@ public class ProductInfoServiceCoreBuildInfoService {
             .uri(uriBuilder -> uriBuilder.queryParam("code", code).build())
             .retrieve()
             .bodyToMono(JsonNode.class)
-            .map(node -> {
-                var key = node.fieldNames().next(); // so yes?
+            .flatMapMany(release -> getBuildInfos(release, code, buildNumberToBuildMetadataMap));
+    }
 
-                return StreamSupport
-                    .stream(node.get(key).spliterator(), false)
-                    .filter(child -> buildNumberToBuildMetadataMap.containsKey(child.get("build").asText()))
-                    .map(child -> {
-                        var build = child.get("build").asText();
+    private Flux<BuildInfo> getBuildInfos(JsonNode releases, String code, Map<String, BuildMetadata> buildNumberToBuildMetadataMap) {
+        return Flux.fromStream(parseProductReleases(releases, code, buildNumberToBuildMetadataMap))
+            .flatMap(Function.identity());
+    }
 
-                        if (!buildNumberToBuildMetadataMap.containsKey(build)) {
-                            return null;
-                        }
+    private Stream<Mono<BuildInfo>> parseProductReleases(JsonNode releases, String code, Map<String, BuildMetadata> buildNumberToBuildMetadataMap) {
+        var fieldNames = releases.fieldNames(); // expected just one, e.g. IC, IU, WS, CL, etc.
 
-                        var linuxDownload = child.get("downloads").get(properties.getLinuxDistroKey());
+        if (fieldNames.hasNext()) {
+            var productCode = fieldNames.next();
 
-                        if (linuxDownload == null) {
-                            return null;
-                        }
+            return StreamSupport
+                .stream(releases.get(productCode).spliterator(), false)
+                .filter(child -> buildNumberToBuildMetadataMap.containsKey(child.get("build").asText())
+                    && child.get("downloads").get(properties.getLinuxDistroKey()) != null)
+                .map(child -> parseChildJsonNode(child, code, buildNumberToBuildMetadataMap));
+        } else {
+            return Stream.empty();
+        }
+    }
 
-                        return new BuildInfo(
-                            linuxDownload.get("link").textValue(),
-                            linuxDownload.get("size").longValue(),
-                            linuxDownload.get("checksumLink").textValue(),
-                            buildNumberToBuildMetadataMap.get(build)
-                        );
-                    })
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
-            })
-            .flatMapMany(Flux::fromIterable);
+    private Mono<BuildInfo> parseChildJsonNode(JsonNode child, String code, Map<String, BuildMetadata> buildNumberToBuildMetadataMap) {
+        var build = child.get("build").asText();
+        var linuxDownload = child.get("downloads").get(properties.getLinuxDistroKey());
+        var checksumLink = linuxDownload.get("checksumLink").textValue();
+
+        return checksumService.getExpectedChecksum(checksumLink)
+            .map(checksum -> new BuildInfo(
+                linuxDownload.get("link").textValue(),
+                linuxDownload.get("size").longValue(),
+                linuxDownload.get("checksumLink").textValue(),
+                buildNumberToBuildMetadataMap.get(build),
+                code,
+                checksum
+            ));
     }
 }

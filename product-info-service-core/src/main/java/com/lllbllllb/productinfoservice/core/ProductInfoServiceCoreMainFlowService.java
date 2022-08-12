@@ -1,19 +1,18 @@
 package com.lllbllllb.productinfoservice.core;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Level;
 
 import com.lllbllllb.productinfoservice.core.model.BuildInfo;
+import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class ProductInfoServiceCoreMainFlowService {
+public class ProductInfoServiceCoreMainFlowService { // fixme: rename to ProductInfoServiceCorePipelineService
 
     private final ProductInfoServiceCoreBuildDownloadService buildDownloadService;
 
@@ -23,10 +22,12 @@ public class ProductInfoServiceCoreMainFlowService {
 
     private final ProductInfoServiceCoreBuildInfoService buildInfoService;
 
-    private final ProductInfoServiceCoreHashValidatorService hashValidatorService;
+    private final ProductInfoServiceCoreChecksumService checksumService;
+
+    private final ProductInfoServiceCorePersistenceService persistenceService;
 
     public Mono<List<BuildInfo>> collect() {
-        return process(buildInfoService.getAllBuildInfo());
+        return process(buildInfoService.getAllBuildInfo()); // fixme: cheat and tricky
     }
 
     public Mono<List<BuildInfo>> collect(String productCode) {
@@ -35,24 +36,23 @@ public class ProductInfoServiceCoreMainFlowService {
 
     private Mono<List<BuildInfo>> process(Flux<BuildInfo> stream) {
         return stream.collectList()
-            .log("1 BuildsMetadataByCode ")
+            .log("1 Accepted BuildInfos ")
             .doOnNext(this::fireAndForget);
     }
 
     private void fireAndForget(List<BuildInfo> buildInfos) {
-        Flux.fromIterable(buildInfos)
-            .log("2 BuildInfos ")
+        checksumService.filterUnchangedByChecksums(buildInfos)
+            .log("2 BuildInfos to update ")
             .flatMap(buildDownloadService::downloadBuild)
             .log("3 Build downloaded ")
-            .flatMap(pair -> fileService.writeToFile(pair.getFirst(), pair.getSecond()))
+            .flatMap(fileService::writeToFile)
             .log("4 Write to file ")
-            .flatMap(pair -> hashValidatorService.validateSha256(pair.getLeft(), pair.getRight()))
+            .flatMap(checksumService::validateFileChecksum)
             .log("4.1 SHA256 OK ")
-            .flatMap(pair -> tarGzService.extractFileFromPath(pair.getRight())
-                .map(file -> Pair.of(pair.getLeft(), file)))
+            .flatMap(buildInfoAware -> tarGzService.extractFileFromPath(buildInfoAware.obj())
+                .map(file -> new BuildInfoAware<>(buildInfoAware.buildInfo(), file)))
             .log("5 File extracted ", Level.FINE)
-            .map(pair -> new String(pair.getRight(), StandardCharsets.UTF_8))
-            .log("6 product-info.json ")
+            .flatMap(persistenceService::save)
             .then().subscribe();
     }
 }

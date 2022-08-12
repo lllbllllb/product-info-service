@@ -3,13 +3,12 @@ package com.lllbllllb.productinfoservice.core;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-import com.lllbllllb.productinfoservice.core.model.BuildInfo;
+import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.tuple.Pair;
-import org.reactivestreams.Publisher;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -20,11 +19,12 @@ public class ProductInfoServiceCoreFileService {
 
     private final ProductInfoServiceCoreFileNameProvider fileNameProvider;
 
-    public Mono<Pair<BuildInfo, Path>> writeToFile(BuildInfo buildInfo, Publisher<DataBuffer> publisher) {
+    public Mono<BuildInfoAware<Path>> writeToFile(BuildInfoAware<Flux<DataBuffer>> buildInfoAware) {
+        var buildInfo = buildInfoAware.buildInfo();
         var filename = fileNameProvider.get(buildInfo);
         var path = Path.of(properties.getPathToSave(), filename);
 
-        return DataBufferUtils.write(publisher, path, StandardOpenOption.CREATE)
-            .thenReturn(Pair.of(buildInfo, path));
+        return DataBufferUtils.write(buildInfoAware.obj(), path, StandardOpenOption.CREATE)
+            .thenReturn(new BuildInfoAware<>(buildInfo, path));
     }
 }

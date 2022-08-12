@@ -3,11 +3,11 @@ package com.lllbllllb.productinfoservice.core;
 import java.net.URI;
 
 import com.lllbllllb.productinfoservice.core.model.BuildInfo;
+import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.core.model.ProgressStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,7 +23,7 @@ public class ProductInfoServiceCoreBuildDownloadService {
     private final ProductInfoServiceCoreProgressTrackerService progressTrackerService;
 
     @SneakyThrows
-    public Mono<Pair<BuildInfo, Flux<DataBuffer>>> downloadBuild(BuildInfo buildInfo) {
+    public Mono<BuildInfoAware<Flux<DataBuffer>>> downloadBuild(BuildInfo buildInfo) {
         progressTrackerService.updateProgress(buildInfo, ProgressStatus.RUNNING);
 
         var stream = redirectedWebClient.get()
@@ -40,6 +40,6 @@ public class ProductInfoServiceCoreBuildDownloadService {
                 }
             });
 
-        return Mono.just(Pair.of(buildInfo, stream));
+        return Mono.just(new BuildInfoAware<>(buildInfo, stream));
     }
 }

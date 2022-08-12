@@ -59,6 +59,7 @@ public class ProductInfoServiceCoreBuildsMetadataService {
 
     public Mono<Collection<Map.Entry<String, Set<BuildMetadata>>>> getAllBuildsMetadata() {
         return getProducts()
+            .doOnNext(products -> fireLastCheck()) // fixme: move to end of the flow
             .map(products -> {
                 var codeToBuildNumbersMap = new HashMap<String, Set<BuildMetadata>>();
 
@@ -72,14 +73,17 @@ public class ProductInfoServiceCoreBuildsMetadataService {
             });
     }
 
+    public void fireLastCheck() {
+        lastCheck = ZonedDateTime.now(clock);
+    }
+
     private Mono<Products> getProducts() {
         return updatesXmlClient.get()
             .ifModifiedSince(lastCheck)
             .retrieve()
             .onStatus(HttpStatus::is3xxRedirection, clientResponse -> Mono.empty())
             .bodyToMono(Products.class)
-            .log("0 Products ", Level.FINE)
-            .doOnNext(products -> lastCheck = ZonedDateTime.now(clock));
+            .log("0 Products ", Level.FINE);
     }
 
     private Set<BuildMetadata> extractBuildInfos(Product product) {

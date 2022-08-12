@@ -6,3 +6,9 @@ spring:
     max-in-memory-size: 1MB
   lifecycle:
     timeout-per-shutdown-phase: 1m
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      username: admin
+      password: password
+      database: test

@@ -17,6 +17,7 @@ public class ProductInfoServiceCoreScheduler {
     @PostConstruct
     public void init() {
         Flux.interval(properties.getDelay(), properties.getRefreshInterval())
+            .log("Scheduled Builds ")
             .flatMap(t -> mainFlowService.collect())
             .log("Scheduled Builds ")
             .subscribe();

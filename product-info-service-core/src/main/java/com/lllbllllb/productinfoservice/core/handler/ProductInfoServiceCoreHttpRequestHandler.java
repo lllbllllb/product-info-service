@@ -3,6 +3,7 @@ package com.lllbllllb.productinfoservice.core.handler;
 import java.util.List;
 
 import com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreMainFlowService;
+import com.lllbllllb.productinfoservice.core.ProductInfoServiceCorePersistenceService;
 import com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreStatusService;
 import com.lllbllllb.productinfoservice.core.model.BuildInfo;
 import com.lllbllllb.productinfoservice.core.model.ServiceStatus;
@@ -24,6 +25,8 @@ public class ProductInfoServiceCoreHttpRequestHandler {
     private final ProductInfoServiceCoreMainFlowService mainFlowService;
 
     private final ProductInfoServiceCoreStatusService statusService;
+
+    private final ProductInfoServiceCorePersistenceService persistenceService;
 
     public Mono<ServerResponse> root(ServerRequest request) {
 

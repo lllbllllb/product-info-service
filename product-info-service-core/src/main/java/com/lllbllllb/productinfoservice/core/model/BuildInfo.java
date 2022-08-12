@@ -4,7 +4,9 @@ public record BuildInfo(
     String link,
     long size,
     String checksumLink,
-    BuildMetadata buildMetadata
+    BuildMetadata buildMetadata,
+    String productCode,
+    String checksum
 ) {
 
 }

@@ -6,6 +6,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -28,6 +29,11 @@ public class ProductInfoServiceCoreTarGzService {
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
     // fixme: https://stackoverflow.com/q/58320041
+    public Mono<BuildInfoAware<byte[]>> extractFileFromPath(BuildInfoAware<Path> path) {
+        return extractFileFromPath(path.obj())
+            .map(bytes -> new BuildInfoAware<>(path.buildInfo(), bytes));
+    }
+
     public Mono<byte[]> extractFileFromPath(Path path) {
         var fileName = properties.getTargetFileName();
 
@@ -60,7 +66,8 @@ public class ProductInfoServiceCoreTarGzService {
 
                 throw new IllegalStateException(String.format("No file with name [%s] found inside [%s]", fileName, path));
             })
-            .publishOn(Schedulers.boundedElastic());
+            .publishOn(Schedulers.boundedElastic())
+            .onErrorResume(e -> Mono.empty());
     }
 
 }

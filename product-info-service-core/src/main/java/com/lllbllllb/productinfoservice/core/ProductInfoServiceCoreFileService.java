@@ -7,6 +7,7 @@ import java.nio.file.StandardOpenOption;
 import com.lllbllllb.productinfoservice.core.model.BuildInfo;
 import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class ProductInfoServiceCoreFileService {
         var path = getPath(buildInfo);
 
         return DataBufferUtils.write(buildInfoAware.obj(), path, StandardOpenOption.CREATE)
+            .onErrorResume(e -> Mono.empty())
             .thenReturn(new BuildInfoAware<>(buildInfo, path));
     }
 
@@ -52,7 +54,8 @@ public class ProductInfoServiceCoreFileService {
 
         if (isFileExists(path)) {
             return Mono.fromCallable(() -> Files.size(path))
-                .subscribeOn(Schedulers.boundedElastic());
+                .subscribeOn(Schedulers.boundedElastic())
+                .onErrorResume(e -> Mono.empty());
         }
 
         return Mono.just(NO_FILE_SIZE);
@@ -60,5 +63,16 @@ public class ProductInfoServiceCoreFileService {
 
     public boolean isFileExists(Path path) {
         return Files.exists(path);
+    }
+
+    public Mono<Boolean> deleteFile(BuildInfo buildInfo) {
+        var path = getPath(buildInfo);
+
+        return deleteFile(path);
+    }
+
+    public Mono<Boolean> deleteFile(Path path) {
+        return Mono.fromCallable(() -> Files.deleteIfExists(path))
+            .subscribeOn(Schedulers.boundedElastic());
     }
 }

@@ -40,14 +40,18 @@ public class ProductInfoServiceCoreHttpRequestHandler {
     public Mono<ServerResponse> getProductCode(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
 
-        return ok().bodyValue("Your PC: " + productCode);
+        return persistenceService.findByProductCode(productCode)
+            .map(bia -> bia.obj().productInfoFile())
+            .collectList()
+            .flatMap(file -> ok().bodyValue(file));
     }
 
     public Mono<ServerResponse> getBuildNumber(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
         var buildNumber = request.pathVariable(BUILD_NUMBER);
 
-        return ok().bodyValue(String.format("PC: %s | BN: %s", productCode, buildNumber));
+        return persistenceService.findByProductCodeAndFullNumber(productCode, buildNumber)
+            .flatMap(bia -> ok().bodyValue(bia.obj().productInfoFile()));
     }
 
     public Mono<ServerResponse> refresh(ServerRequest request) {

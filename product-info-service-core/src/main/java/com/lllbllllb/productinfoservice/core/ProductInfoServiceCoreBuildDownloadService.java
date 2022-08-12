@@ -47,7 +47,8 @@ public class ProductInfoServiceCoreBuildDownloadService {
                             default -> throw new RuntimeException(String.format("Download of the [%s] was aborted due to signal [%s]", buildInfo, signal));
                         }
                     });
-            });
+            })
+            .onErrorResume(ex -> Flux.empty());
 
         progressTrackerService.updateProgress(buildInfo, ProgressStatus.RUNNING);
 

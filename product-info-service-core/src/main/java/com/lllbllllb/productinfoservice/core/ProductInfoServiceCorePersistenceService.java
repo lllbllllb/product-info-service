@@ -2,6 +2,7 @@ package com.lllbllllb.productinfoservice.core;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lllbllllb.productinfoservice.core.model.BuildInfo;
 import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.core.model.BuildMetadata;
@@ -11,6 +12,7 @@ import com.lllbllllb.productinfoservice.core.repository.ProductInfoServiceReposi
 import com.lllbllllb.productinfoservice.core.repository.model.BuildInfoDto;
 import io.r2dbc.postgresql.codec.Json;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,6 +25,8 @@ public class ProductInfoServiceCorePersistenceService {
 
     private final ProductInfoServiceRepositoryIdProvider idProvider;
 
+    private final ObjectMapper objectMapper;
+
     public Mono<BuildInfoAware<ProductInfo>> save(BuildInfoAware<byte[]> buildInfoAware) {
         var buildInfo = buildInfoAware.buildInfo();
         var productInfoBytes = buildInfoAware.obj();
@@ -32,7 +36,11 @@ public class ProductInfoServiceCorePersistenceService {
         dto.setProductInfo(Json.of(productInfoBytes));
         dto.setProductCode(buildInfo.productCode());
         dto.setChecksum(buildInfo.checksum());
+        dto.setChecksumLink(buildInfo.checksumLink());
         dto.setLink(buildInfo.link());
+        dto.setSize(buildInfo.size());
+        dto.setChannelName(buildInfo.buildMetadata().channelName());
+        dto.setChannelStatus(buildInfo.buildMetadata().channelStatus());
         dto.setProductName(metadata.productName());
         dto.setBuildVersion(metadata.version());
         dto.setReleaseDate(metadata.releaseDate());
@@ -62,6 +70,7 @@ public class ProductInfoServiceCorePersistenceService {
     }
 
     // fixme: move to dedicated ConverterService
+    @SneakyThrows
     private BuildInfoAware<ProductInfo> fromDto(BuildInfoDto dto) {
         var buildMetadata = new BuildMetadata(
             dto.getProductName(),
@@ -80,7 +89,7 @@ public class ProductInfoServiceCorePersistenceService {
             dto.getChecksum()
         );
         var productInfo = new ProductInfo(
-            dto.getProductInfo().asString(),
+            objectMapper.readTree(dto.getProductInfo().asArray()),
             dto.getCreatedDate(),
             dto.getLastModifiedDate()
         );

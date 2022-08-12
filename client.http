@@ -16,8 +16,14 @@ GET http://localhost:8080/status
 ####
 POST http://localhost:8080/refresh
 
-### http://localhost:8080/refresh/IC
+### /refresh/IC
 POST http://localhost:8080/refresh/IC
 
-### http://localhost:8080/refresh/GW
+### /refresh/GW
 POST http://localhost:8080/refresh/GW
+
+### /GW
+GET http://localhost:8080/GW
+
+### /GW/213.6777.25
+GET http://localhost:8080/GW/213.6777.25

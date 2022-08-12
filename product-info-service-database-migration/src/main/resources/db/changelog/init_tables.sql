@@ -9,7 +9,7 @@ create table build_info
     checksum           text,
     link               text,
     checksum_link      text,
-    size               text,
+    size               bigint,
     product_name       text,
     channel_name       text,
     channel_status     text,

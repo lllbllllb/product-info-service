@@ -43,7 +43,8 @@ public class ProductInfoServiceCoreChecksumService {
                     return DigestUtils.sha256Hex(is);
                 }
             })
-            .publishOn(Schedulers.boundedElastic());
+            .subscribeOn(Schedulers.boundedElastic())
+            .onErrorResume(e -> Mono.empty());
     }
 
     public Mono<BuildInfoAware<Path>> validateFileChecksum(BuildInfoAware<Path> buildInfoAware) {
@@ -55,8 +56,6 @@ public class ProductInfoServiceCoreChecksumService {
                     sink.next(buildInfoAware);
                 } else {
                     progressTrackerService.updateProgress(buildInfoAware.buildInfo(), ProgressStatus.INVALID_CHECKSUM);
-                    // todo: think about just skip invalid
-                    sink.error(new IllegalStateException(String.format("Invalid checksum for %s. Actual checksum [%s]", buildInfoAware, actualChecksum)));
                 }
             });
     }

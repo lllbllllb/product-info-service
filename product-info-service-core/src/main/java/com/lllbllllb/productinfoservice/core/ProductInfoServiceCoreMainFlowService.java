@@ -49,12 +49,11 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
             .log("4 Write to file ")
             .flatMap(checksumService::validateFileChecksum)
             .log("4.1 SHA256 OK ")
-            .flatMap(buildInfoAware -> tarGzService.extractFileFromPath(buildInfoAware.obj())
-                .map(file -> new BuildInfoAware<>(buildInfoAware.buildInfo(), file)))
+            .flatMap(tarGzService::extractFileFromPath)
             .log("5 File extracted ", Level.FINE)
             .flatMap(persistenceService::save)
-            .map(r -> r.obj().productInfoFile())
-            .log("6 Product info")
-            .then().subscribe();
+//            .flatMap(buildInfoAware -> fileService.deleteFile(buildInfoAware.buildInfo()))
+            .log("6 Tidied up ")
+            .subscribe();
     }
 }

@@ -53,6 +53,8 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
                 .map(file -> new BuildInfoAware<>(buildInfoAware.buildInfo(), file)))
             .log("5 File extracted ", Level.FINE)
             .flatMap(persistenceService::save)
+            .map(r -> r.obj().productInfoFile())
+            .log("6 Product info")
             .then().subscribe();
     }
 }

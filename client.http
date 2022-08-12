@@ -4,6 +4,9 @@ GET https://www.jetbrains.com/updates/updates.xml
 ### https://data.services.jetbrains.com/products/releases?code=IC
 GET https://data.services.jetbrains.com/products/releases?code=IC
 
+### https://data.services.jetbrains.com/products/releases?code=GW
+GET https://data.services.jetbrains.com/products/releases?code=GW
+
 ####
 GET http://localhost:8080/
 
@@ -15,3 +18,6 @@ POST http://localhost:8080/refresh
 
 ### http://localhost:8080/refresh/IC
 POST http://localhost:8080/refresh/IC
+
+### http://localhost:8080/refresh/GW
+POST http://localhost:8080/refresh/GW

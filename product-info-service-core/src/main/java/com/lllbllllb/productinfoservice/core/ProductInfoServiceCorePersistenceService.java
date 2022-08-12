@@ -1,6 +1,5 @@
 package com.lllbllllb.productinfoservice.core;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import com.lllbllllb.productinfoservice.core.model.BuildInfo;
@@ -10,6 +9,7 @@ import com.lllbllllb.productinfoservice.core.model.ProductInfo;
 import com.lllbllllb.productinfoservice.core.repository.ProductInfoServiceRepository;
 import com.lllbllllb.productinfoservice.core.repository.ProductInfoServiceRepositoryIdProvider;
 import com.lllbllllb.productinfoservice.core.repository.model.BuildInfoDto;
+import io.r2dbc.postgresql.codec.Json;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -25,18 +25,16 @@ public class ProductInfoServiceCorePersistenceService {
 
     public Mono<BuildInfoAware<ProductInfo>> save(BuildInfoAware<byte[]> buildInfoAware) {
         var buildInfo = buildInfoAware.buildInfo();
-        var productInfoJson = buildInfoAware.obj();
-
+        var productInfoBytes = buildInfoAware.obj();
         var metadata = buildInfo.buildMetadata();
         var dto = new BuildInfoDto();
         dto.setId(idProvider.get(buildInfo));
-        var productInfo = new String(productInfoJson, StandardCharsets.UTF_8);
+        dto.setProductInfo(Json.of(productInfoBytes));
         dto.setProductCode(buildInfo.productCode());
-        dto.setProductInfo(productInfo);
         dto.setChecksum(buildInfo.checksum());
         dto.setLink(buildInfo.link());
         dto.setProductName(metadata.productName());
-        dto.setVersion(metadata.version());
+        dto.setBuildVersion(metadata.version());
         dto.setReleaseDate(metadata.releaseDate());
         dto.setFullNumber(metadata.fullNumber());
 
@@ -69,7 +67,7 @@ public class ProductInfoServiceCorePersistenceService {
             dto.getProductName(),
             dto.getChannelName(),
             dto.getChannelStatus(),
-            dto.getVersion(),
+            dto.getBuildVersion(),
             dto.getReleaseDate(),
             dto.getFullNumber()
         );
@@ -82,7 +80,7 @@ public class ProductInfoServiceCorePersistenceService {
             dto.getChecksum()
         );
         var productInfo = new ProductInfo(
-            dto.getProductInfo(),
+            dto.getProductInfo().asString(),
             dto.getCreatedDate(),
             dto.getLastModifiedDate()
         );

@@ -4,16 +4,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import io.r2dbc.postgresql.codec.Json;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Data
-@Document("build-info")
-public class BuildInfoDto {
+@Table("build_info")
+public class BuildInfoDto implements Persistable<UUID> {
 
     @Id
     private UUID id;
@@ -21,7 +24,7 @@ public class BuildInfoDto {
     @Indexed
     private String productCode;
 
-    private Object productInfo;
+    private Json productInfo;
 
     private String checksum;
 
@@ -37,11 +40,10 @@ public class BuildInfoDto {
 
     private String channelStatus;
 
-    private String version;
+    private String buildVersion;
 
     private LocalDate releaseDate;
 
-    @Indexed
     private String fullNumber;
 
     @CreatedDate
@@ -49,4 +51,12 @@ public class BuildInfoDto {
 
     @LastModifiedDate
     private LocalDate lastModifiedDate;
+
+    @Version
+    private Long version;
+
+    @Override
+    public boolean isNew() {
+        return version == null;
+    }
 }

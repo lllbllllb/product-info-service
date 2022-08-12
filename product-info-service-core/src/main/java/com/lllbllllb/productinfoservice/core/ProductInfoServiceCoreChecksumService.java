@@ -56,7 +56,7 @@ public class ProductInfoServiceCoreChecksumService {
                 } else {
                     progressTrackerService.updateProgress(buildInfoAware.buildInfo(), ProgressStatus.INVALID_CHECKSUM);
                     // todo: think about just skip invalid
-                    sink.error(new IllegalStateException(String.format("Invalid checksum for %s. Expected [%s]", buildInfoAware, expectedChecksum)));
+                    sink.error(new IllegalStateException(String.format("Invalid checksum for %s. Actual checksum [%s]", buildInfoAware, actualChecksum)));
                 }
             });
     }

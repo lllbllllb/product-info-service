@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class ProductInfoServiceRepositoryIdProvider {
 
     public UUID get(BuildInfo buildInfo) {
-        var link = buildInfo.link().getBytes();
+        var link = ("%s_%s".formatted(buildInfo.productCode(), buildInfo.buildMetadata().fullNumber())).getBytes();
 
         return UUID.nameUUIDFromBytes(link);
     }

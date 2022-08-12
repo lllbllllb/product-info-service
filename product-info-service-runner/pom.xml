@@ -29,6 +29,10 @@
             <groupId>com.lllbllllb</groupId>
             <artifactId>product-info-service-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lllbllllb</groupId>
+            <artifactId>product-info-service-database-migration</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,7 +1,9 @@
 spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017
-      username: admin
-      password: password
-      database: test
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/authservice
+    username: postgres
+    password: password
+  liquibase:
+    url: jdbc:postgresql://localhost:5433/authservice
+    user: postgres
+    password: password

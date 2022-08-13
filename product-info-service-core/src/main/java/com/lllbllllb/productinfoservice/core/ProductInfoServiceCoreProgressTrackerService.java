@@ -3,8 +3,8 @@ package com.lllbllllb.productinfoservice.core;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.lllbllllb.productinfoservice.core.model.BuildInfo;
-import com.lllbllllb.productinfoservice.core.model.ProgressStatus;
+import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.ProgressStatus;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,4 +1,4 @@
-package com.lllbllllb.productinfoservice.core.model;
+package com.lllbllllb.productinfoservice.model;
 
 public record BuildInfoAware<T>(
     BuildInfo buildInfo,

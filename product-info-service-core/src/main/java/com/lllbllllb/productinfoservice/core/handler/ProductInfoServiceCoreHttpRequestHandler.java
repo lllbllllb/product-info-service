@@ -2,11 +2,11 @@ package com.lllbllllb.productinfoservice.core.handler;
 
 import java.util.List;
 
+import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
 import com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreMainFlowService;
-import com.lllbllllb.productinfoservice.core.ProductInfoServiceCorePersistenceService;
 import com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreStatusService;
-import com.lllbllllb.productinfoservice.core.model.BuildInfo;
-import com.lllbllllb.productinfoservice.core.model.ServiceStatus;
+import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.ServiceStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class ProductInfoServiceCoreHttpRequestHandler {
 
     private final ProductInfoServiceCoreStatusService statusService;
 
-    private final ProductInfoServiceCorePersistenceService persistenceService;
+    private final ProductInfoServiceRepositoryService repositoryService;
 
     public Mono<ServerResponse> root(ServerRequest request) {
 
@@ -40,7 +40,7 @@ public class ProductInfoServiceCoreHttpRequestHandler {
     public Mono<ServerResponse> getProductCode(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
 
-        return persistenceService.findByProductCode(productCode)
+        return repositoryService.findByProductCode(productCode)
             .map(bia -> bia.obj().productInfoFile())
             .collectList()
             .flatMap(file -> ok().bodyValue(file));
@@ -50,7 +50,7 @@ public class ProductInfoServiceCoreHttpRequestHandler {
         var productCode = request.pathVariable(PRODUCT_CODE);
         var buildNumber = request.pathVariable(BUILD_NUMBER);
 
-        return persistenceService.findByProductCodeAndFullNumber(productCode, buildNumber)
+        return repositoryService.findByProductCodeAndFullNumber(productCode, buildNumber)
             .flatMap(bia -> ok().bodyValue(bia.obj().productInfoFile()));
     }
 

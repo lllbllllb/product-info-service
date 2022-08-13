@@ -6,7 +6,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -66,7 +66,7 @@ public class ProductInfoServiceCoreTarGzService {
 
                 throw new IllegalStateException(String.format("No file with name [%s] found inside [%s]", fileName, path));
             })
-            .publishOn(Schedulers.boundedElastic())
+            .subscribeOn(Schedulers.boundedElastic())
             .onErrorResume(e -> Mono.empty());
     }
 

@@ -3,8 +3,8 @@ package com.lllbllllb.productinfoservice.core;
 import java.util.List;
 import java.util.logging.Level;
 
-import com.lllbllllb.productinfoservice.core.model.BuildInfo;
-import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
+import com.lllbllllb.productinfoservice.model.BuildInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -24,7 +24,8 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
 
     private final ProductInfoServiceCoreChecksumService checksumService;
 
-    private final ProductInfoServiceCorePersistenceService persistenceService;
+    private final ProductInfoServiceRepositoryService repositoryService;
+
 
     public Mono<List<BuildInfo>> collect() {
         return process(buildInfoService.getAllBuildInfo()); // fixme: cheat and tricky
@@ -51,7 +52,7 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
             .log("4.1 SHA256 OK ")
             .flatMap(tarGzService::extractFileFromPath)
             .log("5 File extracted ", Level.FINE)
-            .flatMap(persistenceService::save)
+            .flatMap(repositoryService::save)
 //            .flatMap(buildInfoAware -> fileService.deleteFile(buildInfoAware.buildInfo()))
             .log("6 Tidied up ")
             .subscribe();

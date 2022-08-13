@@ -1,6 +1,6 @@
 package com.lllbllllb.productinfoservice.core;
 
-import com.lllbllllb.productinfoservice.core.model.ServiceStatus;
+import com.lllbllllb.productinfoservice.model.ServiceStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

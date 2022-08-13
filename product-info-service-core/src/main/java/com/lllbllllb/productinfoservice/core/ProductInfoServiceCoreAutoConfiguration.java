@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.util.List;
 
 import com.lllbllllb.productinfoservice.core.handler.ProductInfoServiceCoreHttpRequestHandler;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -68,9 +69,9 @@ public class ProductInfoServiceCoreAutoConfiguration {
             .build();
     }
 
-
     @Bean
+    @ConditionalOnMissingBean
     Clock clock() {
-        return Clock.systemUTC();
+        return Clock.systemDefaultZone();
     }
 }

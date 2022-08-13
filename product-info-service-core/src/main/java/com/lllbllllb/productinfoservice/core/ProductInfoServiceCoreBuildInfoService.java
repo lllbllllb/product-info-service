@@ -9,8 +9,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.lllbllllb.productinfoservice.core.model.BuildInfo;
-import com.lllbllllb.productinfoservice.core.model.BuildMetadata;
+import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.BuildMetadata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

@@ -2,9 +2,9 @@ package com.lllbllllb.productinfoservice.core;
 
 import java.net.URI;
 
-import com.lllbllllb.productinfoservice.core.model.BuildInfo;
-import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
-import com.lllbllllb.productinfoservice.core.model.ProgressStatus;
+import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.ProgressStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.io.buffer.DataBuffer;

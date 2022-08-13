@@ -4,10 +4,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-import com.lllbllllb.productinfoservice.core.model.BuildInfo;
-import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class ProductInfoServiceCoreFileService {
     public Path getPath(BuildInfo buildInfo) {
         var fileName = getName(buildInfo);
 
-        return Path.of(properties.getPathToSave(), fileName);
+        return Path.of(properties.getPathToSaveTmp(), fileName);
     }
 
     public Mono<Long> getFileSize(BuildInfo buildInfo) {

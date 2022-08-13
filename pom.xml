@@ -32,6 +32,8 @@
         <module>product-info-service-runner</module>
         <module>product-info-service-core</module>
         <module>product-info-service-database-migration</module>
+        <module>product-info-service-core-api</module>
+        <module>product-info-service-repository</module>
     </modules>
 
     <dependencyManagement>
@@ -65,6 +67,16 @@
             <dependency>
                 <groupId>com.lllbllllb</groupId>
                 <artifactId>product-info-service-database-migration</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lllbllllb</groupId>
+                <artifactId>product-info-service-core-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lllbllllb</groupId>
+                <artifactId>product-info-service-repository</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>

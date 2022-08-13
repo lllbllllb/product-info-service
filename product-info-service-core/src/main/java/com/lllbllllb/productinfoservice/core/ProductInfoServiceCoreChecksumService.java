@@ -6,9 +6,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.lllbllllb.productinfoservice.core.model.BuildInfo;
-import com.lllbllllb.productinfoservice.core.model.BuildInfoAware;
-import com.lllbllllb.productinfoservice.core.model.ProgressStatus;
+import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
+import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.ProgressStatus;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.http.MediaType;
@@ -27,7 +28,9 @@ public class ProductInfoServiceCoreChecksumService {
 
     private final WebClient redirectedWebClient;
 
-    private final ProductInfoServiceCorePersistenceService persistenceService;
+    private final ProductInfoServiceRepositoryService repositoryService;
+
+    private final ProductInfoServiceCoreFileService fileService;
 
     public Mono<String> getExpectedChecksum(String checksumLink) {
         return redirectedWebClient.get()
@@ -56,12 +59,13 @@ public class ProductInfoServiceCoreChecksumService {
                     sink.next(buildInfoAware);
                 } else {
                     progressTrackerService.updateProgress(buildInfoAware.buildInfo(), ProgressStatus.INVALID_CHECKSUM);
+                    fileService.deleteFile(buildInfoAware.buildInfo()).subscribe();
                 }
             });
     }
 
     public Flux<BuildInfo> filterUnchangedByChecksums(List<BuildInfo> buildInfos) {
-        return persistenceService.findAllByBuildInfo(buildInfos)
+        return repositoryService.findAllByBuildInfo(buildInfos)
             .collect(Collectors.toSet())
             .flatMapMany(buildInfoAwareSet -> {
                 var fullNumberToChecksumMap = buildInfoAwareSet.stream()
@@ -78,8 +82,6 @@ public class ProductInfoServiceCoreChecksumService {
             });
     }
 
-    // expected examole bbec46c56ae7c6fe92f2a16af0e3bd6a4c50786198535d368030ee24e520b997 *ideaIC-2022.2.tar.gz
-    // actual example   bbec46c56ae7c6fe92f2a16af0e3bd6a4c50786198535d368030ee24e520b997
     public boolean isChecksumTheSame(String sha256Expected, String sha256Actual) {
         return StringUtils.hasLength(sha256Expected)
             && StringUtils.hasLength(sha256Actual)

@@ -1,8 +1,8 @@
-package com.lllbllllb.productinfoservice.core.repository;
+package com.lllbllllb.productinfoservice.repository;
 
 import java.util.UUID;
 
-import com.lllbllllb.productinfoservice.core.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.BuildInfo;
 import org.springframework.stereotype.Service;
 
 @Service

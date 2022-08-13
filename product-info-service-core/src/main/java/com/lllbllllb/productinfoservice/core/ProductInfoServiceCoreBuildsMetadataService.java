@@ -13,7 +13,7 @@ import java.util.logging.Level;
 
 import javax.annotation.PostConstruct;
 
-import com.lllbllllb.productinfoservice.core.model.BuildMetadata;
+import com.lllbllllb.productinfoservice.model.BuildMetadata;
 import com.lllbllllb.productinfoservice.core.model.updatesxml.Build;
 import com.lllbllllb.productinfoservice.core.model.updatesxml.Channel;
 import com.lllbllllb.productinfoservice.core.model.updatesxml.Product;

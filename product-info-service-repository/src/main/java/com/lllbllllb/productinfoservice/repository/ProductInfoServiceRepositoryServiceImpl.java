@@ -22,7 +22,7 @@ public class ProductInfoServiceRepositoryServiceImpl implements ProductInfoServi
     private final ProductInfoServiceRepositoryConverter converter;
 
     @Override
-    public Mono<BuildInfoAware<ProductInfo>> save(BuildInfoAware<byte[]> buildInfoAware) {
+    public Mono<BuildInfoAware<ProductInfo>> saveBuildInfo(BuildInfoAware<byte[]> buildInfoAware) {
         return repository.save(converter.toDto(buildInfoAware))
             .map(converter::fromDto);
     }

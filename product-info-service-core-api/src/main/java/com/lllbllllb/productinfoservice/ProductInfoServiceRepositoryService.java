@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 public interface ProductInfoServiceRepositoryService {
 
-    Mono<BuildInfoAware<ProductInfo>> save(BuildInfoAware<byte[]> buildInfoAware);
+    Mono<BuildInfoAware<ProductInfo>> saveBuildInfo(BuildInfoAware<byte[]> buildInfoAware);
 
     Flux<BuildInfoAware<ProductInfo>> findAllByBuildInfo(List<BuildInfo> buildInfos);
 

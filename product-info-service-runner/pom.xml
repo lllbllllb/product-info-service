@@ -27,6 +27,10 @@
             <groupId>com.lllbllllb</groupId>
             <artifactId>product-info-service-repository</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lllbllllb</groupId>
+            <artifactId>product-info-service-controller</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

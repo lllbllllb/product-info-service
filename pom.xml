@@ -34,6 +34,7 @@
         <module>product-info-service-database-migration</module>
         <module>product-info-service-core-api</module>
         <module>product-info-service-repository</module>
+        <module>product-info-service-controller</module>
     </modules>
 
     <dependencyManagement>
@@ -77,6 +78,11 @@
             <dependency>
                 <groupId>com.lllbllllb</groupId>
                 <artifactId>product-info-service-repository</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lllbllllb</groupId>
+                <artifactId>product-info-service-controller</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>
@@ -125,7 +131,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-<!--                    <version>${mojo.build.helper.plugin.version}</version>-->
+                    <!--                    <version>${mojo.build.helper.plugin.version}</version>-->
                     <executions>
                         <execution>
                             <id>attach-artifact</id>

@@ -52,8 +52,8 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
             .log("4.1 SHA256 OK ")
             .flatMap(tarGzService::extractFileFromPath)
             .log("5 File extracted ", Level.FINE)
-            .flatMap(repositoryService::save)
-//            .flatMap(buildInfoAware -> fileService.deleteFile(buildInfoAware.buildInfo()))
+            .flatMap(repositoryService::saveBuildInfo)
+//            .flatMap(buildInfoAware -> fileService.deleteFile(buildInfoAware.buildInfo())) fixme: use it NOW
             .log("6 Tidied up ")
             .subscribe();
     }

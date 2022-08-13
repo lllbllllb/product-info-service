@@ -1,11 +1,19 @@
 --liquibase formatted sql
 --changeset lllbllllb:init_tables
 
+create table product_info
+(
+    build_info_id      uuid primary key not null,
+    product_info       jsonb,
+    created_date       timestamp,
+    last_modified_date timestamp,
+    version            bigint
+);
+
 create table build_info
 (
     id                 uuid primary key not null,
     product_code       text,
-    product_info       jsonb,
     checksum           text,
     link               text,
     checksum_link      text,
@@ -16,9 +24,11 @@ create table build_info
     build_version      text,
     release_date       timestamp,
     full_number        text unique,
+    status             text,
     created_date       timestamp,
     last_modified_date timestamp,
     version            bigint
 );
 
 create index if not exists product_code_idx on build_info (product_code);
+create index if not exists full_number_idx on build_info (full_number);

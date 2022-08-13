@@ -1,10 +1,9 @@
 package com.lllbllllb.productinfoservice.repository.model;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.UUID;
 
-import com.lllbllllb.productinfoservice.model.Status;
+import io.r2dbc.postgresql.codec.Json;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -14,35 +13,13 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
-@Table("build_info")
-public class BuildInfoDto implements Persistable<UUID> {
+@Table("product_info")
+public class ProductInfoDto implements Persistable<UUID> {
 
     @Id
-    private UUID id;
+    private UUID buildInfoId;
 
-    private String productCode;
-
-    private String checksum;
-
-    private String link;
-
-    private String checksumLink;
-
-    private long size;
-
-    private String productName;
-
-    private String channelName;
-
-    private String channelStatus;
-
-    private String buildVersion;
-
-    private LocalDate releaseDate;
-
-    private String fullNumber;
-
-    private Status status;
+    private Json productInfo;
 
     @CreatedDate
     private Instant createdDate;
@@ -52,6 +29,11 @@ public class BuildInfoDto implements Persistable<UUID> {
 
     @Version
     private Long version;
+
+    @Override
+    public UUID getId() {
+        return buildInfoId;
+    }
 
     @Override
     public boolean isNew() {

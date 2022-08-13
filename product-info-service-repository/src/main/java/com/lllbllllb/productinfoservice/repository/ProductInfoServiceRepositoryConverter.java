@@ -5,7 +5,9 @@ import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.BuildMetadata;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
+import com.lllbllllb.productinfoservice.model.Status;
 import com.lllbllllb.productinfoservice.repository.model.BuildInfoDto;
+import com.lllbllllb.productinfoservice.repository.model.ProductInfoDto;
 import io.r2dbc.postgresql.codec.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,13 +21,11 @@ public class ProductInfoServiceRepositoryConverter {
 
     private final ObjectMapper objectMapper;
 
-    public BuildInfoDto toDto(BuildInfoAware<byte[]> buildInfoAware) {
-        var buildInfo = buildInfoAware.buildInfo();
-        var productInfoBytes = buildInfoAware.obj();
+    public BuildInfoDto toDto(BuildInfo buildInfo, Status status) {
         var metadata = buildInfo.buildMetadata();
         var dto = new BuildInfoDto();
-        dto.setId(idProvider.get(buildInfo));
-        dto.setProductInfo(Json.of(productInfoBytes));
+        var id = idProvider.get(buildInfo);
+        dto.setId(id);
         dto.setProductCode(buildInfo.productCode());
         dto.setChecksum(buildInfo.checksum());
         dto.setChecksumLink(buildInfo.checksumLink());
@@ -37,12 +37,24 @@ public class ProductInfoServiceRepositoryConverter {
         dto.setBuildVersion(metadata.version());
         dto.setReleaseDate(metadata.releaseDate());
         dto.setFullNumber(metadata.fullNumber());
+        dto.setStatus(status);
+
+        return dto;
+    }
+
+    public ProductInfoDto toDto(BuildInfoAware<byte[]> buildInfoAware) {
+        var buildInfo = buildInfoAware.buildInfo();
+        var productInfoBytes = buildInfoAware.obj();
+        var dto = new ProductInfoDto();
+        var id = idProvider.get(buildInfo);
+        dto.setBuildInfoId(id);
+        dto.setProductInfo(Json.of(productInfoBytes));
 
         return dto;
     }
 
     @SneakyThrows
-    public BuildInfoAware<ProductInfo> fromDto(BuildInfoDto dto) {
+    public BuildInfoAware<Status> fromDto(BuildInfoDto dto) {
         var buildMetadata = new BuildMetadata(
             dto.getProductName(),
             dto.getChannelName(),
@@ -59,13 +71,17 @@ public class ProductInfoServiceRepositoryConverter {
             dto.getProductCode(),
             dto.getChecksum()
         );
-        var productInfo = new ProductInfo(
+        var status = dto.getStatus();
+
+        return new BuildInfoAware<>(buildInfo, status);
+    }
+
+    @SneakyThrows
+    public ProductInfo fromDto(ProductInfoDto dto) {
+        return new ProductInfo(
             objectMapper.readTree(dto.getProductInfo().asArray()),
             dto.getCreatedDate(),
             dto.getLastModifiedDate()
         );
-
-
-        return new BuildInfoAware<>(buildInfo, productInfo);
     }
 }

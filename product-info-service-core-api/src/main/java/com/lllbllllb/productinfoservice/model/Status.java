@@ -1,8 +1,8 @@
 package com.lllbllllb.productinfoservice.model;
 
-public enum ProgressStatus {
-    RUNNING,
-    FAILED,
+public enum Status {
+    IN_PROGRESS,
     FINISHED,
+    FAILED,
     INVALID_CHECKSUM
 }

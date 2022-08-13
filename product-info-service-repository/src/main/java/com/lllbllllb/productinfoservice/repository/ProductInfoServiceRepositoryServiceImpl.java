@@ -6,6 +6,7 @@ import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
+import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -15,37 +16,57 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductInfoServiceRepositoryServiceImpl implements ProductInfoServiceRepositoryService {
 
-    private final ProductInfoServiceRepositoryPostgres repository;
+    private final ProductInfoServiceBuildInfoRepository buildInfoRepository;
+
+    private final ProductInfoServiceProductInfoRepository productInfoRepository;
 
     private final ProductInfoServiceRepositoryIdProvider idProvider;
 
     private final ProductInfoServiceRepositoryConverter converter;
 
     @Override
-    public Mono<BuildInfoAware<ProductInfo>> saveBuildInfo(BuildInfoAware<byte[]> buildInfoAware) {
-        return repository.save(converter.toDto(buildInfoAware))
+    public Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Status status) {
+        var dto = converter.toDto(buildInfo, status);
+
+        return buildInfoRepository.save(dto)
             .map(converter::fromDto);
     }
 
     @Override
-    public Flux<BuildInfoAware<ProductInfo>> findAllByBuildInfo(List<BuildInfo> buildInfos) {
+    public Mono<ProductInfo> saveProductInfo(BuildInfoAware<byte[]> buildInfoAware) {
+        return productInfoRepository.save(converter.toDto(buildInfoAware))
+            .map(converter::fromDto);
+    }
+
+    @Override
+    public Flux<BuildInfoAware<Status>> findAllBuildInfo(List<BuildInfo> buildInfos) {
         var ids = buildInfos.stream()
             .map(idProvider::get)
             .toList();
 
-        return repository.findAllById(ids)
+        return buildInfoRepository.findAllById(ids)
             .map(converter::fromDto);
     }
 
     @Override
-    public Flux<BuildInfoAware<ProductInfo>> findByProductCode(String productCode) {
-        return repository.findAllByProductCode(productCode)
+    public Flux<ProductInfo> findAllProductInfo(List<BuildInfo> buildInfos) {
+        var ids = buildInfos.stream()
+            .map(idProvider::get)
+            .toList();
+
+        return productInfoRepository.findAllById(ids)
             .map(converter::fromDto);
     }
 
     @Override
-    public Mono<BuildInfoAware<ProductInfo>> findByProductCodeAndFullNumber(String productCode, String fullNumber) {
-        return repository.findByProductCodeAndFullNumber(productCode, fullNumber)
+    public Flux<ProductInfo> findProductInfoByProductCode(String productCode) {
+        return productInfoRepository.findAllByProductCode(productCode)
+            .map(converter::fromDto);
+    }
+
+    @Override
+    public Mono<ProductInfo> findProductInfoByProductCodeAndFullNumber(String productCode, String fullNumber) {
+        return productInfoRepository.findByProductCodeAndFullNumber(productCode, fullNumber)
             .map(converter::fromDto);
     }
 }

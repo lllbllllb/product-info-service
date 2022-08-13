@@ -7,5 +7,5 @@ import lombok.Value;
 @Value
 public class ServiceStatus {
 
-    Map<BuildInfo, ProgressStatus> progressMap;
+    Map<BuildInfo, Status> progressMap;
 }

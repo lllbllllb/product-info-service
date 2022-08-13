@@ -13,9 +13,9 @@ public interface ProductInfoServiceCoreApiService {
 
     Mono<ServiceStatus> getServiceStatus();
 
-    Flux<BuildInfoAware<ProductInfo>> findProductInfoByCode(String productCode);
+    Flux<ProductInfo> findProductInfoByCode(String productCode);
 
-    Mono<BuildInfoAware<ProductInfo>> findProductInfoByCodeAndNumber(String productCode, String fullNumber);
+    Mono<ProductInfo> findProductInfoByCodeAndNumber(String productCode, String fullNumber);
 
     Mono<List<BuildInfo>> refreshAll();
 

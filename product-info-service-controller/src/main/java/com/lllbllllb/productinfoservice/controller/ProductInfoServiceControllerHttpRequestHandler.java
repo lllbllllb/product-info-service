@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceCoreApiService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.ProductInfo;
 import com.lllbllllb.productinfoservice.model.ServiceStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.BUILD_NUMBER;
 import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.PRODUCT_CODE;
+import static org.springframework.http.HttpHeaders.LAST_MODIFIED;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Service
@@ -31,21 +33,24 @@ public class ProductInfoServiceControllerHttpRequestHandler {
         return ok().body(apiService.getServiceStatus(), ServiceStatus.class);
     }
 
-    public Mono<ServerResponse> getProductCode(ServerRequest request) {
+    public Mono<ServerResponse> getByProductCode(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
 
         return apiService.findProductInfoByCode(productCode)
-            .map(bia -> bia.obj().productInfoFile())
+            .map(ProductInfo::productInfoFile)
             .collectList()
             .flatMap(file -> ok().bodyValue(file));
     }
 
-    public Mono<ServerResponse> getBuildNumber(ServerRequest request) {
+    public Mono<ServerResponse> getByProductCodeAndBuildNumber(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
         var buildNumber = request.pathVariable(BUILD_NUMBER);
 
         return apiService.findProductInfoByCodeAndNumber(productCode, buildNumber)
-            .flatMap(bia -> ok().bodyValue(bia.obj().productInfoFile()));
+            .flatMap(productInfo -> ok()
+                .header(LAST_MODIFIED, Long.toString(productInfo.updatedDate().toEpochMilli()))
+                .bodyValue(productInfo.productInfoFile())
+            );
     }
 
     public Mono<ServerResponse> refresh(ServerRequest request) {

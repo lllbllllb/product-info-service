@@ -29,13 +29,13 @@ public class ProductInfoServiceCoreApiServiceImpl implements ProductInfoServiceC
     }
 
     @Override
-    public Flux<BuildInfoAware<ProductInfo>> findProductInfoByCode(String productCode) {
-        return repositoryService.findByProductCode(productCode);
+    public Flux<ProductInfo> findProductInfoByCode(String productCode) {
+        return repositoryService.findProductInfoByProductCode(productCode);
     }
 
     @Override
-    public Mono<BuildInfoAware<ProductInfo>> findProductInfoByCodeAndNumber(String productCode, String fullNumber) {
-        return repositoryService.findByProductCodeAndFullNumber(productCode, fullNumber);
+    public Mono<ProductInfo> findProductInfoByCodeAndNumber(String productCode, String fullNumber) {
+        return repositoryService.findProductInfoByProductCodeAndFullNumber(productCode, fullNumber);
     }
 
     @Override

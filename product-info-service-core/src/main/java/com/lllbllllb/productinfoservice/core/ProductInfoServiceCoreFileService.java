@@ -7,6 +7,7 @@ import java.nio.file.StandardOpenOption;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import lombok.RequiredArgsConstructor;
+import org.reactivestreams.Publisher;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,11 @@ public class ProductInfoServiceCoreFileService {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
-    public Mono<BuildInfoAware<Path>> writeToFile(BuildInfoAware<Flux<DataBuffer>> buildInfoAware) {
+    public Mono<BuildInfoAware<Path>> writeToFile(BuildInfoAware<Publisher<DataBuffer>> buildInfoAware) {
         var buildInfo = buildInfoAware.buildInfo();
         var path = getPath(buildInfo);
 
         return DataBufferUtils.write(buildInfoAware.obj(), path, StandardOpenOption.CREATE)
-            .onErrorResume(e -> Mono.empty())
             .thenReturn(new BuildInfoAware<>(buildInfo, path));
     }
 
@@ -53,8 +53,7 @@ public class ProductInfoServiceCoreFileService {
 
         if (isFileExists(path)) {
             return Mono.fromCallable(() -> Files.size(path))
-                .subscribeOn(Schedulers.boundedElastic())
-                .onErrorResume(e -> Mono.empty());
+                .subscribeOn(Schedulers.boundedElastic());
         }
 
         return Mono.just(NO_FILE_SIZE);

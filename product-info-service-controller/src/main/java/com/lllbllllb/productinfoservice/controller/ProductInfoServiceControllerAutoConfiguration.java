@@ -22,7 +22,7 @@ public class ProductInfoServiceControllerAutoConfiguration {
             .and(route(GET("/status"), handler::getStatus))
             .and(route(POST(REFRESH_URL), handler::refresh))
             .and(route(POST(REFRESH_PRODUCT_CODE_URL), handler::refreshByCode))
-            .and(route(GET(PRODUCT_CODE_URL), handler::getProductCode))
-            .and(route(GET(BUILD_NUMBER_URL), handler::getBuildNumber));
+            .and(route(GET(PRODUCT_CODE_URL), handler::getByProductCode))
+            .and(route(GET(BUILD_NUMBER_URL), handler::getByProductCodeAndBuildNumber));
     }
 }

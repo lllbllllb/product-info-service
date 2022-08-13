@@ -66,8 +66,7 @@ public class ProductInfoServiceCoreTarGzService {
 
                 throw new IllegalStateException(String.format("No file with name [%s] found inside [%s]", fileName, path));
             })
-            .subscribeOn(Schedulers.boundedElastic())
-            .onErrorResume(e -> Mono.empty());
+            .subscribeOn(Schedulers.boundedElastic());
     }
 
 }

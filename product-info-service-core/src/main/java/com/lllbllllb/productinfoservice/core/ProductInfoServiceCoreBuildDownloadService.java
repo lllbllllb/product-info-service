@@ -4,9 +4,10 @@ import java.net.URI;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
-import com.lllbllllb.productinfoservice.model.ProgressStatus;
+import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.reactivestreams.Publisher;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class ProductInfoServiceCoreBuildDownloadService {
     private final ProductInfoServiceCoreFileService fileService;
 
     @SneakyThrows
-    public Mono<BuildInfoAware<Flux<DataBuffer>>> downloadBuild(BuildInfo buildInfo) {
+    public Mono<BuildInfoAware<Publisher<DataBuffer>>> downloadBuild(BuildInfo buildInfo) {
         var stream = fileService.getFileSize(buildInfo)
             .flatMapMany(actualSize -> {
                 if (actualSize == buildInfo.size()) {
@@ -42,15 +43,14 @@ public class ProductInfoServiceCoreBuildDownloadService {
                     .bodyToFlux(DataBuffer.class)
                     .doFinally(signal -> {
                         switch (signal) {
-                            case CANCEL, ON_COMPLETE -> progressTrackerService.updateProgress(buildInfo, ProgressStatus.FINISHED);
-                            case ON_ERROR -> progressTrackerService.updateProgress(buildInfo, ProgressStatus.FAILED);
+                            case CANCEL, ON_COMPLETE -> progressTrackerService.updateProgress(buildInfo, Status.FINISHED);
+                            case ON_ERROR -> progressTrackerService.updateProgress(buildInfo, Status.FAILED);
                             default -> throw new RuntimeException(String.format("Download of the [%s] was aborted due to signal [%s]", buildInfo, signal));
                         }
                     });
-            })
-            .onErrorResume(ex -> Flux.empty());
+            });
 
-        progressTrackerService.updateProgress(buildInfo, ProgressStatus.RUNNING);
+        progressTrackerService.updateProgress(buildInfo, Status.IN_PROGRESS);
 
         return Mono.just(new BuildInfoAware<>(buildInfo, stream));
     }

@@ -5,6 +5,7 @@ import java.util.logging.Level;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -26,6 +27,8 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
 
     private final ProductInfoServiceRepositoryService repositoryService;
 
+    private final ProductInfoServiceCoreFailureService failureService;
+
 
     public Mono<List<BuildInfo>> collect() {
         return process(buildInfoService.getAllBuildInfo()); // fixme: cheat and tricky
@@ -44,7 +47,8 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
     private void fireAndForget(List<BuildInfo> buildInfos) {
         checksumService.filterUnchangedByChecksums(buildInfos)
             .log("2 BuildInfos to update ")
-            .flatMap(buildDownloadService::downloadBuild)
+            .flatMap(buildInfo -> repositoryService.saveBuildInfo(buildInfo, Status.IN_PROGRESS))
+            .flatMap(buildInfoAware -> buildDownloadService.downloadBuild(buildInfoAware.buildInfo()))
             .log("3 Build downloaded ")
             .flatMap(fileService::writeToFile)
             .log("4 Write to file ")
@@ -52,9 +56,10 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
             .log("4.1 SHA256 OK ")
             .flatMap(tarGzService::extractFileFromPath)
             .log("5 File extracted ", Level.FINE)
-            .flatMap(repositoryService::saveBuildInfo)
+            .flatMap(repositoryService::saveProductInfo)
 //            .flatMap(buildInfoAware -> fileService.deleteFile(buildInfoAware.buildInfo())) fixme: use it NOW
             .log("6 Tidied up ")
+            .onErrorContinue(failureService::handleFail)
             .subscribe();
     }
 }

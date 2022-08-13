@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
+import com.lllbllllb.productinfoservice.core.exception.InvalidChecksumException;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
-import com.lllbllllb.productinfoservice.model.ProgressStatus;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.http.MediaType;
@@ -46,26 +46,27 @@ public class ProductInfoServiceCoreChecksumService {
                     return DigestUtils.sha256Hex(is);
                 }
             })
-            .subscribeOn(Schedulers.boundedElastic())
-            .onErrorResume(e -> Mono.empty());
+            .subscribeOn(Schedulers.boundedElastic());
     }
 
     public Mono<BuildInfoAware<Path>> validateFileChecksum(BuildInfoAware<Path> buildInfoAware) {
         return getActualChecksum(buildInfoAware.obj())
             .handle((actualChecksum, sink) -> {
-                var expectedChecksum = buildInfoAware.buildInfo().checksum();
+                var buildInfo = buildInfoAware.buildInfo();
+                var expectedChecksum = buildInfo.checksum();
 
                 if (isChecksumTheSame(expectedChecksum, actualChecksum)) {
                     sink.next(buildInfoAware);
                 } else {
-                    progressTrackerService.updateProgress(buildInfoAware.buildInfo(), ProgressStatus.INVALID_CHECKSUM);
-                    fileService.deleteFile(buildInfoAware.buildInfo()).subscribe();
+                    sink.error(new InvalidChecksumException(String.format("Invalid checksum for %s. Actual checksum [%s]", buildInfo, actualChecksum)));
+//                    progressTrackerService.updateProgress(buildInfoAware.buildInfo(), Status.INVALID_CHECKSUM);
+//                    fileService.deleteFile(buildInfoAware.buildInfo()).subscribe();
                 }
             });
     }
 
     public Flux<BuildInfo> filterUnchangedByChecksums(List<BuildInfo> buildInfos) {
-        return repositoryService.findAllByBuildInfo(buildInfos)
+        return repositoryService.findAllBuildInfo(buildInfos)
             .collect(Collectors.toSet())
             .flatMapMany(buildInfoAwareSet -> {
                 var fullNumberToChecksumMap = buildInfoAwareSet.stream()

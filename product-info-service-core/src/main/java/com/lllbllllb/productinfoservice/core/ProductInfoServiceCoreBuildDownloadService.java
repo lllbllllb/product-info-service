@@ -21,9 +21,9 @@ public class ProductInfoServiceCoreBuildDownloadService {
 
     private final WebClient redirectedWebClient;
 
-    private final ProductInfoServiceCoreProgressTrackerService progressTrackerService;
-
     private final ProductInfoServiceCoreFileService fileService;
+
+    private final ProductInfoServiceCoreFailureService failureService;
 
     @SneakyThrows
     public Mono<BuildInfoAware<Publisher<DataBuffer>>> downloadBuild(BuildInfo buildInfo) {
@@ -40,17 +40,9 @@ public class ProductInfoServiceCoreBuildDownloadService {
                     .accept(MediaType.APPLICATION_OCTET_STREAM)
                     .header("Range", rangeValue)
                     .retrieve()
-                    .bodyToFlux(DataBuffer.class)
-                    .doFinally(signal -> {
-                        switch (signal) {
-                            case CANCEL, ON_COMPLETE -> progressTrackerService.updateProgress(buildInfo, Status.FINISHED);
-                            case ON_ERROR -> progressTrackerService.updateProgress(buildInfo, Status.FAILED);
-                            default -> throw new RuntimeException(String.format("Download of the [%s] was aborted due to signal [%s]", buildInfo, signal));
-                        }
-                    });
-            });
-
-        progressTrackerService.updateProgress(buildInfo, Status.IN_PROGRESS);
+                    .bodyToFlux(DataBuffer.class);
+            })
+            .onErrorResume(ex -> failureService.onErrorResume(buildInfo, Status.FAILED_DOWNLOAD, Flux.empty()));
 
         return Mono.just(new BuildInfoAware<>(buildInfo, stream));
     }

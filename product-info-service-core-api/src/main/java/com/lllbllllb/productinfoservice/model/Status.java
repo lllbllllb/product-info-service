@@ -3,6 +3,7 @@ package com.lllbllllb.productinfoservice.model;
 public enum Status {
     IN_PROGRESS,
     FINISHED,
-    FAILED,
+    FAILED_DOWNLOAD,
+    FAILED_WRITE_TO_FILE,
     INVALID_CHECKSUM
 }

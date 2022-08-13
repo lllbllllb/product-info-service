@@ -13,7 +13,7 @@ public interface ProductInfoServiceRepositoryService {
 
     Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Status status);
 
-    Mono<ProductInfo> saveProductInfo(BuildInfoAware<byte[]> buildInfoAware);
+    Mono<BuildInfoAware<ProductInfo>> saveProductInfo(BuildInfo buildInfo, byte[] productInfo);
 
     Flux<BuildInfoAware<Status>> findAllBuildInfo(List<BuildInfo> buildInfos);
 

@@ -6,7 +6,9 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -28,10 +30,12 @@ public class ProductInfoServiceCoreTarGzService {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
-    // fixme: https://stackoverflow.com/q/58320041
-    public Mono<BuildInfoAware<byte[]>> extractFileFromPath(BuildInfoAware<Path> path) {
-        return extractFileFromPath(path.obj())
-            .map(bytes -> new BuildInfoAware<>(path.buildInfo(), bytes));
+    private final ProductInfoServiceCoreFailureService failureService;
+
+    public Mono<BuildInfoAware<byte[]>> extractFileFromPath(BuildInfo buildInfo, Path path) {
+        return extractFileFromPath(path)
+            .onErrorResume(ex -> failureService.onErrorResume(buildInfo, Status.FAILED_DOWNLOAD, Mono.empty()))
+            .map(bytes -> new BuildInfoAware<>(buildInfo, bytes));
     }
 
     public Mono<byte[]> extractFileFromPath(Path path) {

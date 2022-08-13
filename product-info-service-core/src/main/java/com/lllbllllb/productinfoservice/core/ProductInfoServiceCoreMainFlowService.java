@@ -17,7 +17,7 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
 
     private final ProductInfoServiceCoreBuildDownloadService buildDownloadService;
 
-    private final ProductInfoServiceCoreFileService fileService;
+    private final ProductInfoServiceCoreFileCacheService fileCacheService;
 
     private final ProductInfoServiceCoreTarGzService tarGzService;
 
@@ -27,7 +27,7 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
 
     private final ProductInfoServiceRepositoryService repositoryService;
 
-    private final ProductInfoServiceCoreFailureService failureService;
+    private final ProductInfoServiceCoreFinalizeService finalizeService;
 
 
     public Mono<List<BuildInfo>> collect() {
@@ -50,16 +50,15 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
             .flatMap(buildInfo -> repositoryService.saveBuildInfo(buildInfo, Status.IN_PROGRESS))
             .flatMap(buildInfoAware -> buildDownloadService.downloadBuild(buildInfoAware.buildInfo()))
             .log("3 Build downloaded ")
-            .flatMap(fileService::writeToFile)
+            .flatMap(buildInfoAware -> fileCacheService.writeToFile(buildInfoAware.buildInfo(), buildInfoAware.obj()))
             .log("4 Write to file ")
-            .flatMap(checksumService::validateFileChecksum)
+            .flatMap(buildInfoAware -> checksumService.validateFileChecksum(buildInfoAware.buildInfo(), buildInfoAware.obj()))
             .log("4.1 SHA256 OK ")
-            .flatMap(tarGzService::extractFileFromPath)
+            .flatMap(buildInfoAware -> tarGzService.extractFileFromPath(buildInfoAware.buildInfo(), buildInfoAware.obj()))
             .log("5 File extracted ", Level.FINE)
-            .flatMap(repositoryService::saveProductInfo)
-//            .flatMap(buildInfoAware -> fileService.deleteFile(buildInfoAware.buildInfo())) fixme: use it NOW
-            .log("6 Tidied up ")
-            .onErrorContinue(failureService::handleFail)
+            .flatMap(buildInfoAware -> repositoryService.saveProductInfo(buildInfoAware.buildInfo(), buildInfoAware.obj()))
+            .flatMap(buildInfoAware -> finalizeService.finalize(buildInfoAware.buildInfo()))
+            .log("6 Finalized ")
             .subscribe();
     }
 }

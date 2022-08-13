@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProductInfoServiceRepositoryConverter {
 
-    private final ProductInfoServiceRepositoryIdProvider idProvider;
+    private final ProductInfoServiceRepositoryBuildInfoIdProvider idProvider;
 
     private final ObjectMapper objectMapper;
 
@@ -42,13 +42,11 @@ public class ProductInfoServiceRepositoryConverter {
         return dto;
     }
 
-    public ProductInfoDto toDto(BuildInfoAware<byte[]> buildInfoAware) {
-        var buildInfo = buildInfoAware.buildInfo();
-        var productInfoBytes = buildInfoAware.obj();
+    public ProductInfoDto toDto(BuildInfo buildInfo, byte[] productInfo) {
         var dto = new ProductInfoDto();
         var id = idProvider.get(buildInfo);
         dto.setBuildInfoId(id);
-        dto.setProductInfo(Json.of(productInfoBytes));
+        dto.setProductInfo(toBuildInfoJson(productInfo));
 
         return dto;
     }
@@ -83,5 +81,9 @@ public class ProductInfoServiceRepositoryConverter {
             dto.getCreatedDate(),
             dto.getLastModifiedDate()
         );
+    }
+
+    public Json toBuildInfoJson(byte[] bytes) {
+        return Json.of(bytes);
     }
 }

@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
-import com.lllbllllb.productinfoservice.core.exception.InvalidChecksumException;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.http.MediaType;
@@ -24,13 +24,11 @@ import reactor.core.scheduler.Schedulers;
 @RequiredArgsConstructor
 public class ProductInfoServiceCoreChecksumService {
 
-    private final ProductInfoServiceCoreProgressTrackerService progressTrackerService;
-
     private final WebClient redirectedWebClient;
 
     private final ProductInfoServiceRepositoryService repositoryService;
 
-    private final ProductInfoServiceCoreFileService fileService;
+    private final ProductInfoServiceCoreFinalizeService finalizeService;
 
     public Mono<String> getExpectedChecksum(String checksumLink) {
         return redirectedWebClient.get()
@@ -49,18 +47,16 @@ public class ProductInfoServiceCoreChecksumService {
             .subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<BuildInfoAware<Path>> validateFileChecksum(BuildInfoAware<Path> buildInfoAware) {
-        return getActualChecksum(buildInfoAware.obj())
+    public Mono<BuildInfoAware<Path>> validateFileChecksum(BuildInfo buildInfo, Path path) {
+        return getActualChecksum(path)
             .handle((actualChecksum, sink) -> {
-                var buildInfo = buildInfoAware.buildInfo();
                 var expectedChecksum = buildInfo.checksum();
 
                 if (isChecksumTheSame(expectedChecksum, actualChecksum)) {
-                    sink.next(buildInfoAware);
+                    sink.next(new BuildInfoAware<>(buildInfo, path));
                 } else {
-                    sink.error(new InvalidChecksumException(String.format("Invalid checksum for %s. Actual checksum [%s]", buildInfo, actualChecksum)));
-//                    progressTrackerService.updateProgress(buildInfoAware.buildInfo(), Status.INVALID_CHECKSUM);
-//                    fileService.deleteFile(buildInfoAware.buildInfo()).subscribe();
+                    finalizeService.finalize(buildInfo, Status.INVALID_CHECKSUM)
+                        .subscribe();
                 }
             });
     }
@@ -79,7 +75,7 @@ public class ProductInfoServiceCoreChecksumService {
                             || !isChecksumTheSame(fullNumberToChecksumMap.get(fullNumber), buildInfo.checksum());
                     });
 
-               return Flux.fromStream(buildInfosToUpdateSteam);
+                return Flux.fromStream(buildInfosToUpdateSteam);
             });
     }
 

@@ -5,7 +5,6 @@ import java.util.List;
 import com.lllbllllb.productinfoservice.ProductInfoServiceCoreApiService;
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
-import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
 import com.lllbllllb.productinfoservice.model.ServiceStatus;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +18,11 @@ public class ProductInfoServiceCoreApiServiceImpl implements ProductInfoServiceC
 
     private final ProductInfoServiceCoreMainFlowService mainFlowService;
 
-    private final ProductInfoServiceCoreStatusService statusService;
-
     private final ProductInfoServiceRepositoryService repositoryService;
 
     @Override
     public Mono<ServiceStatus> getServiceStatus() {
-        return statusService.getServiceStatus();
+        return Mono.empty();
     }
 
     @Override

@@ -20,28 +20,42 @@ public class ProductInfoServiceRepositoryServiceImpl implements ProductInfoServi
 
     private final ProductInfoServiceProductInfoRepository productInfoRepository;
 
-    private final ProductInfoServiceRepositoryIdProvider idProvider;
+    private final ProductInfoServiceRepositoryBuildInfoIdProvider buildInfoIdProvider;
 
     private final ProductInfoServiceRepositoryConverter converter;
 
     @Override
     public Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Status status) {
-        var dto = converter.toDto(buildInfo, status);
+        var id = buildInfoIdProvider.get(buildInfo);
 
-        return buildInfoRepository.save(dto)
+        return buildInfoRepository.findById(id)
+            .map(dto -> {
+                dto.setStatus(status);
+                return dto;
+            })
+            .defaultIfEmpty(converter.toDto(buildInfo, status))
+            .flatMap(buildInfoRepository::save)
             .map(converter::fromDto);
     }
 
     @Override
-    public Mono<ProductInfo> saveProductInfo(BuildInfoAware<byte[]> buildInfoAware) {
-        return productInfoRepository.save(converter.toDto(buildInfoAware))
-            .map(converter::fromDto);
+    public Mono<BuildInfoAware<ProductInfo>> saveProductInfo(BuildInfo buildInfo, byte[] bytes) {
+        var id = buildInfoIdProvider.get(buildInfo);
+
+        return productInfoRepository.findById(id)
+            .map(dto -> {
+                dto.setProductInfo(converter.toBuildInfoJson(bytes));
+                return dto;
+            })
+            .defaultIfEmpty(converter.toDto(buildInfo, bytes))
+            .flatMap(productInfoRepository::save)
+            .map(dto -> new BuildInfoAware<>(buildInfo, converter.fromDto(dto)));
     }
 
     @Override
     public Flux<BuildInfoAware<Status>> findAllBuildInfo(List<BuildInfo> buildInfos) {
         var ids = buildInfos.stream()
-            .map(idProvider::get)
+            .map(buildInfoIdProvider::get)
             .toList();
 
         return buildInfoRepository.findAllById(ids)
@@ -51,7 +65,7 @@ public class ProductInfoServiceRepositoryServiceImpl implements ProductInfoServi
     @Override
     public Flux<ProductInfo> findAllProductInfo(List<BuildInfo> buildInfos) {
         var ids = buildInfos.stream()
-            .map(idProvider::get)
+            .map(buildInfoIdProvider::get)
             .toList();
 
         return productInfoRepository.findAllById(ids)

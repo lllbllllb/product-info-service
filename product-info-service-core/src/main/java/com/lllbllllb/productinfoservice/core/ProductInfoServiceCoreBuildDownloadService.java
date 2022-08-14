@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +26,19 @@ public class ProductInfoServiceCoreBuildDownloadService {
 
     private final ProductInfoServiceCoreFailureService failureService;
 
+    private final ProductInfoServiceCoreConfigurationProperties properties;
+
     @SneakyThrows
     public Mono<BuildInfoAware<Publisher<DataBuffer>>> downloadBuild(BuildInfo buildInfo) {
         var stream = fileService.getFileSize(buildInfo)
             .flatMapMany(actualSize -> {
-                if (actualSize == buildInfo.size()) {
+                var delta = buildInfo.size() - actualSize;
+
+                if (delta == 0) {
                     return Flux.empty();
                 }
 
-                var rangeValue = String.format("bytes=%s-", actualSize);
+                var rangeValue = String.format("bytes=-%s", delta);
 
                 return redirectedWebClient.get()
                     .uri(URI.create(buildInfo.link()))
@@ -42,7 +47,8 @@ public class ProductInfoServiceCoreBuildDownloadService {
                     .retrieve()
                     .bodyToFlux(DataBuffer.class);
             })
-            .onErrorResume(ex -> failureService.onErrorResume(buildInfo, Status.FAILED_DOWNLOAD, Flux.empty()));
+            .retryWhen(Retry.backoff(properties.getRetryOptions().getMaxAttempts(), properties.getRetryOptions().getMinBackoff()))
+            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.FAILED_DOWNLOAD, Flux.empty()));
 
         return Mono.just(new BuildInfoAware<>(buildInfo, stream));
     }

@@ -1,7 +1,6 @@
 package com.lllbllllb.productinfoservice.core;
 
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
@@ -24,8 +23,8 @@ public class ProductInfoServiceCoreFileCacheService {
     public Mono<BuildInfoAware<Path>> writeToFile(BuildInfo buildInfo, Publisher<DataBuffer> dataBufferPublisher) {
         var path = fileService.getPath(buildInfo);
 
-        return DataBufferUtils.write(dataBufferPublisher, path, StandardOpenOption.CREATE)
-            .onErrorResume(ex -> failureService.onErrorResume(buildInfo, Status.FAILED_WRITE_TO_FILE, Mono.empty()))
+        return DataBufferUtils.write(dataBufferPublisher, path)
+            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.FAILED_WRITE_TO_FILE, Mono.empty()))
             .thenReturn(new BuildInfoAware<>(buildInfo, path));
     }
 

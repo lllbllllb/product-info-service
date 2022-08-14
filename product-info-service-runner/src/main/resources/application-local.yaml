@@ -8,10 +8,10 @@ spring:
     user: postgres
     password: password
 
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
+#logging:
+#  level:
+#    io.r2dbc.postgresql.QUERY: DEBUG
+#    io.r2dbc.postgresql.PARAM: DEBUG
 product-info-service:
   core:
     path-to-save-tmp: C:\Users\mrmbl\Downloads\testjb

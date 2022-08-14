@@ -1,5 +1,6 @@
 package com.lllbllllb.productinfoservice;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
@@ -22,5 +23,7 @@ public interface ProductInfoServiceRepositoryService {
     Flux<ProductInfo> findProductInfoByProductCode(String productCode);
 
     Mono<ProductInfo> findProductInfoByProductCodeAndFullNumber(String productCode, String fullNumber);
+
+    Flux<BuildInfoAware<Status>> updateBuildInfoToStatus(Status from, Status to);
 
 }

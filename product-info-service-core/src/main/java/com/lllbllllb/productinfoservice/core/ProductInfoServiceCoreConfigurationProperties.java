@@ -6,6 +6,7 @@ import java.time.Period;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
 
 import com.lllbllllb.productinfoservice.core.model.CleanupPolicy;
 import lombok.Data;
@@ -45,5 +46,18 @@ public class ProductInfoServiceCoreConfigurationProperties {
 
     @NotNull
     private CleanupPolicy cleanupPolicy = CleanupPolicy.ALL;
+
+    @NotNull
+    private RetryOptions retryOptions = new RetryOptions();
+
+    @Data
+    public static class RetryOptions {
+
+        @PositiveOrZero
+        private long maxAttempts = 4;
+
+        @NotNull
+        private Duration minBackoff = Duration.ofSeconds(8);
+    }
 
 }

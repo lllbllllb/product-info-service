@@ -23,7 +23,7 @@ create table build_info
     channel_status     text,
     build_version      text,
     release_date       timestamp,
-    full_number        text unique,
+    full_number        text,
     status             text,
     created_date       timestamp,
     last_modified_date timestamp,

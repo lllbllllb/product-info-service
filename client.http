@@ -7,13 +7,13 @@ GET https://data.services.jetbrains.com/products/releases?code=IC
 ### https://data.services.jetbrains.com/products/releases?code=GW
 GET https://data.services.jetbrains.com/products/releases?code=GW
 
-####
+### /
 GET http://localhost:8080/
 
-####
+### /status
 GET http://localhost:8080/status
 
-####
+### /refresh
 POST http://localhost:8080/refresh
 
 ### /refresh/IC

@@ -29,7 +29,6 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
 
     private final ProductInfoServiceCoreFinalizeService finalizeService;
 
-
     public Mono<List<BuildInfo>> collect() {
         return process(buildInfoService.getAllBuildInfo()); // fixme: cheat and tricky
     }
@@ -45,11 +44,11 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
     }
 
     private void fireAndForget(List<BuildInfo> buildInfos) {
-        checksumService.filterUnchangedByChecksums(buildInfos)
+        buildInfoService.filterBuildInfosToProceed(buildInfos)
             .log("2 BuildInfos to update ")
             .flatMap(buildInfo -> repositoryService.saveBuildInfo(buildInfo, Status.IN_PROGRESS))
             .flatMap(buildInfoAware -> buildDownloadService.downloadBuild(buildInfoAware.buildInfo()))
-            .log("3 Build downloaded ")
+            .log("3 Build stream accepted ")
             .flatMap(buildInfoAware -> fileCacheService.writeToFile(buildInfoAware.buildInfo(), buildInfoAware.obj()))
             .log("4 Write to file ")
             .flatMap(buildInfoAware -> checksumService.validateFileChecksum(buildInfoAware.buildInfo(), buildInfoAware.obj()))

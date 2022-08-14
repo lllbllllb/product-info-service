@@ -3,6 +3,7 @@ package com.lllbllllb.productinfoservice.core;
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
 import com.lllbllllb.productinfoservice.core.model.CleanupPolicy;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,18 +19,24 @@ public class ProductInfoServiceCoreFinalizeService {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
-    public Mono<Boolean> finalize(BuildInfo buildInfo) {
+    public Mono<BuildInfoAware<Boolean>> finalize(BuildInfo buildInfo) {
         return finalize(buildInfo, Status.FINISHED);
     }
 
-    public Mono<Boolean> finalize(BuildInfo buildInfo, Status status) {
+    public Mono<BuildInfoAware<Boolean>> finalize(BuildInfo buildInfo, Status status) {
         return repositoryService.saveBuildInfo(buildInfo, status)
             .flatMap(buildInfoAware -> {
                 if (CleanupPolicy.ALL == properties.getCleanupPolicy()) {
-                    return fileService.deleteFile(buildInfo);
+                    return fileService.deleteFile(buildInfo)
+                        .map(deleted -> new BuildInfoAware<>(buildInfo, deleted));
                 }
 
-                return Mono.just(true);
+                return Mono.just(new BuildInfoAware<>(buildInfo, true));
             });
+    }
+
+    public Mono<Void> doOnTerminate() {
+        return repositoryService.updateBuildInfoToStatus(Status.IN_PROGRESS, Status.TERMINATED_IN_PROGRESS)
+            .then();
     }
 }

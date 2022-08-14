@@ -3,8 +3,6 @@ package com.lllbllllb.productinfoservice.core;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
@@ -16,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -35,13 +32,16 @@ public class ProductInfoServiceCoreChecksumService {
             .uri(URI.create(checksumLink))
             .accept(MediaType.TEXT_HTML)
             .retrieve()
-            .bodyToMono(String.class);
+            .bodyToMono(String.class)
+            .map(this::sanitizeChecksum);
     }
 
     public Mono<String> getActualChecksum(Path path) {
         return Mono.fromCallable(() -> {
                 try (var is = Files.newInputStream(path)) {
-                    return DigestUtils.sha256Hex(is);
+                    var checksum = DigestUtils.sha256Hex(is);
+
+                    return sanitizeChecksum(checksum);
                 }
             })
             .subscribeOn(Schedulers.boundedElastic());
@@ -61,28 +61,13 @@ public class ProductInfoServiceCoreChecksumService {
             });
     }
 
-    public Flux<BuildInfo> filterUnchangedByChecksums(List<BuildInfo> buildInfos) {
-        return repositoryService.findAllBuildInfo(buildInfos)
-            .collect(Collectors.toSet())
-            .flatMapMany(buildInfoAwareSet -> {
-                var fullNumberToChecksumMap = buildInfoAwareSet.stream()
-                    .collect(Collectors.toMap(bia -> bia.buildInfo().buildMetadata().fullNumber(), bia -> bia.buildInfo().checksum()));
-
-                var buildInfosToUpdateSteam = buildInfos.stream()
-                    .filter(buildInfo -> {
-                        var fullNumber = buildInfo.buildMetadata().fullNumber();
-                        return !fullNumberToChecksumMap.containsKey(fullNumber)
-                            || !isChecksumTheSame(fullNumberToChecksumMap.get(fullNumber), buildInfo.checksum());
-                    });
-
-                return Flux.fromStream(buildInfosToUpdateSteam);
-            });
-    }
-
     public boolean isChecksumTheSame(String sha256Expected, String sha256Actual) {
         return StringUtils.hasLength(sha256Expected)
             && StringUtils.hasLength(sha256Actual)
-            && sha256Expected.equals(sha256Actual)
-            || sha256Expected.startsWith(sha256Actual + " ");
+            && sha256Expected.equals(sha256Actual);
+    }
+
+    private String sanitizeChecksum(String source) {
+        return source.substring(0, 64).toLowerCase();
     }
 }

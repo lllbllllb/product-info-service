@@ -9,6 +9,7 @@ import com.lllbllllb.productinfoservice.model.ProductInfo;
 import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -24,6 +25,8 @@ public class ProductInfoServiceRepositoryServiceImpl implements ProductInfoServi
 
     private final ProductInfoServiceRepositoryConverter converter;
 
+    private final TransactionalOperator rxtx;
+
     @Override
     public Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Status status) {
         var id = buildInfoIdProvider.get(buildInfo);
@@ -35,7 +38,8 @@ public class ProductInfoServiceRepositoryServiceImpl implements ProductInfoServi
             })
             .defaultIfEmpty(converter.toDto(buildInfo, status))
             .flatMap(buildInfoRepository::save)
-            .map(converter::fromDto);
+            .map(converter::fromDto)
+            .as(rxtx::transactional);
     }
 
     @Override
@@ -49,7 +53,8 @@ public class ProductInfoServiceRepositoryServiceImpl implements ProductInfoServi
             })
             .defaultIfEmpty(converter.toDto(buildInfo, bytes))
             .flatMap(productInfoRepository::save)
-            .map(dto -> new BuildInfoAware<>(buildInfo, converter.fromDto(dto)));
+            .map(dto -> new BuildInfoAware<>(buildInfo, converter.fromDto(dto)))
+            .as(rxtx::transactional);
     }
 
     @Override
@@ -59,7 +64,8 @@ public class ProductInfoServiceRepositoryServiceImpl implements ProductInfoServi
             .toList();
 
         return buildInfoRepository.findAllById(ids)
-            .map(converter::fromDto);
+            .map(converter::fromDto)
+            .as(rxtx::transactional);
     }
 
     @Override
@@ -69,18 +75,36 @@ public class ProductInfoServiceRepositoryServiceImpl implements ProductInfoServi
             .toList();
 
         return productInfoRepository.findAllById(ids)
-            .map(converter::fromDto);
+            .map(converter::fromDto)
+            .as(rxtx::transactional);
     }
 
     @Override
     public Flux<ProductInfo> findProductInfoByProductCode(String productCode) {
         return productInfoRepository.findAllByProductCode(productCode)
-            .map(converter::fromDto);
+            .map(converter::fromDto)
+            .as(rxtx::transactional);
     }
 
     @Override
     public Mono<ProductInfo> findProductInfoByProductCodeAndFullNumber(String productCode, String fullNumber) {
         return productInfoRepository.findByProductCodeAndFullNumber(productCode, fullNumber)
-            .map(converter::fromDto);
+            .map(converter::fromDto)
+            .as(rxtx::transactional);
     }
+
+    @Override
+    public Flux<BuildInfoAware<Status>> updateBuildInfoToStatus(Status from, Status to) {
+
+        return buildInfoRepository.findAllByStatus(from)
+            .map(dto -> {
+                dto.setStatus(to);
+
+                return dto;
+            })
+            .flatMap(buildInfoRepository::save)
+            .map(converter::fromDto)
+            .as(rxtx::transactional);
+    }
+
 }

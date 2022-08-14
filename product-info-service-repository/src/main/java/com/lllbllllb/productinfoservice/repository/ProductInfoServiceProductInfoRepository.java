@@ -1,9 +1,7 @@
 package com.lllbllllb.productinfoservice.repository;
 
-import java.util.List;
 import java.util.UUID;
 
-import com.lllbllllb.productinfoservice.repository.model.BuildInfoDto;
 import com.lllbllllb.productinfoservice.repository.model.ProductInfoDto;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;

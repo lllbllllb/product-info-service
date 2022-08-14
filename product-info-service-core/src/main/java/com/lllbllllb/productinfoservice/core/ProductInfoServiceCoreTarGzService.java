@@ -34,7 +34,7 @@ public class ProductInfoServiceCoreTarGzService {
 
     public Mono<BuildInfoAware<byte[]>> extractFileFromPath(BuildInfo buildInfo, Path path) {
         return extractFileFromPath(path)
-            .onErrorResume(ex -> failureService.onErrorResume(buildInfo, Status.FAILED_DOWNLOAD, Mono.empty()))
+            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.INVALID_ARCHIVE, Mono.empty()))
             .map(bytes -> new BuildInfoAware<>(buildInfo, bytes));
     }
 
@@ -58,8 +58,6 @@ public class ProductInfoServiceCoreTarGzService {
                             var buf = new byte[(int) entry.getSize()];
 
                             IOUtils.readFully(ti, buf);
-
-//                    return new String(buf, StandardCharsets.UTF_8);
 
                             return buf;
                         }

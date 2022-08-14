@@ -1,6 +1,7 @@
 package com.lllbllllb.productinfoservice.core;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -9,8 +10,10 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildMetadata;
+import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,12 +32,40 @@ public class ProductInfoServiceCoreBuildInfoService {
 
     private final ProductInfoServiceCoreChecksumService checksumService;
 
+    private final ProductInfoServiceRepositoryService repositoryService;
+
+
     public Flux<BuildInfo> getAllBuildInfo() {
         return process(buildsMetadataService.getAllBuildsMetadata());
     }
 
     public Flux<BuildInfo> getBuildInfoByProductCode(String productCode) {
         return process(buildsMetadataService.getBuildsMetadataByProduct(productCode));
+    }
+
+    public Flux<BuildInfo> filterBuildInfosToProceed(List<BuildInfo> buildInfos) {
+        return repositoryService.findAllBuildInfo(buildInfos)
+            .collect(Collectors.toSet())
+            .flatMapMany(buildInfoAwareSet -> {
+                var keyToBuildInfoMap = buildInfoAwareSet.stream()
+                    .collect(Collectors.toMap(bia -> getUniqueKey(bia.buildInfo()), Function.identity()));
+                var buildInfosToUpdateSteam = buildInfos.stream()
+                    .filter(buildInfo -> {
+                        var key = getUniqueKey(buildInfo);
+                        var newChecksum = buildInfo.checksum();
+
+                        return !keyToBuildInfoMap.containsKey(key)
+                            || keyToBuildInfoMap.get(key).obj() == Status.TERMINATED_IN_PROGRESS
+                            || keyToBuildInfoMap.get(key).obj() == Status.IN_PROGRESS
+                            || !checksumService.isChecksumTheSame(keyToBuildInfoMap.get(key).buildInfo().checksum(), newChecksum);
+                    });
+
+                return Flux.fromStream(buildInfosToUpdateSteam);
+            });
+    }
+
+    private String getUniqueKey(BuildInfo buildInfo) {
+        return String.format("%s-%s", buildInfo.productCode(), buildInfo.buildMetadata().fullNumber());
     }
 
     private Flux<BuildInfo> process(Mono<Collection<Map.Entry<String, Set<BuildMetadata>>>> pub) {

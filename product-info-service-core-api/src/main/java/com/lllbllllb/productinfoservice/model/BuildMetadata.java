@@ -8,7 +8,9 @@ public record BuildMetadata(
     String channelStatus,
     String version,
     LocalDate releaseDate,
-    String fullNumber
+    String fullNumber,
+
+    String productCode
 ) {
 
 }

@@ -39,25 +39,19 @@ public class ProductInfoServiceCoreMainFlowService { // fixme: rename to Product
 
     private Mono<List<BuildInfo>> process(Flux<BuildInfo> stream) {
         return stream.collectList()
-            .log("1 Accepted BuildInfos ")
+            .log(this.getClass().getName(), Level.FINE)
             .doOnNext(this::fireAndForget);
     }
 
     private void fireAndForget(List<BuildInfo> buildInfos) {
         buildInfoService.filterBuildInfosToProceed(buildInfos)
-            .log("2 BuildInfos to update ")
             .flatMap(buildInfo -> repositoryService.saveBuildInfo(buildInfo, Status.IN_PROGRESS))
             .flatMap(buildInfoAware -> buildDownloadService.downloadBuild(buildInfoAware.buildInfo()))
-            .log("3 Build stream accepted ")
             .flatMap(buildInfoAware -> fileCacheService.writeToFile(buildInfoAware.buildInfo(), buildInfoAware.obj()))
-            .log("4 Write to file ")
             .flatMap(buildInfoAware -> checksumService.validateFileChecksum(buildInfoAware.buildInfo(), buildInfoAware.obj()))
-            .log("4.1 SHA256 OK ")
             .flatMap(buildInfoAware -> tarGzService.extractFileFromPath(buildInfoAware.buildInfo(), buildInfoAware.obj()))
-            .log("5 File extracted ", Level.FINE)
             .flatMap(buildInfoAware -> repositoryService.saveProductInfo(buildInfoAware.buildInfo(), buildInfoAware.obj()))
             .flatMap(buildInfoAware -> finalizeService.finalize(buildInfoAware.buildInfo()))
-            .log("6 Finalized ")
             .subscribe();
     }
 }

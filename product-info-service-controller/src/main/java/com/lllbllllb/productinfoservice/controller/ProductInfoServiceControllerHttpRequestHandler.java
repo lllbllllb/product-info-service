@@ -39,7 +39,8 @@ public class ProductInfoServiceControllerHttpRequestHandler {
         return apiService.findProductInfoByCode(productCode)
             .map(ProductInfo::productInfoFile)
             .collectList()
-            .flatMap(file -> ok().bodyValue(file));
+            .flatMap(file -> ok().bodyValue(file))
+            .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> getByProductCodeAndBuildNumber(ServerRequest request) {
@@ -50,7 +51,8 @@ public class ProductInfoServiceControllerHttpRequestHandler {
             .flatMap(productInfo -> ok()
                 .header(LAST_MODIFIED, Long.toString(productInfo.updatedDate().toEpochMilli()))
                 .bodyValue(productInfo.productInfoFile())
-            );
+            )
+            .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> refresh(ServerRequest request) {

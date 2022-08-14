@@ -55,8 +55,7 @@ public class ProductInfoServiceCoreBuildInfoService {
                         var newChecksum = buildInfo.checksum();
 
                         return !keyToBuildInfoMap.containsKey(key)
-                            || keyToBuildInfoMap.get(key).obj() == Status.TERMINATED_IN_PROGRESS
-                            || keyToBuildInfoMap.get(key).obj() == Status.IN_PROGRESS
+                            || keyToBuildInfoMap.get(key).obj() != Status.FINISHED
                             || !checksumService.isChecksumTheSame(keyToBuildInfoMap.get(key).buildInfo().checksum(), newChecksum);
                     });
 
@@ -65,7 +64,9 @@ public class ProductInfoServiceCoreBuildInfoService {
     }
 
     private String getUniqueKey(BuildInfo buildInfo) {
-        return String.format("%s-%s", buildInfo.productCode(), buildInfo.buildMetadata().fullNumber());
+        var metadata = buildInfo.buildMetadata();
+
+        return String.format("%s-%s", metadata.productCode(), metadata.fullNumber());
     }
 
     private Flux<BuildInfo> process(Mono<Collection<Map.Entry<String, Set<BuildMetadata>>>> pub) {
@@ -74,23 +75,23 @@ public class ProductInfoServiceCoreBuildInfoService {
             .flatMap(entry -> getBuildInfos(entry.getKey(), entry.getValue()));
     }
 
-    private Flux<BuildInfo> getBuildInfos(String code, Collection<BuildMetadata> buildMetadata) {
+    private Flux<BuildInfo> getBuildInfos(String productCode, Collection<BuildMetadata> buildMetadata) {
         var buildNumberToBuildMetadataMap = buildMetadata.stream()
             .collect(Collectors.toMap(BuildMetadata::fullNumber, Function.identity()));
 
         return releasesCodeClient.get()
-            .uri(uriBuilder -> uriBuilder.queryParam("code", code).build())
+            .uri(uriBuilder -> uriBuilder.queryParam("code", productCode).build())
             .retrieve()
             .bodyToMono(JsonNode.class)
-            .flatMapMany(release -> getBuildInfos(release, code, buildNumberToBuildMetadataMap));
+            .flatMapMany(release -> getBuildInfos(release, buildNumberToBuildMetadataMap));
     }
 
-    private Flux<BuildInfo> getBuildInfos(JsonNode releases, String code, Map<String, BuildMetadata> buildNumberToBuildMetadataMap) {
-        return Flux.fromStream(parseProductReleases(releases, code, buildNumberToBuildMetadataMap))
+    private Flux<BuildInfo> getBuildInfos(JsonNode releases, Map<String, BuildMetadata> buildNumberToBuildMetadataMap) {
+        return Flux.fromStream(parseProductReleases(releases, buildNumberToBuildMetadataMap))
             .flatMap(Function.identity());
     }
 
-    private Stream<Mono<BuildInfo>> parseProductReleases(JsonNode releases, String code, Map<String, BuildMetadata> buildNumberToBuildMetadataMap) {
+    private Stream<Mono<BuildInfo>> parseProductReleases(JsonNode releases, Map<String, BuildMetadata> buildNumberToBuildMetadataMap) {
         var fieldNames = releases.fieldNames(); // expected just one, e.g. IC, IU, WS, CL, etc.
 
         if (fieldNames.hasNext()) {
@@ -100,13 +101,13 @@ public class ProductInfoServiceCoreBuildInfoService {
                 .stream(releases.get(productCode).spliterator(), false)
                 .filter(child -> buildNumberToBuildMetadataMap.containsKey(child.get("build").asText())
                     && child.get("downloads").get(properties.getLinuxDistroKey()) != null)
-                .map(child -> parseChildJsonNode(child, code, buildNumberToBuildMetadataMap));
+                .map(child -> parseChildJsonNode(child, buildNumberToBuildMetadataMap));
         } else {
             return Stream.empty();
         }
     }
 
-    private Mono<BuildInfo> parseChildJsonNode(JsonNode child, String code, Map<String, BuildMetadata> buildNumberToBuildMetadataMap) {
+    private Mono<BuildInfo> parseChildJsonNode(JsonNode child, Map<String, BuildMetadata> buildNumberToBuildMetadataMap) {
         var build = child.get("build").asText();
         var linuxDownload = child.get("downloads").get(properties.getLinuxDistroKey());
         var checksumLink = linuxDownload.get("checksumLink").textValue();
@@ -117,7 +118,6 @@ public class ProductInfoServiceCoreBuildInfoService {
                 linuxDownload.get("size").longValue(),
                 linuxDownload.get("checksumLink").textValue(),
                 buildNumberToBuildMetadataMap.get(build),
-                code,
                 checksum
             ));
     }

@@ -8,8 +8,11 @@ spring:
     user: postgres
     password: password
 
-#logging:
-#  level:
+
+logging:
+  level:
+    com.lllbllllb.productinfoservice: TRACE
+    com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreMainFlowService: TRACE
 #    io.r2dbc.postgresql.QUERY: DEBUG
 #    io.r2dbc.postgresql.PARAM: DEBUG
 product-info-service:

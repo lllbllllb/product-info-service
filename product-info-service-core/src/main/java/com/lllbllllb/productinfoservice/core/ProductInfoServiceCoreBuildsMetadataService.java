@@ -13,11 +13,11 @@ import java.util.logging.Level;
 
 import javax.annotation.PostConstruct;
 
-import com.lllbllllb.productinfoservice.model.BuildMetadata;
 import com.lllbllllb.productinfoservice.core.model.updatesxml.Build;
 import com.lllbllllb.productinfoservice.core.model.updatesxml.Channel;
 import com.lllbllllb.productinfoservice.core.model.updatesxml.Product;
 import com.lllbllllb.productinfoservice.core.model.updatesxml.Products;
+import com.lllbllllb.productinfoservice.model.BuildMetadata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class ProductInfoServiceCoreBuildsMetadataService {
                     .filter(product -> product.getCode().contains(productCode))
                     .findAny()
                     .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown product code [%s]", productCode)));
-                var builds = extractBuildInfos(targetProduct);
+                var builds = extractBuildMetadata(targetProduct, productCode);
 
                 codeToBuildNumbersMap.put(productCode, builds);
 
@@ -63,11 +63,11 @@ public class ProductInfoServiceCoreBuildsMetadataService {
             .map(products -> {
                 var codeToBuildNumbersMap = new HashMap<String, Set<BuildMetadata>>();
 
-                products.getProduct().forEach(product -> {
-                    var builds = extractBuildInfos(product);
+                products.getProduct().forEach(product -> product.getCode().forEach(code -> {
+                    var metadata = extractBuildMetadata(product, code);
 
-                    product.getCode().forEach(code -> codeToBuildNumbersMap.put(code, builds));
-                });
+                    codeToBuildNumbersMap.put(code, metadata);
+                }));
 
                 return codeToBuildNumbersMap.entrySet();
             });
@@ -83,10 +83,11 @@ public class ProductInfoServiceCoreBuildsMetadataService {
             .retrieve()
             .onStatus(HttpStatus::is3xxRedirection, clientResponse -> Mono.empty())
             .bodyToMono(Products.class)
-            .log("0 Products ", Level.FINE);
+            .log(this.getClass().getName(), Level.FINE);
+
     }
 
-    private Set<BuildMetadata> extractBuildInfos(Product product) {
+    private Set<BuildMetadata> extractBuildMetadata(Product product, String productCode) {
         var buildInfos = new HashSet<BuildMetadata>();
 
         for (Channel channel : product.getChannel()) {
@@ -98,7 +99,8 @@ public class ProductInfoServiceCoreBuildsMetadataService {
                         channel.getStatus(),
                         build.getVersion(),
                         build.getReleaseDate(),
-                        build.getFullNumber()
+                        build.getFullNumber(),
+                        productCode
                     );
 
                     buildInfos.add(buildInfo);

@@ -9,6 +9,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 
 import com.lllbllllb.productinfoservice.core.model.CleanupPolicy;
+import com.lllbllllb.productinfoservice.core.model.ServiceMode;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,9 @@ public class ProductInfoServiceCoreConfigurationProperties {
 
     @NotNull
     private RetryOptions retryOptions = new RetryOptions();
+
+    @NotNull
+    private ServiceMode serviceMode = ServiceMode.STANDALONE;
 
     @Data
     public static class RetryOptions {

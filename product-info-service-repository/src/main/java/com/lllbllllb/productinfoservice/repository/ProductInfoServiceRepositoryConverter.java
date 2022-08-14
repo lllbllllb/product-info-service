@@ -26,7 +26,7 @@ public class ProductInfoServiceRepositoryConverter {
         var dto = new BuildInfoDto();
         var id = idProvider.get(buildInfo);
         dto.setId(id);
-        dto.setProductCode(buildInfo.productCode());
+        dto.setProductCode(metadata.productCode());
         dto.setChecksum(buildInfo.checksum());
         dto.setChecksumLink(buildInfo.checksumLink());
         dto.setLink(buildInfo.link());
@@ -59,14 +59,14 @@ public class ProductInfoServiceRepositoryConverter {
             dto.getChannelStatus(),
             dto.getBuildVersion(),
             dto.getReleaseDate(),
-            dto.getFullNumber()
-        );
+            dto.getFullNumber(),
+            dto.getProductCode()
+            );
         var buildInfo = new BuildInfo(
             dto.getLink(),
             dto.getSize(),
             dto.getChecksumLink(),
             buildMetadata,
-            dto.getProductCode(),
             dto.getChecksum()
         );
         var status = dto.getStatus();

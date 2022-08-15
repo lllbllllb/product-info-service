@@ -25,11 +25,15 @@
         </dependency>
         <dependency>
             <groupId>com.lllbllllb</groupId>
-            <artifactId>product-info-service-repository</artifactId>
+            <artifactId>product-info-service-repository-local</artifactId>
         </dependency>
         <dependency>
             <groupId>com.lllbllllb</groupId>
             <artifactId>product-info-service-controller</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lllbllllb</groupId>
+            <artifactId>product-info-service-repository-remote</artifactId>
         </dependency>
 
         <dependency>

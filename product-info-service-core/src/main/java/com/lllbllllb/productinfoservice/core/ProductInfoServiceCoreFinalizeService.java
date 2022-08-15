@@ -1,6 +1,6 @@
 package com.lllbllllb.productinfoservice.core;
 
-import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
+import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
 import com.lllbllllb.productinfoservice.core.model.CleanupPolicy;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductInfoServiceCoreFinalizeService {
 
-    private final ProductInfoServiceRepositoryService repositoryService;
+    private final ProductInfoServiceRepositoryLocalService repositoryService;
 
     private final ProductInfoServiceCoreFileService fileService;
 
@@ -33,10 +33,5 @@ public class ProductInfoServiceCoreFinalizeService {
 
                 return Mono.just(new BuildInfoAware<>(buildInfo, true));
             });
-    }
-
-    public Mono<Void> doOnTerminate() {
-        return repositoryService.updateBuildInfoToStatus(Status.IN_PROGRESS, Status.TERMINATED_IN_PROGRESS)
-            .then();
     }
 }

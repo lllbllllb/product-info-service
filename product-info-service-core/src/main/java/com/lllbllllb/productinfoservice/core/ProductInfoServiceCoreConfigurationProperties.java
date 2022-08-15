@@ -1,7 +1,6 @@
 package com.lllbllllb.productinfoservice.core;
 
 import java.time.Duration;
-import java.time.Period;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -9,7 +8,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 
 import com.lllbllllb.productinfoservice.core.model.CleanupPolicy;
-import com.lllbllllb.productinfoservice.core.model.ServiceMode;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -30,18 +28,6 @@ public class ProductInfoServiceCoreConfigurationProperties {
     @Pattern(regexp = "^.+(\\.json)$", message = "Only JSON files supported")
     private String targetFileName = "product-info.json";
 
-    @Pattern(regexp = "^(http|https)://.+(\\.xml)$", message = "Invalid http link")
-    private String updatesXmlUrl = "https://www.jetbrains.com/updates/updates.xml";
-
-    @Pattern(regexp = "^(http|https)://.+$", message = "Invalid http link")
-    private String releasesCodeUrl = "https://data.services.jetbrains.com/products/releases";
-
-    @NotBlank
-    private String linuxDistroKey = "linux";
-
-    @NotNull
-    private Period buildMaxAge = Period.ofYears(1);
-
     @NotBlank
     private String pathToSaveTmp;
 
@@ -50,9 +36,6 @@ public class ProductInfoServiceCoreConfigurationProperties {
 
     @NotNull
     private RetryOptions retryOptions = new RetryOptions();
-
-    @NotNull
-    private ServiceMode serviceMode = ServiceMode.STANDALONE;
 
     @Data
     public static class RetryOptions {

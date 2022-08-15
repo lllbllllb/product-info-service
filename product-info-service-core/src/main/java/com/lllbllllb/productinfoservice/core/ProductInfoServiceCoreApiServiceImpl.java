@@ -3,7 +3,7 @@ package com.lllbllllb.productinfoservice.core;
 import java.util.List;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceCoreApiService;
-import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
+import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
 import com.lllbllllb.productinfoservice.model.ServiceStatus;
@@ -16,9 +16,9 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductInfoServiceCoreApiServiceImpl implements ProductInfoServiceCoreApiService {
 
-    private final ProductInfoServiceCoreMainFlowService mainFlowService;
+    private final ProductInfoServiceCoreMainEtlPipelineService mainFlowService;
 
-    private final ProductInfoServiceRepositoryService repositoryService;
+    private final ProductInfoServiceRepositoryLocalService repositoryService;
 
     @Override
     public Mono<ServiceStatus> getServiceStatus() {

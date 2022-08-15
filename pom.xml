@@ -33,8 +33,9 @@
         <module>product-info-service-core</module>
         <module>product-info-service-database-migration</module>
         <module>product-info-service-core-api</module>
-        <module>product-info-service-repository</module>
+        <module>product-info-service-repository-local</module>
         <module>product-info-service-controller</module>
+        <module>product-info-service-repository-remote</module>
     </modules>
 
     <dependencyManagement>
@@ -77,12 +78,17 @@
             </dependency>
             <dependency>
                 <groupId>com.lllbllllb</groupId>
-                <artifactId>product-info-service-repository</artifactId>
+                <artifactId>product-info-service-repository-local</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lllbllllb</groupId>
                 <artifactId>product-info-service-controller</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lllbllllb</groupId>
+                <artifactId>product-info-service-repository-remote</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>

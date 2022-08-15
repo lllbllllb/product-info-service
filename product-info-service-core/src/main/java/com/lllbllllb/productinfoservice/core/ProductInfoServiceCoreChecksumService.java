@@ -1,19 +1,15 @@
 package com.lllbllllb.productinfoservice.core;
 
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -21,27 +17,12 @@ import reactor.core.scheduler.Schedulers;
 @RequiredArgsConstructor
 public class ProductInfoServiceCoreChecksumService {
 
-    private final WebClient redirectedWebClient;
-
-    private final ProductInfoServiceRepositoryService repositoryService;
-
     private final ProductInfoServiceCoreFinalizeService finalizeService;
-
-    public Mono<String> getExpectedChecksum(String checksumLink) {
-        return redirectedWebClient.get()
-            .uri(URI.create(checksumLink))
-            .accept(MediaType.TEXT_HTML)
-            .retrieve()
-            .bodyToMono(String.class)
-            .map(this::sanitizeChecksum);
-    }
 
     public Mono<String> getActualChecksum(Path path) {
         return Mono.fromCallable(() -> {
                 try (var is = Files.newInputStream(path)) {
-                    var checksum = DigestUtils.sha256Hex(is);
-
-                    return sanitizeChecksum(checksum);
+                    return DigestUtils.sha256Hex(is);
                 }
             })
             .subscribeOn(Schedulers.boundedElastic());
@@ -64,10 +45,7 @@ public class ProductInfoServiceCoreChecksumService {
     public boolean isChecksumTheSame(String sha256Expected, String sha256Actual) {
         return StringUtils.hasLength(sha256Expected)
             && StringUtils.hasLength(sha256Actual)
-            && sha256Expected.equals(sha256Actual);
+            && sha256Expected.equalsIgnoreCase(sha256Actual);
     }
 
-    private String sanitizeChecksum(String source) {
-        return source.substring(0, 64).toLowerCase();
-    }
 }

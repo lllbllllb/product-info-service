@@ -12,7 +12,7 @@ spring:
 logging:
   level:
     com.lllbllllb.productinfoservice: TRACE
-    com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreMainFlowService: TRACE
+    com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreMainEtlPipelineService: TRACE
 #    io.r2dbc.postgresql.QUERY: DEBUG
 #    io.r2dbc.postgresql.PARAM: DEBUG
 product-info-service:

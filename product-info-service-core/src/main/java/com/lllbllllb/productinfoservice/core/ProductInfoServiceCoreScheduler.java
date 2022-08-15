@@ -14,7 +14,7 @@ public class ProductInfoServiceCoreScheduler {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
-    private final ProductInfoServiceCoreMainFlowService mainFlowService;
+    private final ProductInfoServiceCoreMainEtlPipelineService mainFlowService;
 
     @PostConstruct
     public void init() {

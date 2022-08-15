@@ -34,8 +34,9 @@ public class ProductInfoServiceCoreBuildInfoService {
                         var newChecksum = buildInfo.checksum();
 
                         return !keyToBuildInfoMap.containsKey(key)
-                            || keyToBuildInfoMap.get(key).obj() != Status.FINISHED
-                            || !checksumService.isChecksumTheSame(keyToBuildInfoMap.get(key).buildInfo().checksum(), newChecksum);
+                            || Status.isFailed(keyToBuildInfoMap.get(key).obj())
+                            || keyToBuildInfoMap.get(key).obj() == Status.FINISHED
+                            && !checksumService.isChecksumTheSame(keyToBuildInfoMap.get(key).buildInfo().checksum(), newChecksum);
                     });
 
                 return Flux.fromStream(buildInfosToUpdateSteam);

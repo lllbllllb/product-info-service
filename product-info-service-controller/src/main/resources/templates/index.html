@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/libs/webix/webix.css" type="text/css" charset="utf-8">
+    <script src="/libs/webix/webix.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+    webix.ready(function () {
+        webix.ui({
+            view: "scrollview",
+            scroll: "x",
+            body: {
+                rows: [
+                    {template: "Last finished rounds", type: "header"},
+                    {
+                        view: "datatable",
+                        columns: [
+                            {id: "productCode", header: "Code", width: 80},
+                            {id: "productName", header: "Product Name", width: 200},
+                            {id: "version", header: "Version", width: 160},
+                            {id: "link", header: "Link", fillspace: true},
+                            {id: "checksum", header: "Checksum", width: 560},
+                            {id: "fullNumber", header: "Release Number", width: 120},
+                            {id: "releaseDate", header: "Release Date", width: 120},
+                            {id: "roundCratedDate", header: "Last update Date", width: 160},
+                            {id: "roundInstanceId", header: "Last update Instance", width: 300}
+                        ],
+                        // loading url
+                        url: function (params) {
+                            return webix.ajax("/status");
+                        },
+                        scrollX: false
+                    },
+                    {template: "Last product builds", type: "header"},
+                    {
+                        view: "datatable",
+                        columns: [
+                            {id: "productCode", header: "Code", width: 80},
+                            {id: "productName", header: "Product Name", width: 200},
+                            {id: "version", header: "Version", width: 160},
+                            {id: "link", header: "Link", fillspace: true},
+                            {id: "checksum", header: "Checksum", width: 560},
+                            {id: "fullNumber", header: "Release Number", width: 120},
+                            {id: "releaseDate", header: "Release Date", width: 120},
+                            {id: "roundCratedDate", header: "Last update Date", width: 160},
+                            {id: "roundInstanceId", header: "Last update Instance", width: 300}
+                        ],
+                        // loading url
+                        url: function (params) {
+                            return webix.ajax("/status");
+                        },
+                        scrollX: false
+                    }
+                ]
+            }
+        });
+    });
+</script>
+</body>
+</html>

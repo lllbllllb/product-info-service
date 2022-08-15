@@ -2,6 +2,7 @@ package com.lllbllllb.productinfoservice.core;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Clock;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,13 @@ public class ProductInfoServiceCoreFileService {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
+    private final Clock clock;
+
     public String getName(BuildInfo buildInfo) {
         var metadata = buildInfo.buildMetadata();
+        var start = clock.instant().toEpochMilli();
 
-        return String.format("%s-%s-%s.tar.gz", metadata.productName(), metadata.releaseDate(), metadata.fullNumber());
+        return "%s_%s_%s_%s_%s.tar.gz".formatted(metadata.productName(), metadata.releaseDate(), metadata.fullNumber(), buildInfo.checksum(), start);
     }
 
     public Path getPath(BuildInfo buildInfo) {

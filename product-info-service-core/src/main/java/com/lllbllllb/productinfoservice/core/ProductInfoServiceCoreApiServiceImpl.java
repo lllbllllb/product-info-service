@@ -1,5 +1,6 @@
 package com.lllbllllb.productinfoservice.core;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class ProductInfoServiceCoreApiServiceImpl implements ProductInfoServiceC
     private final ProductInfoServiceReportService reportService;
 
     @Override
-    public Mono<Map<String, BuildInfoAware<Round>>> getLastBuildInfos() {
+    public Mono<Collection<BuildInfoAware<Round>>> getLastBuildInfos() {
         return reportService.getLastReleasedBuildInfos();
     }
 

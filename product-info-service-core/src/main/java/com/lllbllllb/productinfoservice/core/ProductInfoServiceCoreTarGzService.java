@@ -34,7 +34,7 @@ public class ProductInfoServiceCoreTarGzService {
 
     public Mono<BuildInfoAware<byte[]>> extractFileFromPath(BuildInfo buildInfo, Path path) {
         return extractFileFromPath(path)
-            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.INVALID_ARCHIVE, Mono.empty()))
+            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.INVALID_DATA, Mono.empty()))
             .map(bytes -> new BuildInfoAware<>(buildInfo, bytes));
     }
 

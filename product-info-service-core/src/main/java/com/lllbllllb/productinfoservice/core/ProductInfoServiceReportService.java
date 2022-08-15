@@ -2,6 +2,8 @@ package com.lllbllllb.productinfoservice.core;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,7 +25,7 @@ public class ProductInfoServiceReportService {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
-    public Mono<Map<String, BuildInfoAware<Round>>> getLastReleasedBuildInfos() {
+    public Mono<Collection<BuildInfoAware<Round>>> getLastReleasedBuildInfos() {
         var period = properties.getReportPeriod();
         var now = clock.instant();
         var from = ZonedDateTime.now(clock).minus(period).toInstant();
@@ -35,7 +37,8 @@ public class ProductInfoServiceReportService {
                     bia -> bia.buildInfo().buildMetadata().productCode(),
                     Function.identity(),
                     this::getLatestBuild
-                )));
+                ))
+                .values());
     }
 
     private BuildInfoAware<Round> getLatestBuild(BuildInfoAware<Round> first, BuildInfoAware<Round> second) {

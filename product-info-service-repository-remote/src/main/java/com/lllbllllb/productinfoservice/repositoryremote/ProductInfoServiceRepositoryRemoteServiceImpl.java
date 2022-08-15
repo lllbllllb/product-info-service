@@ -24,6 +24,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductInfoServiceRepositoryRemoteServiceImpl implements ProductInfoServiceRepositoryRemoteService {
 
+    private static final int SHA_256_LENGTH = 64;
     private final WebClient releasesCodeClient;
 
     private final WebClient commonGuestClient;
@@ -105,6 +106,6 @@ public class ProductInfoServiceRepositoryRemoteServiceImpl implements ProductInf
     }
 
     private String sanitizeChecksum(String source) {
-        return source.substring(0, 64).toLowerCase();
+        return source.substring(0, SHA_256_LENGTH).toLowerCase();
     }
 }

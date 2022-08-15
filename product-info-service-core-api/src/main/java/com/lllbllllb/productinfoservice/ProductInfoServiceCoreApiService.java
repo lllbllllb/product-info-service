@@ -1,7 +1,7 @@
 package com.lllbllllb.productinfoservice;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 
 public interface ProductInfoServiceCoreApiService {
 
-    Mono<Map<String, BuildInfoAware<Round>>> getLastBuildInfos();
+    Mono<Collection<BuildInfoAware<Round>>> getLastBuildInfos();
 
     Flux<ProductInfo> findProductInfoByCode(String productCode);
 

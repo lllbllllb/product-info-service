@@ -1,10 +1,14 @@
 package com.lllbllllb.productinfoservice.controller;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceCoreApiService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
+import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.ServiceStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,13 +28,19 @@ public class ProductInfoServiceControllerHttpRequestHandler {
 
     private final ProductInfoServiceCoreApiService apiService;
 
+    private final ProductInfoServiceControllerConverterService converterService;
+
     public Mono<ServerResponse> homepage(ServerRequest request) {
 
         return ok().bodyValue("Hello from root!");
     }
 
     public Mono<ServerResponse> getLastBuildInfos(ServerRequest request) {
-        return ok().body(apiService.getLastBuildInfos(), ServiceStatus.class);
+        return apiService.getLastBuildInfos()
+            .map(bia -> bia.stream()
+                .map(converterService::toDto)
+                .collect(Collectors.toList()))
+            .flatMap(dtos -> ok().bodyValue(dtos));
     }
 
     public Mono<ServerResponse> getByProductCode(ServerRequest request) {

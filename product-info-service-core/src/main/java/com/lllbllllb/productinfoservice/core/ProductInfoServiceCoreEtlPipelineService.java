@@ -34,11 +34,11 @@ public class ProductInfoServiceCoreEtlPipelineService {
 
     private final ProductInfoServiceCoreRoundService roundService;
 
-    public Mono<List<BuildInfo>> collect() {
+    public Mono<List<BuildInfo>> startRound() {
         return process(repositoryRemoteService.getAllBuildInfo());
     }
 
-    public Mono<List<BuildInfo>> collect(String productCode) {
+    public Mono<List<BuildInfo>> startRound(String productCode) {
         return process(repositoryRemoteService.getBuildInfoByProductCode(productCode));
     }
 

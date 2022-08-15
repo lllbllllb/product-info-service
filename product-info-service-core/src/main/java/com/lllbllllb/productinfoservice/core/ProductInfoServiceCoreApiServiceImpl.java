@@ -47,11 +47,11 @@ public class ProductInfoServiceCoreApiServiceImpl implements ProductInfoServiceC
 
     @Override
     public Mono<List<BuildInfo>> refreshAll() {
-        return mainFlowService.collect();
+        return mainFlowService.startRound();
     }
 
     @Override
     public Mono<List<BuildInfo>> refreshByCode(String productCode) {
-        return mainFlowService.collect(productCode);
+        return mainFlowService.startRound(productCode);
     }
 }

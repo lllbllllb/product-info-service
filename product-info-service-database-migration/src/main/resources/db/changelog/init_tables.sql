@@ -27,6 +27,16 @@ create table build_info
     status             text,
     created_date       timestamp,
     last_modified_date timestamp,
+    round_id           uuid,
+    version            bigint
+);
+
+create table round
+(
+    id                 uuid primary key not null,
+    instance_id        text,
+    created_date       timestamp,
+    last_modified_date timestamp,
     version            bigint
 );
 

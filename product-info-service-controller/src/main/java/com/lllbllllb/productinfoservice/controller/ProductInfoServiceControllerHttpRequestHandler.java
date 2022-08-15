@@ -29,8 +29,8 @@ public class ProductInfoServiceControllerHttpRequestHandler {
         return ok().bodyValue("Hello from root!");
     }
 
-    public Mono<ServerResponse> getStatus(ServerRequest request) {
-        return ok().body(apiService.getServiceStatus(), ServiceStatus.class);
+    public Mono<ServerResponse> getLastBuildInfos(ServerRequest request) {
+        return ok().body(apiService.getLastBuildInfos(), ServiceStatus.class);
     }
 
     public Mono<ServerResponse> getByProductCode(ServerRequest request) {

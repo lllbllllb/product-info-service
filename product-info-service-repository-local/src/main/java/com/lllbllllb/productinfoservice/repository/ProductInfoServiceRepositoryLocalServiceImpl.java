@@ -1,11 +1,13 @@
 package com.lllbllllb.productinfoservice.repository;
 
+import java.time.Instant;
 import java.util.List;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
+import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,22 +23,39 @@ public class ProductInfoServiceRepositoryLocalServiceImpl implements ProductInfo
 
     private final ProductInfoServiceProductInfoRepository productInfoRepository;
 
-    private final ProductInfoServiceRepositoryBuildInfoIdProvider buildInfoIdProvider;
+    private final ProductInfoServiceRoundRepository roundRepository;
+
+    private final ProductInfoServiceRepositoryIdProvider idProvider;
 
     private final ProductInfoServiceRepositoryConverter converter;
 
     private final TransactionalOperator rxtx;
 
     @Override
-    public Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Status status) {
-        var id = buildInfoIdProvider.get(buildInfo);
+    public Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Round round, Status status) {
+        var buildInfoId = idProvider.getBuildInfoId(buildInfo);
+        var roundId = idProvider.getRoundId(round);
+
+        return buildInfoRepository.findById(buildInfoId)
+            .map(dto -> {
+                dto.setStatus(status);
+                return dto;
+            })
+            .defaultIfEmpty(converter.toDto(buildInfo, status, roundId))
+            .flatMap(buildInfoRepository::save)
+            .map(converter::fromDto)
+            .as(rxtx::transactional);
+    }
+
+    @Override
+    public Mono<BuildInfoAware<Status>> updateBuildInfo(BuildInfo buildInfo, Status status) {
+        var id = idProvider.getBuildInfoId(buildInfo);
 
         return buildInfoRepository.findById(id)
             .map(dto -> {
                 dto.setStatus(status);
                 return dto;
             })
-            .defaultIfEmpty(converter.toDto(buildInfo, status))
             .flatMap(buildInfoRepository::save)
             .map(converter::fromDto)
             .as(rxtx::transactional);
@@ -44,7 +63,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl implements ProductInfo
 
     @Override
     public Mono<BuildInfoAware<ProductInfo>> saveProductInfo(BuildInfo buildInfo, byte[] bytes) {
-        var id = buildInfoIdProvider.get(buildInfo);
+        var id = idProvider.getBuildInfoId(buildInfo);
 
         return productInfoRepository.findById(id)
             .map(dto -> {
@@ -60,21 +79,10 @@ public class ProductInfoServiceRepositoryLocalServiceImpl implements ProductInfo
     @Override
     public Flux<BuildInfoAware<Status>> findAllBuildInfo(List<BuildInfo> buildInfos) {
         var ids = buildInfos.stream()
-            .map(buildInfoIdProvider::get)
+            .map(idProvider::getBuildInfoId)
             .toList();
 
         return buildInfoRepository.findAllById(ids)
-            .map(converter::fromDto)
-            .as(rxtx::transactional);
-    }
-
-    @Override
-    public Flux<ProductInfo> findAllProductInfo(List<BuildInfo> buildInfos) {
-        var ids = buildInfos.stream()
-            .map(buildInfoIdProvider::get)
-            .toList();
-
-        return productInfoRepository.findAllById(ids)
             .map(converter::fromDto)
             .as(rxtx::transactional);
     }
@@ -94,16 +102,23 @@ public class ProductInfoServiceRepositoryLocalServiceImpl implements ProductInfo
     }
 
     @Override
-    public Flux<BuildInfoAware<Status>> updateBuildInfoToStatus(Status from, Status to) {
+    public Mono<Round> saveRound(Round round) {
+        var dto = converter.toDto(round);
 
-        return buildInfoRepository.findAllByStatus(from)
-            .map(dto -> {
-                dto.setStatus(to);
-
-                return dto;
-            })
-            .flatMap(buildInfoRepository::save)
+        return roundRepository.save(dto)
             .map(converter::fromDto)
+            .as(rxtx::transactional);
+    }
+
+
+    @Override
+    public Flux<BuildInfoAware<Round>> findAllFinishedBuildsByPeriod(Instant from, Instant to) {
+        return buildInfoRepository.findAllFinishedByPeriod(from, to)
+            .flatMap(buildInfoDto -> roundRepository.findById(buildInfoDto.getRoundId())
+                .map(dto -> {
+                    var round = converter.fromDto(dto);
+                    return converter.fromDto(buildInfoDto, round);
+                }))
             .as(rxtx::transactional);
     }
 

@@ -6,10 +6,13 @@ import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +21,6 @@ public class ProductInfoServiceCoreBuildInfoService {
     private final ProductInfoServiceCoreChecksumService checksumService;
 
     private final ProductInfoServiceRepositoryLocalService repositoryService;
-
 
     public Flux<BuildInfo> filterBuildInfosToProceed(List<BuildInfo> buildInfos) {
         return repositoryService.findAllBuildInfo(buildInfos)
@@ -38,6 +40,14 @@ public class ProductInfoServiceCoreBuildInfoService {
 
                 return Flux.fromStream(buildInfosToUpdateSteam);
             });
+    }
+
+    public Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Round round) {
+        return saveBuildInfo(buildInfo, round, Status.IN_PROGRESS);
+    }
+
+    public Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Round round, Status status) {
+        return repositoryService.saveBuildInfo(buildInfo, round, status);
     }
 
     private String getUniqueKey(BuildInfo buildInfo) {

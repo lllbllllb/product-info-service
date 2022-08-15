@@ -1,6 +1,7 @@
 package com.lllbllllb.productinfoservice.core;
 
 import java.time.Duration;
+import java.time.Period;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,6 +34,9 @@ public class ProductInfoServiceCoreConfigurationProperties {
 
     @NotNull
     private CleanupPolicy cleanupPolicy = CleanupPolicy.ALL;
+
+    @NotNull
+    private Period reportPeriod = Period.ofYears(1);
 
     @NotNull
     private RetryOptions retryOptions = new RetryOptions();

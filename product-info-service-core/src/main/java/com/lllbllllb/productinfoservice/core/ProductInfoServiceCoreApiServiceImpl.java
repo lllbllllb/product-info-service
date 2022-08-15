@@ -1,12 +1,13 @@
 package com.lllbllllb.productinfoservice.core;
 
 import java.util.List;
+import java.util.Map;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceCoreApiService;
-import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
-import com.lllbllllb.productinfoservice.model.ServiceStatus;
+import com.lllbllllb.productinfoservice.model.Round;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -16,23 +17,25 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductInfoServiceCoreApiServiceImpl implements ProductInfoServiceCoreApiService {
 
-    private final ProductInfoServiceCoreMainEtlPipelineService mainFlowService;
+    private final ProductInfoServiceCoreEtlPipelineService mainFlowService;
 
-    private final ProductInfoServiceRepositoryLocalService repositoryService;
+    private final ProductInfoServiceCoreProductInfoService repositoryService;
+
+    private final ProductInfoServiceReportService reportService;
 
     @Override
-    public Mono<ServiceStatus> getServiceStatus() {
-        return Mono.empty();
+    public Mono<Map<String, BuildInfoAware<Round>>> getLastBuildInfos() {
+        return reportService.getLastReleasedBuildInfos();
     }
 
     @Override
     public Flux<ProductInfo> findProductInfoByCode(String productCode) {
-        return repositoryService.findProductInfoByProductCode(productCode);
+        return repositoryService.findByCode(productCode);
     }
 
     @Override
     public Mono<ProductInfo> findProductInfoByCodeAndNumber(String productCode, String fullNumber) {
-        return repositoryService.findProductInfoByProductCodeAndFullNumber(productCode, fullNumber);
+        return repositoryService.findByCodeAndNumber(productCode, fullNumber);
     }
 
     @Override

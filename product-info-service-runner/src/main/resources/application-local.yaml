@@ -18,3 +18,5 @@ product-info-service:
   core:
     path-to-save-tmp: C:\Users\mrmbl\Downloads\testjb
     cleanup-policy: none
+  controller:
+    round-delay: 4s

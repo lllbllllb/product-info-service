@@ -22,9 +22,16 @@ public class ProductInfoServiceCoreBuildInfoService {
 
     private final ProductInfoServiceBuildInfoRepositoryService buildInfoRepositoryService;
 
+    private final ProductInfoServiceCoreRandomService randomService;
+
+    private final ProductInfoServiceCoreConfigurationProperties properties;
+
     public Flux<BuildInfo> filterBuildInfosToProceed(List<BuildInfo> buildInfos) {
-        return buildInfoRepositoryService.findAllBuildInfo(buildInfos)
-            .collect(Collectors.toSet())
+        var shuffled = randomService.shuffle(buildInfos);
+
+        return buildInfoRepositoryService.findAllBuildInfo(shuffled)
+            .delayElements(properties.getConcurrentCourtesyPeriod())
+            .collect(Collectors.toList())
             .flatMapMany(buildInfoAwareSet -> {
                 var keyToBuildInfoMap = buildInfoAwareSet.stream()
                     .collect(Collectors.toMap(bia -> getUniqueKey(bia.buildInfo()), Function.identity()));
@@ -35,8 +42,7 @@ public class ProductInfoServiceCoreBuildInfoService {
 
                         return !keyToBuildInfoMap.containsKey(key)
                             || Status.isFailed(keyToBuildInfoMap.get(key).obj())
-                            || keyToBuildInfoMap.get(key).obj() == Status.FINISHED
-                            && !checksumService.isChecksumTheSame(keyToBuildInfoMap.get(key).buildInfo().checksum(), newChecksum);
+                            || !checksumService.isChecksumTheSame(keyToBuildInfoMap.get(key).buildInfo().checksum(), newChecksum);
                     });
 
                 return Flux.fromStream(buildInfosToUpdateSteam);

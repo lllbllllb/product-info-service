@@ -9,10 +9,6 @@ public enum Status {
     INVALID_DATA,
     TERMINATED_IN_PROGRESS;
 
-    public static boolean isTerminal(Status status) {
-        return status != FINISHED;
-    }
-
     public static boolean isFailed(Status status) {
         return status != IN_PROGRESS
             && status != FINISHED;

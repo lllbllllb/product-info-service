@@ -20,11 +20,6 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("product-info-service.core")
 public class ProductInfoServiceCoreConfigurationProperties {
 
-    @NotNull
-    private Duration refreshInterval = Duration.ofHours(1);
-
-    @NotNull
-    private Duration delay = Duration.ofHours(1);
 
     @Pattern(regexp = "^.+(\\.json)$", message = "Only JSON files supported")
     private String targetFileName = "product-info.json";
@@ -40,6 +35,9 @@ public class ProductInfoServiceCoreConfigurationProperties {
 
     @NotNull
     private RetryOptions retryOptions = new RetryOptions();
+
+    @NotNull
+    private Duration concurrentCourtesyPeriod = Duration.ofMillis(20);
 
     @Data
     public static class RetryOptions {

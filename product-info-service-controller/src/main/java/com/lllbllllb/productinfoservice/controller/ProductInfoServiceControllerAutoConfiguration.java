@@ -1,8 +1,5 @@
 package com.lllbllllb.productinfoservice.controller;
 
-import java.time.Clock;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -21,7 +18,9 @@ public class ProductInfoServiceControllerAutoConfiguration {
 
     @Bean
     RouterFunction<ServerResponse> routes(ProductInfoServiceControllerHttpRequestHandler handler) {
-        return route(GET("/status"), handler::getLastBuildInfos)
+        return route(GET("/status"), handler::getStatus)
+            .and(route(GET("/lastBuildsData"), handler::getLastBuildData))
+            .and(route(GET("/activeRoundsData"), handler::getActiveRoundsData))
             .and(route(POST(REFRESH_URL), handler::refresh))
             .and(route(POST(REFRESH_PRODUCT_CODE_URL), handler::refreshByCode))
             .and(route(GET(PRODUCT_CODE_URL), handler::getByProductCode))

@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.lllbllllb.productinfoservice.repository.ProductInfoServiceRepositoryAutoConfiguration
+  com.lllbllllb.productinfoservice.repositorylocal.ProductInfoServiceRepositoryAutoConfiguration

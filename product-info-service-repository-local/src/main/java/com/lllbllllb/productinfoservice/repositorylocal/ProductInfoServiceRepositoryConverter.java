@@ -1,4 +1,4 @@
-package com.lllbllllb.productinfoservice.repository;
+package com.lllbllllb.productinfoservice.repositorylocal;
 
 import java.util.UUID;
 
@@ -9,9 +9,9 @@ import com.lllbllllb.productinfoservice.model.BuildMetadata;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
 import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.Status;
-import com.lllbllllb.productinfoservice.repository.model.BuildInfoDto;
-import com.lllbllllb.productinfoservice.repository.model.ProductInfoDto;
-import com.lllbllllb.productinfoservice.repository.model.RoundDto;
+import com.lllbllllb.productinfoservice.repositorylocal.model.BuildInfoDto;
+import com.lllbllllb.productinfoservice.repositorylocal.model.ProductInfoDto;
+import com.lllbllllb.productinfoservice.repositorylocal.model.RoundDto;
 import io.r2dbc.postgresql.codec.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

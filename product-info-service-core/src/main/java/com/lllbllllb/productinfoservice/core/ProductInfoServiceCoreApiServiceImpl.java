@@ -2,14 +2,15 @@ package com.lllbllllb.productinfoservice.core;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceCoreApiService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
 import com.lllbllllb.productinfoservice.model.Round;
+import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,6 +28,11 @@ public class ProductInfoServiceCoreApiServiceImpl implements ProductInfoServiceC
     @Override
     public Mono<Collection<BuildInfoAware<Round>>> getLastBuildInfos() {
         return reportService.getLastReleasedBuildInfos();
+    }
+
+    @Override
+    public Flux<BuildInfoAware<Pair<Status, Round>>> getActiveRoundsData() {
+        return reportService.getActiveRoundData();
     }
 
     @Override

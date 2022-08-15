@@ -8,6 +8,7 @@ import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
 import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.Status;
+import org.apache.commons.lang3.tuple.Pair;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -28,4 +29,6 @@ public interface ProductInfoServiceRepositoryLocalService {
     Mono<Round> saveRound(Round round);
 
     Flux<BuildInfoAware<Round>> findAllFinishedBuildsByPeriod(Instant from, Instant to);
+
+    Flux<BuildInfoAware<Pair<Status, Round>>> findAllFromActiveRounds();
 }

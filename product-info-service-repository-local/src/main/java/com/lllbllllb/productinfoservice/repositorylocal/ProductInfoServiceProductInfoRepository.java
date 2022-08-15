@@ -1,8 +1,8 @@
-package com.lllbllllb.productinfoservice.repository;
+package com.lllbllllb.productinfoservice.repositorylocal;
 
 import java.util.UUID;
 
-import com.lllbllllb.productinfoservice.repository.model.ProductInfoDto;
+import com.lllbllllb.productinfoservice.repositorylocal.model.ProductInfoDto;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import reactor.core.publisher.Flux;

@@ -3,16 +3,17 @@ package com.lllbllllb.productinfoservice.core;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.Round;
+import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -39,6 +40,10 @@ public class ProductInfoServiceReportService {
                     this::getLatestBuild
                 ))
                 .values());
+    }
+
+    public Flux<BuildInfoAware<Pair<Status, Round>>> getActiveRoundData() {
+        return repositoryLocalService.findAllFromActiveRounds();
     }
 
     private BuildInfoAware<Round> getLatestBuild(BuildInfoAware<Round> first, BuildInfoAware<Round> second) {

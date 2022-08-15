@@ -12,7 +12,7 @@
             scroll: "x",
             body: {
                 rows: [
-                    {template: "Last finished rounds", type: "header"},
+                    {template: "Last builds info", type: "header"},
                     {
                         view: "datatable",
                         columns: [
@@ -26,29 +26,27 @@
                             {id: "roundCratedDate", header: "Last update Date", width: 160},
                             {id: "roundInstanceId", header: "Last update Instance", width: 300}
                         ],
-                        // loading url
                         url: function (params) {
-                            return webix.ajax("/status");
+                            return webix.ajax("/lastBuildsData");
                         },
                         scrollX: false
                     },
-                    {template: "Last product builds", type: "header"},
+                    {template: "Active rounds data", type: "header"},
                     {
                         view: "datatable",
                         columns: [
                             {id: "productCode", header: "Code", width: 80},
                             {id: "productName", header: "Product Name", width: 200},
                             {id: "version", header: "Version", width: 160},
-                            {id: "link", header: "Link", fillspace: true},
-                            {id: "checksum", header: "Checksum", width: 560},
                             {id: "fullNumber", header: "Release Number", width: 120},
+                            {id: "status", header: "Status", width: 220},
+                            {id: "link", header: "Link", fillspace: true},
                             {id: "releaseDate", header: "Release Date", width: 120},
-                            {id: "roundCratedDate", header: "Last update Date", width: 160},
-                            {id: "roundInstanceId", header: "Last update Instance", width: 300}
+                            {id: "roundCratedDate", header: "Started at", width: 160},
+                            {id: "roundInstanceId", header: "Running in instance", width: 300}
                         ],
-                        // loading url
                         url: function (params) {
-                            return webix.ajax("/status");
+                            return webix.ajax("/activeRoundsData");
                         },
                         scrollX: false
                     }

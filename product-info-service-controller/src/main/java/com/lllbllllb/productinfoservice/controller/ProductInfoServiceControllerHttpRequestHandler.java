@@ -1,15 +1,13 @@
 package com.lllbllllb.productinfoservice.controller;
 
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceCoreApiService;
+import com.lllbllllb.productinfoservice.controller.model.FullStatusDto;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
-import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
-import com.lllbllllb.productinfoservice.model.Round;
-import com.lllbllllb.productinfoservice.model.ServiceStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -30,16 +28,33 @@ public class ProductInfoServiceControllerHttpRequestHandler {
 
     private final ProductInfoServiceControllerConverterService converterService;
 
-    public Mono<ServerResponse> homepage(ServerRequest request) {
-
-        return ok().bodyValue("Hello from root!");
+    public Mono<ServerResponse> getStatus(ServerRequest request) {
+        return apiService.getActiveRoundsData()
+            .sort(Comparator.comparing(buildInfoAware -> buildInfoAware.obj().getRight().cratedDate()))
+            .map(converterService::toActiveRoundDataDto)
+            .collectList()
+            .zipWith(apiService.getLastBuildInfos()
+                .map(bia -> bia.stream()
+                    .map(converterService::toBuildInfoDto)
+                    .collect(Collectors.toList())))
+            .map(tuple2 -> new FullStatusDto(tuple2.getT1(), tuple2.getT2()))
+            .flatMap(dto -> ok().bodyValue(dto))
+            .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> getLastBuildInfos(ServerRequest request) {
+    public Mono<ServerResponse> getLastBuildData(ServerRequest request) {
         return apiService.getLastBuildInfos()
             .map(bia -> bia.stream()
-                .map(converterService::toDto)
+                .map(converterService::toBuildInfoDto)
                 .collect(Collectors.toList()))
+            .flatMap(dtos -> ok().bodyValue(dtos));
+    }
+
+    public Mono<ServerResponse> getActiveRoundsData(ServerRequest request) {
+        return apiService.getActiveRoundsData()
+            .sort(Comparator.comparing(buildInfoAware -> buildInfoAware.obj().getRight().cratedDate()))
+            .map(converterService::toActiveRoundDataDto)
+            .collectList()
             .flatMap(dtos -> ok().bodyValue(dtos));
     }
 

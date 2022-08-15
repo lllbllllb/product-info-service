@@ -1,4 +1,4 @@
-package com.lllbllllb.productinfoservice.repository;
+package com.lllbllllb.productinfoservice.repositorylocal;
 
 import java.util.UUID;
 

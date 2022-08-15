@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
+import com.lllbllllb.productinfoservice.ProductInfoServiceBuildInfoRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.Round;
@@ -20,10 +20,10 @@ public class ProductInfoServiceCoreBuildInfoService {
 
     private final ProductInfoServiceCoreChecksumService checksumService;
 
-    private final ProductInfoServiceRepositoryLocalService repositoryService;
+    private final ProductInfoServiceBuildInfoRepositoryService buildInfoRepositoryService;
 
     public Flux<BuildInfo> filterBuildInfosToProceed(List<BuildInfo> buildInfos) {
-        return repositoryService.findAllBuildInfo(buildInfos)
+        return buildInfoRepositoryService.findAllBuildInfo(buildInfos)
             .collect(Collectors.toSet())
             .flatMapMany(buildInfoAwareSet -> {
                 var keyToBuildInfoMap = buildInfoAwareSet.stream()
@@ -48,7 +48,7 @@ public class ProductInfoServiceCoreBuildInfoService {
     }
 
     public Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Round round, Status status) {
-        return repositoryService.saveBuildInfo(buildInfo, round, status);
+        return buildInfoRepositoryService.saveBuildInfo(buildInfo, round, status);
     }
 
     private String getUniqueKey(BuildInfo buildInfo) {

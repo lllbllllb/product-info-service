@@ -59,7 +59,7 @@ public class ProductInfoServiceCoreEtlPipelineService {
             .flatMap(buildInfoAware -> checksumService.validateFileChecksum(buildInfoAware.buildInfo(), buildInfoAware.obj()))
             .flatMap(buildInfoAware -> tarGzService.extractFileFromPath(buildInfoAware.buildInfo(), buildInfoAware.obj()))
             .flatMap(buildInfoAware -> productInfoService.saveProductInfo(buildInfoAware.buildInfo(), buildInfoAware.obj()))
-            .flatMap(buildInfoAware -> finalizeService.finalize(buildInfoAware.buildInfo(), round))
+            .flatMap(buildInfoAware -> finalizeService.finalize(buildInfoAware.buildInfo()))
             .subscribe();
     }
 }

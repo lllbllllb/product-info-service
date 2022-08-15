@@ -4,7 +4,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
+import com.lllbllllb.productinfoservice.ProductInfoServiceBuildInfoRepositoryService;
+import com.lllbllllb.productinfoservice.ProductInfoServiceProductInfoRepositoryService;
+import com.lllbllllb.productinfoservice.ProductInfoServiceRoundRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
@@ -20,7 +22,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class ProductInfoServiceRepositoryLocalServiceImpl implements ProductInfoServiceRepositoryLocalService {
+public class ProductInfoServiceRepositoryLocalServiceImpl
+    implements ProductInfoServiceBuildInfoRepositoryService, ProductInfoServiceProductInfoRepositoryService, ProductInfoServiceRoundRepositoryService {
 
     private final ProductInfoServiceBuildInfoRepository buildInfoRepository;
 
@@ -41,6 +44,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl implements ProductInfo
         return buildInfoRepository.findById(buildInfoId)
             .map(dto -> {
                 dto.setStatus(status);
+                dto.setRoundId(roundId);
                 return dto;
             })
             .defaultIfEmpty(converter.toDto(buildInfo, status, roundId))

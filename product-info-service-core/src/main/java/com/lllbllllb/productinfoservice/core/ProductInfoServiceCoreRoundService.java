@@ -2,7 +2,7 @@ package com.lllbllllb.productinfoservice.core;
 
 import java.time.Clock;
 
-import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
+import com.lllbllllb.productinfoservice.ProductInfoServiceRoundRepositoryService;
 import com.lllbllllb.productinfoservice.model.Round;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class ProductInfoServiceCoreRoundService {
 
     private final ProductInfoServiceCoreInstanceService instanceService;
 
-    private final ProductInfoServiceRepositoryLocalService repositoryLocalService;
+    private final ProductInfoServiceRoundRepositoryService roundRepositoryService;
 
     private final Clock clock;
 
@@ -23,6 +23,6 @@ public class ProductInfoServiceCoreRoundService {
         var createdDate = clock.instant();
         var round = new Round(instanceId, createdDate);
 
-        return repositoryLocalService.saveRound(round);
+        return roundRepositoryService.saveRound(round);
     }
 }

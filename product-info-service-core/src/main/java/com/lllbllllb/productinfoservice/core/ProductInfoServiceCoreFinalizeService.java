@@ -1,10 +1,9 @@
 package com.lllbllllb.productinfoservice.core;
 
-import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
+import com.lllbllllb.productinfoservice.ProductInfoServiceBuildInfoRepositoryService;
 import com.lllbllllb.productinfoservice.core.model.CleanupPolicy;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
-import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,14 +17,14 @@ public class ProductInfoServiceCoreFinalizeService {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
-    private final ProductInfoServiceRepositoryLocalService repositoryService;
+    private final ProductInfoServiceBuildInfoRepositoryService buildInfoRepositoryService;
 
-    public Mono<BuildInfoAware<Boolean>> finalize(BuildInfo buildInfo, Round round) {
+    public Mono<BuildInfoAware<Boolean>> finalize(BuildInfo buildInfo) {
         return finalize(buildInfo, Status.FINISHED);
     }
 
     public Mono<BuildInfoAware<Boolean>> finalize(BuildInfo buildInfo, Status status) {
-        return repositoryService.updateBuildInfo(buildInfo, status)
+        return buildInfoRepositoryService.updateBuildInfo(buildInfo, status)
             .flatMap(bia -> {
                 if (CleanupPolicy.ALL == properties.getCleanupPolicy()) {
                     return fileService.deleteFile(buildInfo)

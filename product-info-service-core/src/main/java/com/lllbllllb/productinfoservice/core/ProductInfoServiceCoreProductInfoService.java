@@ -1,6 +1,6 @@
 package com.lllbllllb.productinfoservice.core;
 
-import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
+import com.lllbllllb.productinfoservice.ProductInfoServiceProductInfoRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
@@ -13,17 +13,17 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductInfoServiceCoreProductInfoService {
 
-    private final ProductInfoServiceRepositoryLocalService repositoryService;
+    private final ProductInfoServiceProductInfoRepositoryService productInfoRepositoryService;
 
     public Mono<BuildInfoAware<ProductInfo>> saveProductInfo(BuildInfo buildInfo, byte[] productInfo) {
-        return repositoryService.saveProductInfo(buildInfo, productInfo);
+        return productInfoRepositoryService.saveProductInfo(buildInfo, productInfo);
     }
 
     public Flux<ProductInfo> findByCode(String productCode) {
-        return repositoryService.findProductInfoByProductCode(productCode);
+        return productInfoRepositoryService.findProductInfoByProductCode(productCode);
     }
 
     public Mono<ProductInfo> findByCodeAndNumber(String productCode, String fullNumber) {
-        return repositoryService.findProductInfoByProductCodeAndFullNumber(productCode, fullNumber);
+        return productInfoRepositoryService.findProductInfoByProductCodeAndFullNumber(productCode, fullNumber);
     }
 }

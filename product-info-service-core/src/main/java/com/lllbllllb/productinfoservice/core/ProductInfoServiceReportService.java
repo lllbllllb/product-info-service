@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryLocalService;
+import com.lllbllllb.productinfoservice.ProductInfoServiceBuildInfoRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.Status;
@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductInfoServiceReportService {
 
-    private final ProductInfoServiceRepositoryLocalService repositoryLocalService;
+    private final ProductInfoServiceBuildInfoRepositoryService buildInfoRepositoryService;
 
     private final Clock clock;
 
@@ -31,7 +31,7 @@ public class ProductInfoServiceReportService {
         var now = clock.instant();
         var from = ZonedDateTime.now(clock).minus(period).toInstant();
 
-        return repositoryLocalService.findAllFinishedBuildsByPeriod(from, now)
+        return buildInfoRepositoryService.findAllFinishedBuildsByPeriod(from, now)
             .collectList()
             .map(builds -> builds.stream()
                 .collect(Collectors.toMap(
@@ -43,7 +43,7 @@ public class ProductInfoServiceReportService {
     }
 
     public Flux<BuildInfoAware<Pair<Status, Round>>> getActiveRoundData() {
-        return repositoryLocalService.findAllFromActiveRounds();
+        return buildInfoRepositoryService.findAllFromActiveRounds();
     }
 
     private BuildInfoAware<Round> getLatestBuild(BuildInfoAware<Round> first, BuildInfoAware<Round> second) {

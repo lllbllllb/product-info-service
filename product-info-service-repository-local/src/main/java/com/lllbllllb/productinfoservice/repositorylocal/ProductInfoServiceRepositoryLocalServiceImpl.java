@@ -1,7 +1,6 @@
 package com.lllbllllb.productinfoservice.repositorylocal;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceBuildInfoRepositoryService;
@@ -82,13 +81,10 @@ public class ProductInfoServiceRepositoryLocalServiceImpl
     }
 
     @Transactional(readOnly = true)
-    @Override
-    public Flux<BuildInfoAware<Status>> findAllBuildInfo(List<BuildInfo> buildInfos) {
-        var ids = buildInfos.stream()
-            .map(idProvider::getBuildInfoId)
-            .toList();
+    public Mono<BuildInfoAware<Status>> findBuildInfo(BuildInfo buildInfo) {
+        var id = idProvider.getBuildInfoId(buildInfo);
 
-        return buildInfoRepository.findAllById(ids)
+        return buildInfoRepository.findById(id)
             .map(converter::fromDto);
     }
 

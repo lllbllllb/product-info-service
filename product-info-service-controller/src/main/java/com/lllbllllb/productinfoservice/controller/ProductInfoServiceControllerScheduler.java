@@ -2,8 +2,8 @@ package com.lllbllllb.productinfoservice.controller;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceCoreApiService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 
 @Service
 @RequiredArgsConstructor
@@ -11,11 +11,11 @@ public class ProductInfoServiceControllerScheduler {
 
     private final ProductInfoServiceCoreApiService apiService;
 
-    private final ProductInfoServiceControllerConfigurationProperties properties;
-
+    @Scheduled(
+        initialDelayString = "#{@productInfoServiceControllerConfigurationProperties.roundDelay}",
+        fixedDelayString = "#{@productInfoServiceControllerConfigurationProperties.roundInterval}"
+    )
     public void init() {
-        Flux.interval(properties.getRoundDelay(), properties.getRoundInterval())
-            .concatMap(ignore -> apiService.refreshAll())
-            .subscribe();
+        apiService.refreshAll().subscribe();
     }
 }

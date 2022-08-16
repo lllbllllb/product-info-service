@@ -1,7 +1,6 @@
 package com.lllbllllb.productinfoservice;
 
 import java.time.Instant;
-import java.util.List;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
@@ -17,7 +16,7 @@ public interface ProductInfoServiceBuildInfoRepositoryService {
 
     Mono<BuildInfoAware<Status>> updateBuildInfo(BuildInfo buildInfo, Status status);
 
-    Flux<BuildInfoAware<Status>> findAllBuildInfo(List<BuildInfo> buildInfos);
+    Mono<BuildInfoAware<Status>> findBuildInfo(BuildInfo buildInfo);
 
     Flux<BuildInfoAware<Round>> findAllFinishedBuildsByPeriod(Instant from, Instant to);
 

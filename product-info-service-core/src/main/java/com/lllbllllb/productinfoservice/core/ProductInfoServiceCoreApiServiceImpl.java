@@ -1,10 +1,8 @@
 package com.lllbllllb.productinfoservice.core;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceCoreApiService;
-import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
 import com.lllbllllb.productinfoservice.model.Round;
@@ -46,12 +44,12 @@ public class ProductInfoServiceCoreApiServiceImpl implements ProductInfoServiceC
     }
 
     @Override
-    public Mono<List<BuildInfo>> refreshAll() {
+    public Flux<BuildInfoAware<Round>> refreshAll() {
         return mainFlowService.startRound();
     }
 
     @Override
-    public Mono<List<BuildInfo>> refreshByCode(String productCode) {
+    public Flux<BuildInfoAware<Round>> refreshByCode(String productCode) {
         return mainFlowService.startRound(productCode);
     }
 }

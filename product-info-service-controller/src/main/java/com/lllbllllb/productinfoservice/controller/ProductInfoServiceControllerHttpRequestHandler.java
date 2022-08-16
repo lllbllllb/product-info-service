@@ -1,15 +1,12 @@
 package com.lllbllllb.productinfoservice.controller;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceCoreApiService;
 import com.lllbllllb.productinfoservice.controller.model.FullStatusDto;
-import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -81,17 +78,20 @@ public class ProductInfoServiceControllerHttpRequestHandler {
     }
 
     public Mono<ServerResponse> refresh(ServerRequest request) {
-        var tr = new ParameterizedTypeReference<List<BuildInfo>>() {
-        };
-
-        return ok().body(apiService.refreshAll(), tr);
+        return apiService.refreshAll()
+            .map(converterService::toBuildInfoDto)
+            .collectList()
+            .flatMap(dtos -> ok().bodyValue(dtos))
+            .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> refreshByCode(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
-        var tr = new ParameterizedTypeReference<List<BuildInfo>>() {
-        };
 
-        return ok().body(apiService.refreshByCode(productCode), tr);
+        return apiService.refreshByCode(productCode)
+            .map(converterService::toBuildInfoDto)
+            .collectList()
+            .flatMap(dtos -> ok().bodyValue(dtos))
+            .switchIfEmpty(ServerResponse.notFound().build());
     }
 }

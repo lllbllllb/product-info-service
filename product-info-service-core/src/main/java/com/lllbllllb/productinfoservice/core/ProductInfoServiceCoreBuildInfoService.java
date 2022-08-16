@@ -1,8 +1,6 @@
 package com.lllbllllb.productinfoservice.core;
 
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceBuildInfoRepositoryService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
@@ -29,24 +27,11 @@ public class ProductInfoServiceCoreBuildInfoService {
     public Flux<BuildInfo> filterBuildInfosToProceed(List<BuildInfo> buildInfos) {
         var shuffled = randomService.shuffle(buildInfos);
 
-        return buildInfoRepositoryService.findAllBuildInfo(shuffled)
+        return Flux.fromIterable(shuffled)
             .delayElements(properties.getConcurrentCourtesyPeriod())
-            .collect(Collectors.toList())
-            .flatMapMany(buildInfoAwareSet -> {
-                var keyToBuildInfoMap = buildInfoAwareSet.stream()
-                    .collect(Collectors.toMap(bia -> getUniqueKey(bia.buildInfo()), Function.identity()));
-                var buildInfosToUpdateSteam = buildInfos.stream()
-                    .filter(buildInfo -> {
-                        var key = getUniqueKey(buildInfo);
-                        var newChecksum = buildInfo.checksum();
-
-                        return !keyToBuildInfoMap.containsKey(key)
-                            || Status.isFailed(keyToBuildInfoMap.get(key).obj())
-                            || !checksumService.isChecksumTheSame(keyToBuildInfoMap.get(key).buildInfo().checksum(), newChecksum);
-                    });
-
-                return Flux.fromStream(buildInfosToUpdateSteam);
-            });
+            .filterWhen(buildInfo -> buildInfoRepositoryService.findBuildInfo(buildInfo)
+                .map(bia -> Status.isFailed(bia.obj()) || !checksumService.isChecksumTheSame(bia.buildInfo().checksum(), buildInfo.checksum()))
+                .defaultIfEmpty(true));
     }
 
     public Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Round round) {
@@ -55,11 +40,5 @@ public class ProductInfoServiceCoreBuildInfoService {
 
     public Mono<BuildInfoAware<Status>> saveBuildInfo(BuildInfo buildInfo, Round round, Status status) {
         return buildInfoRepositoryService.saveBuildInfo(buildInfo, round, status);
-    }
-
-    private String getUniqueKey(BuildInfo buildInfo) {
-        var metadata = buildInfo.buildMetadata();
-
-        return String.format("%s-%s", metadata.productCode(), metadata.fullNumber());
     }
 }

@@ -24,7 +24,14 @@ public class ProductInfoServiceCoreFileService {
         var metadata = buildInfo.buildMetadata();
         var start = clock.instant().toEpochMilli();
 
-        return "%s_%s_%s_%s_%s.tar.gz".formatted(metadata.productName(), metadata.releaseDate(), metadata.fullNumber(), buildInfo.checksum(), start);
+        return "%s_%s_%s_%s_%s_%s.tar.gz".formatted(
+            metadata.productName(),
+            metadata.productCode(),
+            metadata.releaseDate(),
+            metadata.fullNumber(),
+            buildInfo.checksum(),
+            start
+        );
     }
 
     public Path getPath(BuildInfo buildInfo) {

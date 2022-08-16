@@ -5,12 +5,11 @@ import java.util.logging.Level;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryRemoteService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.Round;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
 @Service
 @RequiredArgsConstructor
@@ -34,20 +33,21 @@ public class ProductInfoServiceCoreEtlPipelineService {
 
     private final ProductInfoServiceCoreRoundService roundService;
 
-    public Mono<List<BuildInfo>> startRound() {
+    public Flux<BuildInfoAware<Round>> startRound() {
         return process(repositoryRemoteService.getAllBuildInfo());
     }
 
-    public Mono<List<BuildInfo>> startRound(String productCode) {
+    public Flux<BuildInfoAware<Round>> startRound(String productCode) {
         return process(repositoryRemoteService.getBuildInfoByProductCode(productCode));
     }
 
-    private Mono<List<BuildInfo>> process(Flux<BuildInfo> stream) {
+    private Flux<BuildInfoAware<Round>> process(Flux<BuildInfo> stream) {
         return stream.collectList()
             .log(this.getClass().getName(), Level.FINE)
             .zipWith(roundService.createRound())
             .doOnNext(tuple2 -> fireAndForget(tuple2.getT1(), tuple2.getT2()))
-            .map(Tuple2::getT1);
+            .flatMapMany(tuple2 -> Flux.fromIterable(tuple2.getT1())
+                .map(buildInfo -> new BuildInfoAware<>(buildInfo, tuple2.getT2())));
     }
 
     private void fireAndForget(List<BuildInfo> buildInfos, Round round) {

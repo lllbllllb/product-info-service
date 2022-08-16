@@ -1,9 +1,7 @@
 package com.lllbllllb.productinfoservice;
 
 import java.util.Collection;
-import java.util.List;
 
-import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
 import com.lllbllllb.productinfoservice.model.Round;
@@ -22,7 +20,7 @@ public interface ProductInfoServiceCoreApiService {
 
     Mono<ProductInfo> findProductInfoByCodeAndNumber(String productCode, String fullNumber);
 
-    Mono<List<BuildInfo>> refreshAll();
+    Flux<BuildInfoAware<Round>> refreshAll();
 
-    Mono<List<BuildInfo>> refreshByCode(String productCode);
+    Flux<BuildInfoAware<Round>> refreshByCode(String productCode);
 }

@@ -18,10 +18,10 @@ import org.springframework.validation.annotation.Validated;
 public class ProductInfoServiceRepositoryRemoteConfigurationProperties {
 
 
-    @Pattern(regexp = "^(http|https)://.+(\\.xml)$", message = "Invalid http link")
+    @Pattern(regexp = "^((http|https)://)?.+(\\.xml)$", message = "Invalid http link")
     private String updatesXmlUrl = "https://www.jetbrains.com/updates/updates.xml";
 
-    @Pattern(regexp = "^(http|https)://.+$", message = "Invalid http link")
+    @Pattern(regexp = "^((http|https)://)?.+$", message = "Invalid http link")
     private String releasesCodeUrl = "https://data.services.jetbrains.com/products/releases";
 
     @NotBlank

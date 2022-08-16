@@ -1,0 +1,40 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
+    username: ${embedded.postgresql.user}
+    password: ${embedded.postgresql.password}
+  liquibase:
+    url: jdbc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
+    user: ${embedded.postgresql.user}
+    password: ${embedded.postgresql.password}
+#logging:
+#  level:
+#    org.springframework.data.r2dbc: DEBUG
+#    com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreEtlPipelineService: TRACE
+#    io.r2dbc.postgresql.QUERY: DEBUG
+#    io.r2dbc.postgresql.PARAM: DEBUG
+
+eureka:
+  client:
+    enabled: false
+
+product-info-service:
+  core:
+    path-to-save-tmp: tmp
+    cleanup-policy: all
+    concurrent-courtesy-period: 1s
+    target-file-name: product-info.json
+    report-period: 1y
+    retry-options:
+      max-attempts: 1
+      min-backoff: 1s
+  controller:
+    round-delay: 24h
+    round-interval: 24h
+    local-scheduled: false
+  repository:
+    remote:
+      updates-xml-url: /updates/updates.xml
+      releases-code-url: /products/releases
+      linux-distro-key: linux
+      build-max-age: 1y

@@ -10,6 +10,7 @@ import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceCont
 import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.PRODUCT_CODE_URL;
 import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.REFRESH_PRODUCT_CODE_URL;
 import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.REFRESH_URL;
+import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.STATUS_URL;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
@@ -20,7 +21,7 @@ public class ProductInfoServiceControllerAutoConfiguration {
 
     @Bean
     RouterFunction<ServerResponse> routes(ProductInfoServiceControllerHttpRequestHandler handler) {
-        return route(GET("/status"), handler::getStatus)
+        return route(GET(STATUS_URL), handler::getStatus)
             .and(route(GET("/lastBuildsData"), handler::getLastBuildData))
             .and(route(GET("/activeRoundsData"), handler::getActiveRoundsData))
             .and(route(POST(REFRESH_URL), handler::refresh))

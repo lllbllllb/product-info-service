@@ -16,5 +16,7 @@ public final class ProductInfoServiceControllerHttpRoutes {
 
     public static final String REFRESH_URL = "/refresh";
 
+    public static final String STATUS_URL = "/status";
+
     public static final String REFRESH_PRODUCT_CODE_URL = String.format("%s%s", REFRESH_URL, PRODUCT_CODE_URL);
 }

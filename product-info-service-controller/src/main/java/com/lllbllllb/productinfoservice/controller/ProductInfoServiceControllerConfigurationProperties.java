@@ -20,4 +20,6 @@ public class ProductInfoServiceControllerConfigurationProperties {
 
     @NotNull
     private Duration roundDelay = Duration.ofHours(1);
+
+    private boolean localScheduled = true;
 }

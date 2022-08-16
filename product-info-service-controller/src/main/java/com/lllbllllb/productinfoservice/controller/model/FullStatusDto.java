@@ -1,10 +1,10 @@
 package com.lllbllllb.productinfoservice.controller.model;
 
-import java.util.Collection;
+import java.util.List;
 
 public record FullStatusDto(
-    Collection<ActiveRoundDataDto> activeRoundsData,
-    Collection<BuildInfoDto> lastBuildsInfo
+    List<ActiveRoundDataDto> activeRoundsData,
+    List<BuildInfoDto> lastBuildsInfo
 ) {
 
 }

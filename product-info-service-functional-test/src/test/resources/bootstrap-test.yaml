@@ -1,0 +1,4 @@
+embedded:
+  postgresql:
+    enabled: true
+    docker-image: postgres:14.1

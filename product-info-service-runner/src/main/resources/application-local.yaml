@@ -18,7 +18,7 @@ product-info-service:
   core:
     path-to-save-tmp: C:\Users\mrmbl\Downloads\testjb
     cleanup-policy: none
-    concurrent-courtesy-period: 1s
+    concurrent-courtesy-period: 2s
   controller:
-    round-delay: 6s
-    round-interval: 4s
+    round-delay: 24h
+    round-interval: 24h

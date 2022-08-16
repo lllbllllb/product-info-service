@@ -11,11 +11,15 @@ public class ProductInfoServiceControllerScheduler {
 
     private final ProductInfoServiceCoreApiService apiService;
 
+    private final ProductInfoServiceControllerConfigurationProperties properties;
+
     @Scheduled(
         initialDelayString = "#{@productInfoServiceControllerConfigurationProperties.roundDelay}",
         fixedDelayString = "#{@productInfoServiceControllerConfigurationProperties.roundInterval}"
     )
     public void init() {
-        apiService.refreshAll().subscribe();
+        if (properties.isLocalScheduled()) {
+            apiService.refreshAll().subscribe();
+        }
     }
 }

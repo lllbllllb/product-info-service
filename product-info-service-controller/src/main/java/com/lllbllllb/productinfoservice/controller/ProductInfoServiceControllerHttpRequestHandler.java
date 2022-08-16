@@ -8,13 +8,13 @@ import com.lllbllllb.productinfoservice.controller.model.FullStatusDto;
 import com.lllbllllb.productinfoservice.model.ProductInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.BUILD_NUMBER;
 import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.PRODUCT_CODE;
-import static org.springframework.http.HttpHeaders.LAST_MODIFIED;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Service
@@ -35,8 +35,7 @@ public class ProductInfoServiceControllerHttpRequestHandler {
                     .map(converterService::toBuildInfoDto)
                     .collect(Collectors.toList())))
             .map(tuple2 -> new FullStatusDto(tuple2.getT1(), tuple2.getT2()))
-            .flatMap(dto -> ok().bodyValue(dto))
-            .switchIfEmpty(ServerResponse.notFound().build());
+            .flatMap(dto -> ok().bodyValue(dto));
     }
 
     public Mono<ServerResponse> getLastBuildData(ServerRequest request) {
@@ -61,6 +60,7 @@ public class ProductInfoServiceControllerHttpRequestHandler {
         return apiService.findProductInfoByCode(productCode)
             .map(ProductInfo::productInfoFile)
             .collectList()
+            .filter(res -> !CollectionUtils.isEmpty(res))
             .flatMap(file -> ok().bodyValue(file))
             .switchIfEmpty(ServerResponse.notFound().build());
     }
@@ -70,10 +70,7 @@ public class ProductInfoServiceControllerHttpRequestHandler {
         var buildNumber = request.pathVariable(BUILD_NUMBER);
 
         return apiService.findProductInfoByCodeAndNumber(productCode, buildNumber)
-            .flatMap(productInfo -> ok()
-                .header(LAST_MODIFIED, Long.toString(productInfo.updatedDate().toEpochMilli()))
-                .bodyValue(productInfo.productInfoFile())
-            )
+            .flatMap(productInfo -> ok().bodyValue(productInfo.productInfoFile()))
             .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -81,8 +78,8 @@ public class ProductInfoServiceControllerHttpRequestHandler {
         return apiService.refreshAll()
             .map(converterService::toBuildInfoDto)
             .collectList()
-            .flatMap(dtos -> ok().bodyValue(dtos))
-            .switchIfEmpty(ServerResponse.notFound().build());
+            .filter(res -> !CollectionUtils.isEmpty(res))
+            .flatMap(dtos -> ok().bodyValue(dtos));
     }
 
     public Mono<ServerResponse> refreshByCode(ServerRequest request) {
@@ -91,7 +88,7 @@ public class ProductInfoServiceControllerHttpRequestHandler {
         return apiService.refreshByCode(productCode)
             .map(converterService::toBuildInfoDto)
             .collectList()
-            .flatMap(dtos -> ok().bodyValue(dtos))
-            .switchIfEmpty(ServerResponse.notFound().build());
+            .filter(res -> !CollectionUtils.isEmpty(res))
+            .flatMap(dtos -> ok().bodyValue(dtos));
     }
 }

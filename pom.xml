@@ -21,11 +21,13 @@
         <revision>0.0.1-SNAPSHOT</revision>
         <java.version>17</java.version>
         <spring-cloud.version>2021.0.3</spring-cloud.version>
-        <testcontainers.version>1.17.3</testcontainers.version>
+        <embedded-postgresql.version>2.2.5</embedded-postgresql.version>
         <mojo.build.helper.plugin.version>3.2.0</mojo.build.helper.plugin.version>
         <flatten.maven.plugin.version>1.2.2</flatten.maven.plugin.version>
         <guava.version>31.1-jre</guava.version>
         <commons-compress.version>1.21</commons-compress.version>
+        <rest-assured.version>5.1.1</rest-assured.version>
+        <testcontainers.version>2.1.8</testcontainers.version>
     </properties>
 
     <modules>
@@ -36,6 +38,7 @@
         <module>product-info-service-repository-local</module>
         <module>product-info-service-controller</module>
         <module>product-info-service-repository-remote</module>
+        <module>product-info-service-functional-test</module>
     </modules>
 
     <dependencyManagement>
@@ -47,13 +50,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers-bom</artifactId>
-                <version>${testcontainers.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
 
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -61,6 +57,12 @@
                 <version>${commons-compress.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.lllbllllb</groupId>
+                <artifactId>product-info-service-runner</artifactId>
+                <version>${revision}</version>
+                <classifier>original</classifier>
+            </dependency>
             <dependency>
                 <groupId>com.lllbllllb</groupId>
                 <artifactId>product-info-service-core</artifactId>
@@ -90,6 +92,29 @@
                 <groupId>com.lllbllllb</groupId>
                 <artifactId>product-info-service-repository-remote</artifactId>
                 <version>${revision}</version>
+            </dependency>
+
+            <!-- test -->
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>${rest-assured.version}</version>
+                <exclusions><!-- https://www.baeldung.com/maven-version-collision -->
+                    <exclusion>
+                        <groupId>org.apache.groovy</groupId>
+                        <artifactId>groovy</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.groovy</groupId>
+                        <artifactId>groovy-xml</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.playtika.testcontainers</groupId>
+                <artifactId>embedded-postgresql</artifactId>
+                <version>${embedded-postgresql.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -1,4 +1,4 @@
-package com.lllbllllb.productinfoservice.core;
+    package com.lllbllllb.productinfoservice.core;
 
 import java.time.Clock;
 

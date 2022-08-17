@@ -5,6 +5,7 @@ import java.nio.file.Path;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -28,7 +29,7 @@ public class ProductInfoServiceCoreChecksumService {
             .subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<BuildInfoAware<Path>> validateFileChecksum(BuildInfo buildInfo, Path path) {
+    public Mono<BuildInfoAware<Path>> validateFileChecksum(BuildInfo buildInfo, Path path, Round round) {
         return getActualChecksum(path)
             .handle((actualChecksum, sink) -> {
                 var expectedChecksum = buildInfo.checksum();
@@ -36,7 +37,7 @@ public class ProductInfoServiceCoreChecksumService {
                 if (isChecksumTheSame(expectedChecksum, actualChecksum)) {
                     sink.next(new BuildInfoAware<>(buildInfo, path));
                 } else {
-                    finalizeService.finalize(buildInfo, Status.INVALID_CHECKSUM)
+                    finalizeService.finalize(buildInfo, Status.INVALID_CHECKSUM, round)
                         .subscribe();
                 }
             });

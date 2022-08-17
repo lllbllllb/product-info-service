@@ -16,7 +16,7 @@ import org.springframework.validation.annotation.Validated;
 public class ProductInfoServiceControllerConfigurationProperties {
 
     @NotNull
-    private Duration roundInterval = Duration.ofHours(1);
+    private Duration roundInterval = Duration.ofMinutes(1);
 
     @NotNull
     private Duration roundDelay = Duration.ofHours(1);

@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.reactivestreams.Publisher;
@@ -20,12 +21,11 @@ public class ProductInfoServiceCoreFileCacheService {
 
     private final ProductInfoServiceCoreFailureService failureService;
 
-    public Mono<BuildInfoAware<Path>> writeToFile(BuildInfo buildInfo, Publisher<DataBuffer> dataBufferPublisher) {
-        var path = fileService.getPath(buildInfo);
-
-        return DataBufferUtils.write(dataBufferPublisher, path)
-            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.FAILED_WRITE_TO_FILE, Mono.empty()))
-            .thenReturn(new BuildInfoAware<>(buildInfo, path));
+    public Mono<BuildInfoAware<Path>> writeToFile(BuildInfo buildInfo, Publisher<DataBuffer> dataBufferPublisher, Round round) {
+        return fileService.getPath(buildInfo, round)
+            .flatMap(path -> DataBufferUtils.write(dataBufferPublisher, path)
+                .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.FAILED_WRITE_TO_FILE, round, Mono.empty()))
+                .thenReturn(new BuildInfoAware<>(buildInfo, path)));
     }
 
 }

@@ -2,9 +2,9 @@ package com.lllbllllb.productinfoservice.core;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Clock;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
+import com.lllbllllb.productinfoservice.model.Round;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -18,11 +18,8 @@ public class ProductInfoServiceCoreFileService {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
-    private final Clock clock;
-
-    public String getName(BuildInfo buildInfo) {
+    public String getName(BuildInfo buildInfo, Round round) {
         var metadata = buildInfo.buildMetadata();
-        var start = clock.instant().toEpochMilli();
 
         return "%s_%s_%s_%s_%s_%s.tar.gz".formatted(
             metadata.productName(),
@@ -30,24 +27,24 @@ public class ProductInfoServiceCoreFileService {
             metadata.releaseDate(),
             metadata.fullNumber(),
             buildInfo.checksum(),
-            start
+            round.instanceId()
         );
     }
 
-    public Path getPath(BuildInfo buildInfo) {
-        var fileName = getName(buildInfo);
+    public Mono<Path> getPath(BuildInfo buildInfo, Round round) {
+        var fileName = getName(buildInfo, round);
 
-        return Path.of(properties.getPathToSaveTmp(), fileName);
+        return Mono.fromCallable(() -> Files.createDirectories(Path.of(properties.getPathToSaveTmp())))
+            .subscribeOn(Schedulers.boundedElastic())
+            .map(path -> path.resolve(fileName));
     }
 
-    public Mono<Long> getFileSize(BuildInfo buildInfo) {
-        var path = getPath(buildInfo);
-
-        return getFileSize(path);
+    public Mono<Long> getFileSize(BuildInfo buildInfo, Round round) {
+        return getPath(buildInfo, round)
+            .flatMap(this::getFileSize);
     }
 
     public Mono<Long> getFileSize(Path path) {
-
         if (isFileExists(path)) {
             return Mono.fromCallable(() -> Files.size(path))
                 .subscribeOn(Schedulers.boundedElastic());
@@ -60,10 +57,9 @@ public class ProductInfoServiceCoreFileService {
         return Files.exists(path);
     }
 
-    public Mono<Boolean> deleteFile(BuildInfo buildInfo) {
-        var path = getPath(buildInfo);
-
-        return deleteFile(path);
+    public Mono<Boolean> deleteFile(BuildInfo buildInfo, Round round) {
+        return getPath(buildInfo, round)
+            .flatMap(this::deleteFile);
     }
 
     public Mono<Boolean> deleteFile(Path path) {

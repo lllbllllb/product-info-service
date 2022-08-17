@@ -1,24 +1,8 @@
-spring:
-  r2dbc:
-    url: r2dbc:postgresql://localhost:5433/authservice
-    username: postgres
-    password: password
-  liquibase:
-    url: jdbc:postgresql://localhost:5433/authservice
-    user: postgres
-    password: password
-
-
-logging:
-  level:
-    com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreEtlPipelineService: TRACE
-#    io.r2dbc.postgresql.QUERY: DEBUG
-#    io.r2dbc.postgresql.PARAM: DEBUG
 product-info-service:
   core:
-    path-to-save-tmp: C:\Users\mrmbl\Downloads\testjb
+    path-to-save-tmp: C:\blackhole
     cleanup-policy: none
-    concurrent-courtesy-period: 2s
+    concurrent-courtesy-period: 20ms
   controller:
     round-delay: 24h
     round-interval: 24h

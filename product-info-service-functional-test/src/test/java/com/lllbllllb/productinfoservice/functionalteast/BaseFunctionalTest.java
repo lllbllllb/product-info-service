@@ -3,13 +3,17 @@ package com.lllbllllb.productinfoservice.functionalteast;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lllbllllb.productinfoservice.ProductInfoServiceApplication;
+import com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreConfigurationProperties;
 import com.lllbllllb.productinfoservice.repositorylocal.ProductInfoServiceBuildInfoRepository;
 import com.lllbllllb.productinfoservice.repositorylocal.ProductInfoServiceProductInfoRepository;
 import com.lllbllllb.productinfoservice.repositorylocal.ProductInfoServiceRoundRepository;
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,18 +53,33 @@ public abstract class BaseFunctionalTest {
     @Autowired
     protected ProductInfoServiceRoundRepository roundRepository;
 
+    @Autowired
+    protected ProductInfoServiceCoreConfigurationProperties coreConfigurationProperties;
+
     @LocalServerPort
     protected int localServerPort;
 
     @BeforeEach
     public void setUp() {
         RestAssured.port = localServerPort;
+        clearAllTables();
+    }
+
+    @AfterEach
+    public void cleanUp() throws Exception {
+        deleteTmpDir();
     }
 
     protected void clearAllTables() {
         buildInfoRepository.deleteAll().block();
         productInfoRepository.deleteAll().block();
         roundRepository.deleteAll().block();
+    }
+
+    protected void deleteTmpDir() throws Exception {
+        var path = Path.of(coreConfigurationProperties.getPathToSaveTmp());
+
+        Files.deleteIfExists(path);
     }
 
     protected Resource loadResource(String name) {

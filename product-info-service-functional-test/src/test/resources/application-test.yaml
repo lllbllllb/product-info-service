@@ -22,8 +22,8 @@ eureka:
 
 product-info-service:
   core:
-    path-to-save-tmp: C:\Users\mrmbl\Downloads\testjb
-    cleanup-policy: none
+    path-to-save-tmp: blackhole
+    cleanup-policy: all
     concurrent-courtesy-period: 0
     target-file-name: product-info.json
     report-period: 1y

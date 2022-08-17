@@ -8,6 +8,7 @@ import java.nio.file.Path;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -32,9 +33,9 @@ public class ProductInfoServiceCoreTarGzService {
 
     private final ProductInfoServiceCoreFailureService failureService;
 
-    public Mono<BuildInfoAware<byte[]>> extractFileFromPath(BuildInfo buildInfo, Path path) {
+    public Mono<BuildInfoAware<byte[]>> extractFileFromPath(BuildInfo buildInfo, Path path, Round round) {
         return extractFileFromPath(path)
-            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.INVALID_DATA, Mono.empty()))
+            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.INVALID_DATA, round, Mono.empty()))
             .map(bytes -> new BuildInfoAware<>(buildInfo, bytes));
     }
 

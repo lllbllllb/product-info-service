@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.lllbllllb.productinfoservice.model.Status;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 
@@ -16,17 +14,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public class ProductInfoServiceGetByCodeHappyPathFunctionalTest extends BaseFunctionalTest {
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        clearAllTables();
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        clearAllTables();
-    }
 
     @Test
     void shouldReturnStatus() throws Exception {

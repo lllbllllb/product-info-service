@@ -12,8 +12,6 @@ import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.lllbllllb.productinfoservice.controller.model.BuildInfoDto;
 import org.apache.commons.text.StringSubstitutor;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
@@ -37,17 +35,6 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static org.springframework.http.MediaType.TEXT_XML_VALUE;
 
 public class ProductInfoServiceRefreshByCodeHappyPathFunctionalTest extends BaseFunctionalTest {
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        clearAllTables();
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        clearAllTables();
-    }
 
     @Test
     void shouldRefresh() {

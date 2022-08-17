@@ -4,5 +4,11 @@ server:
 spring:
   codec:
     max-in-memory-size: 1MB
-  lifecycle:
-    timeout-per-shutdown-phase: 1m
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/productinfoservice
+    username: postgres
+    password: password
+  liquibase:
+    url: jdbc:postgresql://localhost:5433/productinfoservice
+    user: postgres
+    password: password

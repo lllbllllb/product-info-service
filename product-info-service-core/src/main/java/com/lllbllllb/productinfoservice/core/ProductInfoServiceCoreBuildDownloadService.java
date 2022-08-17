@@ -5,6 +5,7 @@ import java.util.logging.Level;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
+import com.lllbllllb.productinfoservice.model.Round;
 import com.lllbllllb.productinfoservice.model.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -30,8 +31,8 @@ public class ProductInfoServiceCoreBuildDownloadService {
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
     @SneakyThrows
-    public Mono<BuildInfoAware<Publisher<DataBuffer>>> downloadBuild(BuildInfo buildInfo) {
-        var stream = fileService.getFileSize(buildInfo)
+    public Mono<BuildInfoAware<Publisher<DataBuffer>>> downloadBuild(BuildInfo buildInfo, Round round) {
+        var stream = fileService.getFileSize(buildInfo, round)
             .flatMapMany(actualSize -> {
                 var delta = buildInfo.size() - actualSize;
 
@@ -49,7 +50,7 @@ public class ProductInfoServiceCoreBuildDownloadService {
                     .bodyToFlux(DataBuffer.class);
             })
             .retryWhen(Retry.backoff(properties.getRetryOptions().getMaxAttempts(), properties.getRetryOptions().getMinBackoff()))
-            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.FAILED_DOWNLOAD, Flux.empty()))
+            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.FAILED_DOWNLOAD, round, Flux.empty()))
             .log(this.getClass().getName(), Level.FINEST);
 
         return Mono.just(new BuildInfoAware<>(buildInfo, stream));

@@ -14,8 +14,6 @@ import com.lllbllllb.productinfoservice.controller.model.BuildInfoDto;
 import com.lllbllllb.productinfoservice.controller.model.FullStatusDto;
 import com.lllbllllb.productinfoservice.model.Status;
 import com.lllbllllb.productinfoservice.repositorylocal.model.RoundDto;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 
@@ -24,17 +22,6 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProductInfoServiceStatusHappyPathFunctionalTest extends BaseFunctionalTest {
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        clearAllTables();
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        clearAllTables();
-    }
 
     @Test
     void shouldReturnStatus() {

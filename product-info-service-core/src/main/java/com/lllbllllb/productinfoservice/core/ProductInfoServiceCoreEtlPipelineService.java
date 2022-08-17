@@ -55,12 +55,12 @@ public class ProductInfoServiceCoreEtlPipelineService {
         buildInfoService.filterBuildInfosToProceed(buildInfos)
             .log(this.getClass().getName(), Level.FINE)
             .flatMap(buildInfo -> buildInfoService.saveBuildInfo(buildInfo, round))
-            .flatMap(buildInfoAware -> buildDownloadService.downloadBuild(buildInfoAware.buildInfo()))
-            .flatMap(buildInfoAware -> fileCacheService.writeToFile(buildInfoAware.buildInfo(), buildInfoAware.obj()))
-            .flatMap(buildInfoAware -> checksumService.validateFileChecksum(buildInfoAware.buildInfo(), buildInfoAware.obj()))
-            .flatMap(buildInfoAware -> tarGzService.extractFileFromPath(buildInfoAware.buildInfo(), buildInfoAware.obj()))
+            .flatMap(buildInfoAware -> buildDownloadService.downloadBuild(buildInfoAware.buildInfo(), round))
+            .flatMap(buildInfoAware -> fileCacheService.writeToFile(buildInfoAware.buildInfo(), buildInfoAware.obj(), round))
+            .flatMap(buildInfoAware -> checksumService.validateFileChecksum(buildInfoAware.buildInfo(), buildInfoAware.obj(), round))
+            .flatMap(buildInfoAware -> tarGzService.extractFileFromPath(buildInfoAware.buildInfo(), buildInfoAware.obj(), round))
             .flatMap(buildInfoAware -> productInfoService.saveProductInfo(buildInfoAware.buildInfo(), buildInfoAware.obj()))
-            .flatMap(buildInfoAware -> finalizeService.finalize(buildInfoAware.buildInfo()))
+            .flatMap(buildInfoAware -> finalizeService.finalize(buildInfoAware.buildInfo(), round))
             .subscribe();
     }
 }

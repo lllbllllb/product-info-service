@@ -25,7 +25,7 @@ public class ProductInfoServiceCoreConfigurationProperties {
     private String targetFileName = "product-info.json";
 
     @NotBlank
-    private String pathToSaveTmp;
+    private String pathToSaveTmp = "tmp";
 
     @NotNull
     private CleanupPolicy cleanupPolicy = CleanupPolicy.ALL;
@@ -37,7 +37,7 @@ public class ProductInfoServiceCoreConfigurationProperties {
     private RetryOptions retryOptions = new RetryOptions();
 
     @NotNull
-    private Duration concurrentCourtesyPeriod = Duration.ofMillis(20);
+    private Duration concurrentCourtesyPeriod = Duration.ofSeconds(1);
 
     @Data
     public static class RetryOptions {

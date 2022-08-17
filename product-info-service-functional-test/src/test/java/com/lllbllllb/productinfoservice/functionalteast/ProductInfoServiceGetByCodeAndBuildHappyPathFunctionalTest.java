@@ -4,8 +4,6 @@ import java.time.Duration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.lllbllllb.productinfoservice.model.Status;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 
@@ -14,17 +12,6 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProductInfoServiceGetByCodeAndBuildHappyPathFunctionalTest extends BaseFunctionalTest {
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        clearAllTables();
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        clearAllTables();
-    }
 
     @Test
     void shouldReturnStatus() throws Exception {

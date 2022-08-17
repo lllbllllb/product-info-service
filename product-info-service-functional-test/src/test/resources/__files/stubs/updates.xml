@@ -1,0 +1,73 @@
+<products>
+    <product name="IntelliJ IDEA">
+        <code>IC</code>
+        <code>IU</code>
+        <channel id="IC-IU-RELEASE-licensing-RELEASE" name="IntelliJ IDEA RELEASE" status="release" url="http://localhost:${wiremockServerPort}/idea/download"
+                 feedback="http://localhost:${wiremockServerPort}/issues/IDEA" majorVersion="2022" licensing="release">
+            <build number="222.3345" version="2022.2" releaseDate="20220726" fullNumber="222.3345.118">
+                <blogPost url="http://localhost:${wiremockServerPort}/idea/2022/07/intellij-idea-2022-2/"/>
+                <message>
+                    <![CDATA[ IntelliJ IDEA 2022.2 is now available with the following updates: <ul> <li>Enhanced remote development experience</li> <li>The switch to JetBrains Runtime 17</li> <li>Support for Spring 6 and Spring Boot 3 features</li> <li><em>Run Current File</em> functionality</li> <li>Support for Kotlin 1.7.0 features</li> </ul> Visit our <a href="http://localhost:${wiremockServerPort}/idea/whatsnew/">What's New page</a> to learn about all of the new features and improvements. ]]></message>
+                <button name="Download" url="http://localhost:${wiremockServerPort}/idea/download" download="true"/>
+                <button name="Release Notes" url="http://localhost:${wiremockServerPort}/articles/IDEA-A-237/IntelliJ-IDEA-20222-2223345118-build-Release-Notes"/>
+                <button name="More Information" url="http://localhost:${wiremockServerPort}/idea/2022/07/intellij-idea-2022-2/"/>
+                <patch from="222.3345" size="from 24 to 36" fullFrom="222.3345.90"/>
+                <patch from="221.6008" size="from 319 to 373" fullFrom="221.6008.13"/>
+            </build>
+            <build number="221.6008" version="2022.1.4" releaseDate="20220412" fullNumber="221.6008.13">
+                <blogPost url="http://localhost:${wiremockServerPort}/idea/2022/07/intellij-idea-2022-1-4/"/>
+                <message>
+                    <![CDATA[ IntelliJ IDEA 2022.1.4 is here! <ul> <li>Fixed the issue causing text flickers in the <em>Commit details</em> pane [<a href="http://localhost:${wiremockServerPort}/issue/IDEA-284246">IDEA-284246</a>].</li> <li>Fixed the <em>Run Git hooks</em> checkbox in the <em>Before Commit</em> section of the <em>Commit</em> tool window [<a href="http://localhost:${wiremockServerPort}/issue/IDEA-264817/Run-Git-hooks-checkbox-becomes-disabled-after-the-first-Commit-action-no-Git-pre-commit-hooks-are-executed">IDEA-264817</a>].</li> <li>Fixed the issue with local module recognition in the Terraform plugin [<a href="http://localhost:${wiremockServerPort}/issue/IDEA-287371/Terraform-cannot-locate-module-locally-unknown-reason">IDEA-287371</a>].</li> <li>Fixed the bug causing IntelliJ IDEA to crash on macOS High Sierra [<a href="http://localhost:${wiremockServerPort}/issue/IDEA-296489">IDEA-296489</a>].</li> <li>Fixed the issue causing the IDE to freeze on startup [<a href="http://localhost:${wiremockServerPort}/issue/IDEA-296486">IDEA-296486</a>].</li> </ul> For more details, please refer to the <a href="http://localhost:${wiremockServerPort}/idea/2022/07/intellij-idea-2022-1-4/">blog post</a>. ]]></message>
+                <button name="Download" url="http://localhost:${wiremockServerPort}/idea/download/previous.html#version20221" download="true"/>
+                <button name="Release Notes" url="http://localhost:${wiremockServerPort}/articles/IDEA-A-232/IntelliJ-IDEA-202214-221600813-build-Release-Notes"/>
+                <button name="More Information" url="http://localhost:${wiremockServerPort}/idea/2022/07/intellij-idea-2022-1-4/"/>
+                <patch from="221.6008" size="from 35 to 46" fullFrom="221.6008.8"/>
+                <patch from="221.5921" size="from 35 to 46" fullFrom="221.5921.22"/>
+                <patch from="213.7172" size="from 651 to 788" fullFrom="213.7172.25"/>
+            </build>
+        </channel>
+        <channel id="IDEA15_Release" name="IntelliJ IDEA Release" status="release" url="http://localhost:${wiremockServerPort}/idea/download"
+                 feedback="http://localhost:${wiremockServerPort}/issues/IDEA" majorVersion="15" licensing="release">
+            <build number="143.2370" version="15.0.6" releaseDate="20151102" fullNumber="143.2370.31">
+                <message>
+                    <![CDATA[ <p>A new IntelliJ IDEA 2016.3.8 bug-fix update is here! The update brings an important fix to the built-in<br> SSH client and makes it compatible with the new GitHub cryptographic standards.</p> ]]></message>
+                <button name="Download" url="http://localhost:${wiremockServerPort}/idea/download/previous.html#version150" download="true"/>
+                <button name="Release Notes" url="http://localhost:${wiremockServerPort}/display/IDEADEV/IntelliJ+IDEA+2016.1.3+Release+Notes"/>
+            </build>
+        </channel>
+    </product>
+    <product name="JetBrains Gateway">
+        <code>GW</code>
+        <channel id="GW-EAP-licensing-RELEASE" name="JetBrains Gateway EAP licensing:RELEASE" status="eap"
+                 url="http://localhost:${wiremockServerPort}/remote-development/gateway" feedback="http://localhost:${wiremockServerPort}" majorVersion="2022" licensing="release">
+            <build number="222.3739" version="2022.2.1 Release Candidate" releaseDate="20220725" fullNumber="222.3739.40">
+                <message>
+                    <![CDATA[ JetBrains Gateway 2022.2.1 RC is out! <p>Notable changes:</p> <ul> <li>Deploy improvements</li> <li>Fixed: sometimes files don't open in the Editor after reconnecting</li> </ul> For more details, please refer to the release notes. ]]></message>
+                <button name="Download" url="http://localhost:${wiremockServerPort}/remote-development/gateway" download="true"/>
+                <button name="Release Notes" url="http://localhost:${wiremockServerPort}/articles/CWM-A-85/Remote-Development-202221-RC-222373940-build-Release-Notes"/>
+                <patch from="222.3739" size="from 7 to 8" fullFrom="222.3739.24"/>
+            </build>
+            <build number="222.3739" version="2022.2.1 Preview" releaseDate="20220725" fullNumber="222.3739.24">
+                <patch from="222.3345" size="from 11 to 12" fullFrom="222.3345.108"/>
+            </build>
+            <build number="222.3345" version="2022.2 Release Candidate" fullNumber="222.3345.94">
+                <patch from="222.3345" size="from 7 to 9" fullFrom="222.3345.54"/>
+            </build>
+        </channel>
+        <channel id="GW-RELEASE-licensing-RELEASE" name="JetBrains Gateway RELEASE" status="release" url="http://localhost:${wiremockServerPort}/remote-development/gateway"
+                 feedback="http://localhost:${wiremockServerPort}" majorVersion="2022" licensing="release">
+            <build number="222.3345" version="2022.2" releaseDate="20220725" fullNumber="222.3345.108">
+                <message>
+                    <![CDATA[ <h3>JetBrains Gateway 2022.2 Beta is now available</h3> <p>Notable changes:</p> <ul> <li>You can manage the versions of your installed IDE backends.</li> <li>The deploy process refactoring is now available, providing you with additional diagnostic information and solutions for detected problems.</li> <li>SSH port forwarding has been fixed for macOS.</li> <li>The vendor tiles in the JetBrains Gateway wizard now feature a new design.</li> <li>You can use port forwarding in the JetBrains Client embedded console.</li> <li>Additional options are available in the port forwarding feature.</li> <li>The terminal focus issue has been fixed.</li> <li>Actions for Go tools now work as expected.</li> <li>Logs in a remote Gradle project are now displayed.</li> <li>Various improvements have been made to the backend control center.</li> </ul> ]]></message>
+                <button name="Download" url="http://localhost:${wiremockServerPort}/remote-development/gateway" download="true"/>
+                <patch from="222.3345" size="from 7 to 8" fullFrom="222.3345.94"/>
+            </build>
+            <build number="221.5921" version="2022.1.4" releaseDate="20220412" fullNumber="221.5921.22">
+                <message>
+                    <![CDATA[ <h3>JetBrains Gateway 2022.1.4 Beta Is Out</h3> <p>Notable changes:</p> <ul> <li>Improvements in Backend Control Center</li> <li>Added compatibility with 2022.2 EAP</li> </ul> To learn about all the features and improvements, visit our Release Notes. ]]></message>
+                <button name="Download" url="http://localhost:${wiremockServerPort}/remote-development/gateway#version20221" download="true"/>
+                <button name="Release Notes" url="http://localhost:${wiremockServerPort}/articles/CWM-A-66/Remote-Development-202214-221592122-build-Release-Notes"/>
+            </build>
+        </channel>
+    </product>
+</products>

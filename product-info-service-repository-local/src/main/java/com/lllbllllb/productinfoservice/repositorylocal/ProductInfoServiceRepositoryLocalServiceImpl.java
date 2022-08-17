@@ -1,6 +1,7 @@
 package com.lllbllllb.productinfoservice.repositorylocal;
 
 import java.time.Instant;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import com.lllbllllb.productinfoservice.ProductInfoServiceBuildInfoRepositoryService;
@@ -48,6 +49,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl
             })
             .defaultIfEmpty(converter.toDto(buildInfo, status, roundId))
             .flatMap(buildInfoRepository::save)
+            .log(this.getClass().getName())
             .map(converter::fromDto);
     }
 
@@ -62,6 +64,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl
                 return dto;
             })
             .flatMap(buildInfoRepository::save)
+            .log(this.getClass().getName())
             .map(converter::fromDto);
     }
 
@@ -77,6 +80,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl
             })
             .defaultIfEmpty(converter.toDto(buildInfo, bytes))
             .flatMap(productInfoRepository::save)
+            .log(this.getClass().getName())
             .map(dto -> new BuildInfoAware<>(buildInfo, converter.fromDto(dto)));
     }
 
@@ -85,6 +89,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl
         var id = idProvider.getBuildInfoId(buildInfo);
 
         return buildInfoRepository.findById(id)
+            .log(this.getClass().getName(), Level.FINE)
             .map(converter::fromDto);
     }
 
@@ -92,6 +97,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl
     @Override
     public Flux<ProductInfo> findProductInfoByProductCode(String productCode) {
         return productInfoRepository.findAllByProductCode(productCode)
+            .log(this.getClass().getName(), Level.FINE)
             .map(converter::fromDto);
     }
 
@@ -99,6 +105,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl
     @Override
     public Mono<ProductInfo> findProductInfoByProductCodeAndFullNumber(String productCode, String fullNumber) {
         return productInfoRepository.findByProductCodeAndFullNumber(productCode, fullNumber)
+            .log(this.getClass().getName(), Level.FINE)
             .map(converter::fromDto);
     }
 
@@ -108,6 +115,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl
         var dto = converter.toDto(round);
 
         return roundRepository.save(dto)
+            .log(this.getClass().getName())
             .map(converter::fromDto);
     }
 
@@ -116,6 +124,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl
     @Override
     public Flux<BuildInfoAware<Round>> findAllFinishedBuildsByPeriod(Instant from, Instant to) {
         return buildInfoRepository.findAllFinishedByPeriod(from, to)
+            .log(this.getClass().getName(), Level.FINE)
             .flatMap(buildInfoDto -> roundRepository.findById(buildInfoDto.getRoundId())
                 .map(dto -> {
                     var round = converter.fromDto(dto);
@@ -130,6 +139,7 @@ public class ProductInfoServiceRepositoryLocalServiceImpl
             .map(BuildInfoDto::getRoundId)
             .collect(Collectors.toSet())
             .flatMapMany(roundRepository::findAllById)
+            .log(this.getClass().getName(), Level.FINE)
             .flatMap(roundDto -> buildInfoRepository.findAllByRoundId(roundDto.getId())
                 .map(buildInfoDto -> {
                     var round = converter.fromDto(roundDto);

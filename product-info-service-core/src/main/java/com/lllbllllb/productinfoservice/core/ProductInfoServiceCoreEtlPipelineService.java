@@ -44,7 +44,8 @@ public class ProductInfoServiceCoreEtlPipelineService {
     private Flux<BuildInfoAware<Round>> process(Flux<BuildInfo> stream) {
         return stream.collectList()
             .log(this.getClass().getName(), Level.FINE)
-            .zipWith(roundService.createRound())
+            .zipWith(roundService.createRound()
+                .log(this.getClass().getName()))
             .doOnNext(tuple2 -> fireAndForget(tuple2.getT1(), tuple2.getT2()))
             .flatMapMany(tuple2 -> Flux.fromIterable(tuple2.getT1())
                 .map(buildInfo -> new BuildInfoAware<>(buildInfo, tuple2.getT2())));

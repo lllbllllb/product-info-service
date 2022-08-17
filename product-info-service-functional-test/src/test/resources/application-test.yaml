@@ -7,12 +7,14 @@ spring:
     url: jdbc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
     user: ${embedded.postgresql.user}
     password: ${embedded.postgresql.password}
-#logging:
-#  level:
-#    org.springframework.data.r2dbc: DEBUG
-#    com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreEtlPipelineService: TRACE
-#    io.r2dbc.postgresql.QUERY: DEBUG
-#    io.r2dbc.postgresql.PARAM: DEBUG
+logging:
+  level:
+    org.springframework.data.r2dbc: DEBUG
+    com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreEtlPipelineService: TRACE
+    com.lllbllllb.productinfoservice.repositoryremote.ProductInfoServiceCoreBuildsMetadataService: TRACE
+    com.lllbllllb.productinfoservice.core.ProductInfoServiceCoreBuildDownloadService: TRACE
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
 
 eureka:
   client:
@@ -20,9 +22,9 @@ eureka:
 
 product-info-service:
   core:
-    path-to-save-tmp: tmp
-    cleanup-policy: all
-    concurrent-courtesy-period: 1s
+    path-to-save-tmp: C:\Users\mrmbl\Downloads\testjb
+    cleanup-policy: none
+    concurrent-courtesy-period: 0
     target-file-name: product-info.json
     report-period: 1y
     retry-options:
@@ -34,7 +36,7 @@ product-info-service:
     local-scheduled: false
   repository:
     remote:
-      updates-xml-url: /updates/updates.xml
-      releases-code-url: /products/releases
+      updates-xml-url: http://localhost:${wiremock.server.port}/updates/updates.xml
+      releases-code-url: http://localhost:${wiremock.server.port}/products/releases
       linux-distro-key: linux
       build-max-age: 1y

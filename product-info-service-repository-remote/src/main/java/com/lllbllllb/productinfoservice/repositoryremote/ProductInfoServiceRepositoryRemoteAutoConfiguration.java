@@ -7,9 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.APPLICATION_XHTML_XML;
 import static org.springframework.http.MediaType.APPLICATION_XML;
-import static org.springframework.http.MediaType.TEXT_XML;
 
 @ComponentScan
 public class ProductInfoServiceRepositoryRemoteAutoConfiguration {
@@ -21,7 +19,7 @@ public class ProductInfoServiceRepositoryRemoteAutoConfiguration {
     ) {
         return webClientBuilder.clone()
             .baseUrl(properties.getUpdatesXmlUrl())
-            .defaultHeaders(httpHeaders -> httpHeaders.setAccept(List.of(TEXT_XML, APPLICATION_XML, APPLICATION_XHTML_XML)))
+            .defaultHeaders(httpHeaders -> httpHeaders.setAccept(List.of(APPLICATION_XML)))
             .build();
     }
 

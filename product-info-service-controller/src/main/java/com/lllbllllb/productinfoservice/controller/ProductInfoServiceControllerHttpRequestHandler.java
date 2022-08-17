@@ -78,7 +78,6 @@ public class ProductInfoServiceControllerHttpRequestHandler {
         return apiService.refreshAll()
             .map(converterService::toBuildInfoDto)
             .collectList()
-            .filter(res -> !CollectionUtils.isEmpty(res))
             .flatMap(dtos -> ok().bodyValue(dtos));
     }
 
@@ -88,7 +87,6 @@ public class ProductInfoServiceControllerHttpRequestHandler {
         return apiService.refreshByCode(productCode)
             .map(converterService::toBuildInfoDto)
             .collectList()
-            .filter(res -> !CollectionUtils.isEmpty(res))
             .flatMap(dtos -> ok().bodyValue(dtos));
     }
 }

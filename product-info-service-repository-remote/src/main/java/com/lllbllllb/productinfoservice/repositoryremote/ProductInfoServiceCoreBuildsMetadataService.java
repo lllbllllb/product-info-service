@@ -84,7 +84,6 @@ public class ProductInfoServiceCoreBuildsMetadataService {
             .onStatus(HttpStatus::is3xxRedirection, clientResponse -> Mono.empty())
             .bodyToMono(Products.class)
             .log(this.getClass().getName(), Level.FINE);
-
     }
 
     private Set<BuildMetadata> extractBuildMetadata(Product product, String productCode) {

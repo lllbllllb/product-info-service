@@ -1,6 +1,7 @@
 package com.lllbllllb.productinfoservice.core;
 
 import java.net.URI;
+import java.util.logging.Level;
 
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
@@ -48,7 +49,8 @@ public class ProductInfoServiceCoreBuildDownloadService {
                     .bodyToFlux(DataBuffer.class);
             })
             .retryWhen(Retry.backoff(properties.getRetryOptions().getMaxAttempts(), properties.getRetryOptions().getMinBackoff()))
-            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.FAILED_DOWNLOAD, Flux.empty()));
+            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.FAILED_DOWNLOAD, Flux.empty()))
+            .log(this.getClass().getName(), Level.FINEST);
 
         return Mono.just(new BuildInfoAware<>(buildInfo, stream));
     }

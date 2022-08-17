@@ -43,10 +43,10 @@ public class ProductInfoServiceCoreConfigurationProperties {
     public static class RetryOptions {
 
         @PositiveOrZero
-        private long maxAttempts = 4;
+        private long maxAttempts = 10;
 
         @NotNull
-        private Duration minBackoff = Duration.ofSeconds(8);
+        private Duration minBackoff = Duration.ofSeconds(12);
     }
 
 }

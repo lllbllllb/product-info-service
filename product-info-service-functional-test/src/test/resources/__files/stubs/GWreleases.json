@@ -1,0 +1,121 @@
+{
+  "GW": [
+    {
+      "date": "2022-07-25",
+      "type": "release",
+      "downloads": {
+        "linux": {
+          "link": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-222.3345.108.tar.gz",
+          "size": 236899585,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-222.3345.108.tar.gz.sha256"
+        },
+        "thirdPartyLibrariesJson": {
+          "link": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-222.3345.108-third-party-libraries.json",
+          "size": 24150,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-222.3345.108-third-party-libraries.json.sha256"
+        },
+        "windows": {
+          "link": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-222.3345.108.exe",
+          "size": 173078112,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-222.3345.108.exe.sha256"
+        },
+        "mac": {
+          "link": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-222.3345.108.dmg",
+          "size": 226599907,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-222.3345.108.dmg.sha256"
+        },
+        "macM1": {
+          "link": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-222.3345.108-aarch64.dmg",
+          "size": 225384603,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-222.3345.108-aarch64.dmg.sha256"
+        }
+      },
+      "patches": {
+        "win": [
+          {
+            "fromBuild": "222.3345.94",
+            "link": "http://localhost:${wiremockServerPort}/idea/gateway/GW-222.3345.94-222.3345.108-patch-jbr11-win.jar",
+            "size": 8741243,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/GW-222.3345.94-222.3345.108-patch-jbr11-win.jar.sha256"
+          }
+        ],
+        "mac": [
+          {
+            "fromBuild": "222.3345.94",
+            "link": "http://localhost:${wiremockServerPort}/idea/gateway/GW-222.3345.94-222.3345.108-patch-jbr11-mac.jar",
+            "size": 7757079,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/GW-222.3345.94-222.3345.108-patch-jbr11-mac.jar.sha256"
+          }
+        ],
+        "unix": [
+          {
+            "fromBuild": "222.3345.94",
+            "link": "http://localhost:${wiremockServerPort}/idea/gateway/GW-222.3345.94-222.3345.108-patch-jbr11-unix.jar",
+            "size": 7677927,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/GW-222.3345.94-222.3345.108-patch-jbr11-unix.jar.sha256"
+          }
+        ]
+      },
+      "notesLink": null,
+      "licenseRequired": true,
+      "version": "2022.2",
+      "majorVersion": "2022.2",
+      "build": "222.3345.108",
+      "whatsnew": "<h3>JetBrains Gateway 2022.2 Beta is now available</h3> \n<p>Notable changes:</p> \n<ul> \n <li>You can manage the versions of your installed IDE backends.</li> \n <li>The deploy process refactoring is now available, providing you with additional diagnostic information and solutions for detected problems.</li> \n <li>SSH port forwarding has been fixed for macOS.</li> \n <li>The vendor tiles in the JetBrains Gateway wizard now feature a new design.</li> \n <li>You can use port forwarding in the JetBrains Client embedded console.</li> \n <li>Additional options are available in the port forwarding feature.</li> \n <li>The terminal focus issue has been fixed.</li> \n <li>Actions for Go tools now work as expected.</li> \n <li>Logs in a remote Gradle project are now displayed.</li> \n <li>Various improvements have been made to the backend control center.</li> \n</ul>",
+      "uninstallFeedbackLinks": {
+        "linux": "http://localhost:${wiremockServerPort}?edition=2022.2",
+        "thirdPartyLibrariesJson": "http://localhost:${wiremockServerPort}?edition=2022.2",
+        "windows": "http://localhost:${wiremockServerPort}?edition=2022.2",
+        "mac": "http://localhost:${wiremockServerPort}?edition=2022.2",
+        "macM1": "http://localhost:${wiremockServerPort}?edition=2022.2"
+      },
+      "printableReleaseType": null
+    },
+    {
+      "date": "2022-06-24",
+      "type": "release",
+      "downloads": {
+        "linux": {
+          "link": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-221.5921.22.tar.gz",
+          "size": 339699270,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-221.5921.22.tar.gz.sha256"
+        },
+        "thirdPartyLibrariesJson": {
+          "link": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-221.5921.22-third-party-libraries.json",
+          "size": 23661,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-221.5921.22-third-party-libraries.json.sha256"
+        },
+        "windows": {
+          "link": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-221.5921.22.exe",
+          "size": 250798040,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-221.5921.22.exe.sha256"
+        },
+        "mac": {
+          "link": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-221.5921.22.dmg",
+          "size": 331621479,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-221.5921.22.dmg.sha256"
+        },
+        "macM1": {
+          "link": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-221.5921.22-aarch64.dmg",
+          "size": 321870490,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/gateway/JetBrainsGateway-221.5921.22-aarch64.dmg.sha256"
+        }
+      },
+      "patches": {},
+      "notesLink": "http://localhost:${wiremockServerPort}/articles/CWM-A-66/Remote-Development-202214-221592122-build-Release-Notes",
+      "licenseRequired": true,
+      "version": "2022.1.4",
+      "majorVersion": "2022.1",
+      "build": "221.5921.22",
+      "whatsnew": "<h3>JetBrains Gateway 2022.1.4 Beta Is Out</h3> \n<p>Notable changes:</p> \n<ul> \n <li>Improvements in Backend Control Center</li> \n <li>Added compatibility with 2022.2 EAP</li> \n</ul> To learn about all the features and improvements, visit our Release Notes.",
+      "uninstallFeedbackLinks": {
+        "linux": "http://localhost:${wiremockServerPort}?edition=2022.1.4",
+        "thirdPartyLibrariesJson": "http://localhost:${wiremockServerPort}?edition=2022.1.4",
+        "windows": "http://localhost:${wiremockServerPort}?edition=2022.1.4",
+        "mac": "http://localhost:${wiremockServerPort}?edition=2022.1.4",
+        "macM1": "http://localhost:${wiremockServerPort}?edition=2022.1.4"
+      },
+      "printableReleaseType": null
+    }
+  ]
+}

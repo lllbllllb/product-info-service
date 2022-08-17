@@ -99,7 +99,7 @@ public class ProductInfoServiceRepositoryRemoteServiceImpl implements ProductInf
     private Mono<String> getExpectedChecksum(String checksumLink) {
         return commonGuestClient.get()
             .uri(URI.create(checksumLink))
-            .accept(MediaType.TEXT_HTML)
+            .accept(MediaType.TEXT_PLAIN)
             .retrieve()
             .bodyToMono(String.class)
             .map(this::sanitizeChecksum);

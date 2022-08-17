@@ -1,0 +1,287 @@
+{
+  "IIU": [
+    {
+      "date": "2022-07-26",
+      "type": "release",
+      "downloads": {
+        "linux": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.2.tar.gz",
+          "size": 1037063835,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.2.tar.gz.sha256"
+        },
+        "thirdPartyLibrariesJson": {
+          "link": "http://localhost:${wiremockServerPort}/storage/third-party-libraries/idea/ideaIU-2022.2-third-party-libraries.json",
+          "size": 361185,
+          "checksumLink": "http://localhost:${wiremockServerPort}/storage/third-party-libraries/idea/ideaIU-2022.2-third-party-libraries.json.sha256"
+        },
+        "windows": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.2.exe",
+          "size": 736935368,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.2.exe.sha256"
+        },
+        "windowsZip": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.2.win.zip",
+          "size": 1021674569,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.2.win.zip.sha256"
+        },
+        "mac": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.2.dmg",
+          "size": 969888835,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.2.dmg.sha256"
+        },
+        "macM1": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.2-aarch64.dmg",
+          "size": 964896990,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.2-aarch64.dmg.sha256"
+        }
+      },
+      "patches": {
+        "win": [
+          {
+            "fromBuild": "222.3345.90",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-222.3345.90-222.3345.118-patch-jbr11-win.jar",
+            "size": 38536973,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-222.3345.90-222.3345.118-patch-jbr11-win.jar.sha256"
+          },
+          {
+            "fromBuild": "221.6008.13",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.13-222.3345.118-patch-jbr11-win.jar",
+            "size": 391970132,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.13-222.3345.118-patch-jbr11-win.jar.sha256"
+          }
+        ],
+        "mac": [
+          {
+            "fromBuild": "222.3345.90",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-222.3345.90-222.3345.118-patch-jbr11-mac.jar",
+            "size": 37730842,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-222.3345.90-222.3345.118-patch-jbr11-mac.jar.sha256"
+          },
+          {
+            "fromBuild": "221.6008.13",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.13-222.3345.118-patch-jbr11-mac.jar",
+            "size": 370542169,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.13-222.3345.118-patch-jbr11-mac.jar.sha256"
+          }
+        ],
+        "unix": [
+          {
+            "fromBuild": "222.3345.90",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-222.3345.90-222.3345.118-patch-jbr11-unix.jar",
+            "size": 37272894,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-222.3345.90-222.3345.118-patch-jbr11-unix.jar.sha256"
+          },
+          {
+            "fromBuild": "221.6008.13",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.13-222.3345.118-patch-jbr11-unix.jar",
+            "size": 390331376,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.13-222.3345.118-patch-jbr11-unix.jar.sha256"
+          }
+        ]
+      },
+      "notesLink": "http://localhost:${wiremockServerPort}/articles/IDEA-A-237/IntelliJ-IDEA-20222-2223345118-build-Release-Notes",
+      "licenseRequired": true,
+      "version": "2022.2",
+      "majorVersion": "2022.2",
+      "build": "222.3345.118",
+      "whatsnew": "IntelliJ IDEA 2022.2 is now available with the following updates: \n<ul> \n <li>Enhanced remote development experience</li> \n <li>The switch to JetBrains Runtime 17</li> \n <li>Support for Spring 6 and Spring Boot 3 features</li> \n <li><em>Run Current File</em> functionality</li> \n <li>Support for Kotlin 1.7.0 features</li> \n</ul> Visit our \n<a href=\"http://localhost:${wiremockServerPort}/idea/whatsnew/\">What's New page</a> to learn about all of the new features and improvements.",
+      "uninstallFeedbackLinks": {
+        "macWithJBR": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "sourcesArchive": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "windowsJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "windowsZipJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "linuxWithoutJBR": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "windowsZipJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "thirdPartyLibrariesJson": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "windows": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "windowsZip": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "mac": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "macJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "macJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "windowsJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "linux": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "linuxJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "linuxJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2",
+        "macM1": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.2"
+      },
+      "printableReleaseType": null
+    },
+    {
+      "date": "2022-07-19",
+      "type": "release",
+      "downloads": {
+        "linux": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4.tar.gz",
+          "size": 1027608185,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4.tar.gz.sha256"
+        },
+        "linuxWithoutJBR": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4-no-jbr.tar.gz",
+          "size": 845583460,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4-no-jbr.tar.gz.sha256"
+        },
+        "thirdPartyLibrariesJson": {
+          "link": "http://localhost:${wiremockServerPort}/storage/third-party-libraries/idea/ideaIU-2022.1.4-third-party-libraries.json",
+          "size": 377686,
+          "checksumLink": "http://localhost:${wiremockServerPort}/storage/third-party-libraries/idea/ideaIU-2022.1.4-third-party-libraries.json.sha256"
+        },
+        "windows": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4.exe",
+          "size": 731413800,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4.exe.sha256"
+        },
+        "windowsZip": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4.win.zip",
+          "size": 1010843639,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4.win.zip.sha256"
+        },
+        "mac": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4.dmg",
+          "size": 963329423,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4.dmg.sha256"
+        },
+        "macM1": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4-aarch64.dmg",
+          "size": 953280532,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-2022.1.4-aarch64.dmg.sha256"
+        }
+      },
+      "patches": {
+        "win": [
+          {
+            "fromBuild": "221.6008.8",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.8-221.6008.13-patch-jbr11-win.jar",
+            "size": 48473731,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.8-221.6008.13-patch-jbr11-win.jar.sha256"
+          },
+          {
+            "fromBuild": "221.5921.22",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-221.5921.22-221.6008.13-patch-jbr11-win.jar",
+            "size": 48658519,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-221.5921.22-221.6008.13-patch-jbr11-win.jar.sha256"
+          },
+          {
+            "fromBuild": "213.7172.25",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-213.7172.25-221.6008.13-patch-jbr11-win.jar",
+            "size": 826799677,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-213.7172.25-221.6008.13-patch-jbr11-win.jar.sha256"
+          }
+        ],
+        "mac": [
+          {
+            "fromBuild": "221.6008.8",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.8-221.6008.13-patch-jbr11-mac.jar",
+            "size": 47665445,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.8-221.6008.13-patch-jbr11-mac.jar.sha256"
+          },
+          {
+            "fromBuild": "221.5921.22",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-221.5921.22-221.6008.13-patch-jbr11-mac.jar",
+            "size": 47851268,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-221.5921.22-221.6008.13-patch-jbr11-mac.jar.sha256"
+          },
+          {
+            "fromBuild": "213.7172.25",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-213.7172.25-221.6008.13-patch-jbr11-mac.jar",
+            "size": 812304293,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-213.7172.25-221.6008.13-patch-jbr11-mac.jar.sha256"
+          }
+        ],
+        "unix": [
+          {
+            "fromBuild": "221.6008.8",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.8-221.6008.13-patch-jbr11-unix.jar",
+            "size": 47207149,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-221.6008.8-221.6008.13-patch-jbr11-unix.jar.sha256"
+          },
+          {
+            "fromBuild": "221.5921.22",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-221.5921.22-221.6008.13-patch-jbr11-unix.jar",
+            "size": 47391871,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-221.5921.22-221.6008.13-patch-jbr11-unix.jar.sha256"
+          },
+          {
+            "fromBuild": "213.7172.25",
+            "link": "http://localhost:${wiremockServerPort}/idea/IU-213.7172.25-221.6008.13-patch-jbr11-unix.jar",
+            "size": 818225973,
+            "checksumLink": "http://localhost:${wiremockServerPort}/idea/IU-213.7172.25-221.6008.13-patch-jbr11-unix.jar.sha256"
+          }
+        ]
+      },
+      "notesLink": "http://localhost:${wiremockServerPort}/articles/IDEA-A-232/IntelliJ-IDEA-202214-221600813-build-Release-Notes",
+      "licenseRequired": true,
+      "version": "2022.1.4",
+      "majorVersion": "2022.1",
+      "build": "221.6008.13",
+      "whatsnew": "IntelliJ IDEA 2022.1.4 is here! \n<ul> \n <li>Fixed the issue causing text flickers in the <em>Commit details</em> pane [<a href=\"http://localhost:${wiremockServerPort}/issue/IDEA-284246\">IDEA-284246</a>].</li> \n <li>Fixed the <em>Run Git hooks</em> checkbox in the <em>Before Commit</em> section of the <em>Commit</em> tool window [<a href=\"http://localhost:${wiremockServerPort}/issue/IDEA-264817/Run-Git-hooks-checkbox-becomes-disabled-after-the-first-Commit-action-no-Git-pre-commit-hooks-are-executed\">IDEA-264817</a>].</li> \n <li>Fixed the issue with local module recognition in the Terraform plugin [<a href=\"http://localhost:${wiremockServerPort}/issue/IDEA-287371/Terraform-cannot-locate-module-locally-unknown-reason\">IDEA-287371</a>].</li> \n <li>Fixed the bug causing IntelliJ IDEA to crash on macOS High Sierra [<a href=\"http://localhost:${wiremockServerPort}/issue/IDEA-296489\">IDEA-296489</a>].</li> \n <li>Fixed the issue causing the IDE to freeze on startup [<a href=\"http://localhost:${wiremockServerPort}/issue/IDEA-296486\">IDEA-296486</a>].</li> \n</ul> For more details, please refer to the \n<a href=\"http://localhost:${wiremockServerPort}/idea/2022/07/intellij-idea-2022-1-4/\">blog post</a>.",
+      "uninstallFeedbackLinks": {
+        "macWithJBR": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "sourcesArchive": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "windowsJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "windowsZipJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "linuxWithoutJBR": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "windowsZipJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "thirdPartyLibrariesJson": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "windows": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "windowsZip": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "mac": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "macJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "macJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "windowsJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "linux": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "linuxJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "linuxJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4",
+        "macM1": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-2022.1.4"
+      },
+      "printableReleaseType": null
+    },
+    {
+      "date": "2015-11-02",
+      "type": "release",
+      "downloads": {
+        "linux": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-15.0.6.tar.gz",
+          "size": 398109068,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-15.0.6.tar.gz.sha256"
+        },
+        "windows": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-15.0.6.exe",
+          "size": 398186632,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-15.0.6.exe.sha256"
+        },
+        "mac": {
+          "link": "http://localhost:${wiremockServerPort}/idea/ideaIU-15.0.6-custom-jdk-bundled.dmg",
+          "size": 464585587,
+          "checksumLink": "http://localhost:${wiremockServerPort}/idea/ideaIU-15.0.6-custom-jdk-bundled.dmg.sha256"
+        }
+      },
+      "patches": {},
+      "notesLink": "http://localhost:${wiremockServerPort}/display/IDEADEV/IntelliJ+IDEA+2016.1.3+Release+Notes",
+      "licenseRequired": true,
+      "version": "15.0.6",
+      "majorVersion": "15.0",
+      "build": "143.2370.31",
+      "whatsnew": "<p>A new IntelliJ IDEA 2016.3.8 bug-fix update is here! The update brings an important fix to the built-in<br> SSH client and makes it compatible with the new GitHub cryptographic standards.</p>",
+      "uninstallFeedbackLinks": {
+        "macWithJBR": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "sourcesArchive": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "windowsJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "windowsZipJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "linuxWithoutJBR": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "windowsZipJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "thirdPartyLibrariesJson": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "windows": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "windowsZip": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "mac": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "macJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "macJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "windowsJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "linux": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "linuxJBR11": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "linuxJBR8": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6",
+        "macM1": "http://localhost:${wiremockServerPort}/idea/uninstall/?edition=IU-15.0.6"
+      },
+      "printableReleaseType": null
+    }
+  ]
+}

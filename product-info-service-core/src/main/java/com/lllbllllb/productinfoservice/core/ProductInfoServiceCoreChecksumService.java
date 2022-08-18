@@ -44,8 +44,8 @@ public class ProductInfoServiceCoreChecksumService {
     }
 
     public boolean isChecksumTheSame(String sha256Expected, String sha256Actual) {
-        return StringUtils.hasLength(sha256Expected)
-            && StringUtils.hasLength(sha256Actual)
+        return StringUtils.hasText(sha256Expected)
+            && StringUtils.hasText(sha256Actual)
             && sha256Expected.equalsIgnoreCase(sha256Actual);
     }
 

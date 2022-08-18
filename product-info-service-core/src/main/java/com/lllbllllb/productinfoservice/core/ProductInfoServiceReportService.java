@@ -47,18 +47,10 @@ public class ProductInfoServiceReportService {
     }
 
     private BuildInfoAware<Round> getLatestBuild(BuildInfoAware<Round> first, BuildInfoAware<Round> second) {
-        if (first.obj().cratedDate().equals(second.obj().cratedDate())) {
-            if (first.buildInfo().buildMetadata().releaseDate().isAfter(second.buildInfo().buildMetadata().releaseDate())) {
-                return first;
-            } else {
-                return second;
-            }
+        if (first.buildInfo().buildMetadata().releaseDate().isAfter(second.buildInfo().buildMetadata().releaseDate())) {
+            return first;
         } else {
-            if (first.obj().cratedDate().isAfter(second.obj().cratedDate())) {
-                return first;
-            } else {
-                return second;
-            }
+            return second;
         }
     }
 }

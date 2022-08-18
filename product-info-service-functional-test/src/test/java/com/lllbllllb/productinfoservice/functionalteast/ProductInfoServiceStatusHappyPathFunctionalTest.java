@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProductInfoServiceStatusHappyPathFunctionalTest extends BaseFunctionalTest {
 
+    @SuppressWarnings("ConstantConditions")
     @Test
     void shouldReturnStatus() {
         // given

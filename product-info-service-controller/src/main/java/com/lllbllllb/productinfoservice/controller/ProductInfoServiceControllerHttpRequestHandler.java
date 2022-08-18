@@ -17,6 +17,11 @@ import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceCont
 import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.PRODUCT_CODE;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
+/**
+ * Handler for functional routes.
+ *
+ * @see ProductInfoServiceControllerAutoConfiguration
+ */
 @Service
 @RequiredArgsConstructor
 public class ProductInfoServiceControllerHttpRequestHandler {
@@ -25,6 +30,12 @@ public class ProductInfoServiceControllerHttpRequestHandler {
 
     private final ProductInfoServiceControllerConverterService converterService;
 
+    /**
+     * Handler for {@code GET} to {@link ProductInfoServiceControllerHttpRoutes#STATUS_URL}.
+     *
+     * @param request {@link ServerRequest}
+     * @return {@link Mono<ServerResponse>}
+     */
     public Mono<ServerResponse> getStatus(ServerRequest request) {
         return apiService.getActiveRoundsData()
             .sort(Comparator.comparing(buildInfoAware -> buildInfoAware.obj().getRight().cratedDate()))
@@ -38,6 +49,12 @@ public class ProductInfoServiceControllerHttpRequestHandler {
             .flatMap(dto -> ok().bodyValue(dto));
     }
 
+    /**
+     * Handler for {@code GET} to {@code /lastBuildsData}.
+     *
+     * @param request {@link ServerRequest}
+     * @return {@link Mono<ServerResponse>}
+     */
     public Mono<ServerResponse> getLastBuildData(ServerRequest request) {
         return apiService.getLastBuildInfos()
             .map(bia -> bia.stream()
@@ -46,6 +63,12 @@ public class ProductInfoServiceControllerHttpRequestHandler {
             .flatMap(dtos -> ok().bodyValue(dtos));
     }
 
+    /**
+     * Handler for {@code GET} to {@code /activeRoundsData}.
+     *
+     * @param request {@link ServerRequest}
+     * @return {@link Mono<ServerResponse>}
+     */
     public Mono<ServerResponse> getActiveRoundsData(ServerRequest request) {
         return apiService.getActiveRoundsData()
             .sort(Comparator.comparing(buildInfoAware -> buildInfoAware.obj().getRight().cratedDate()))
@@ -54,6 +77,12 @@ public class ProductInfoServiceControllerHttpRequestHandler {
             .flatMap(dtos -> ok().bodyValue(dtos));
     }
 
+    /**
+     * Handler for {@code GET} to {@link ProductInfoServiceControllerHttpRoutes#PRODUCT_CODE_URL}.
+     *
+     * @param request {@link ServerRequest}
+     * @return {@link Mono<ServerResponse>}
+     */
     public Mono<ServerResponse> getByProductCode(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
 
@@ -65,6 +94,12 @@ public class ProductInfoServiceControllerHttpRequestHandler {
             .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    /**
+     * Handler for {@code GET} to {@link ProductInfoServiceControllerHttpRoutes#BUILD_NUMBER_URL}.
+     *
+     * @param request {@link ServerRequest}
+     * @return {@link Mono<ServerResponse>}
+     */
     public Mono<ServerResponse> getByProductCodeAndBuildNumber(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
         var buildNumber = request.pathVariable(BUILD_NUMBER);
@@ -74,6 +109,12 @@ public class ProductInfoServiceControllerHttpRequestHandler {
             .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    /**
+     * Handler for {@code GET} to {@link ProductInfoServiceControllerHttpRoutes#REFRESH_URL}.
+     *
+     * @param request {@link ServerRequest}
+     * @return {@link Mono<ServerResponse>}
+     */
     public Mono<ServerResponse> refresh(ServerRequest request) {
         return apiService.refreshAll()
             .map(converterService::toBuildInfoDto)
@@ -81,6 +122,12 @@ public class ProductInfoServiceControllerHttpRequestHandler {
             .flatMap(dtos -> ok().bodyValue(dtos));
     }
 
+    /**
+     * Handler for {@code GET} to {@link ProductInfoServiceControllerHttpRoutes#REFRESH_PRODUCT_CODE_URL}.
+     *
+     * @param request {@link ServerRequest}
+     * @return {@link Mono<ServerResponse>}
+     */
     public Mono<ServerResponse> refreshByCode(ServerRequest request) {
         var productCode = request.pathVariable(PRODUCT_CODE);
 

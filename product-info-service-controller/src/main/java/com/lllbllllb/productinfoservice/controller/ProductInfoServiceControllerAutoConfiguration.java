@@ -15,6 +15,9 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
+/**
+ * Autoconfiguration for {@code Controller} module.
+ */
 @EnableScheduling
 @ComponentScan
 public class ProductInfoServiceControllerAutoConfiguration {

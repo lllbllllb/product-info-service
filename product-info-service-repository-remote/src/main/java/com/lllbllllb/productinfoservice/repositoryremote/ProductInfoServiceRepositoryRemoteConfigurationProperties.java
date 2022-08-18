@@ -18,15 +18,27 @@ import org.springframework.validation.annotation.Validated;
 public class ProductInfoServiceRepositoryRemoteConfigurationProperties {
 
 
+    /**
+     * Url to provider for metadata of the builds.
+     */
     @Pattern(regexp = "^((http|https)://)?.+(\\.xml)$", message = "Invalid http link")
     private String updatesXmlUrl = "https://www.jetbrains.com/updates/updates.xml";
 
+    /**
+     * Url to provider for data of the builds.
+     */
     @Pattern(regexp = "^((http|https)://)?.+$", message = "Invalid http link")
     private String releasesCodeUrl = "https://data.services.jetbrains.com/products/releases";
 
+    /**
+     * Key of the linux build.
+     */
     @NotBlank
     private String linuxDistroKey = "linux";
 
+    /**
+     * Max age of the builds for processing.
+     */
     @NotNull
     private Period buildMaxAge = Period.ofYears(1);
 }

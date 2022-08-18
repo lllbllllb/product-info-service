@@ -4,6 +4,9 @@ import java.time.Instant;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Data about {@code product-info.json} holder.
+ */
 public record ProductInfo(
 
     JsonNode productInfoFile,

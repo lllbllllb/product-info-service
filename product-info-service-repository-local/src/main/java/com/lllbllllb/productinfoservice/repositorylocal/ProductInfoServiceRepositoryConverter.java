@@ -17,6 +17,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
+/**
+ * Entities to dto and vice-versa converter.
+ */
 @Service
 @RequiredArgsConstructor
 public class ProductInfoServiceRepositoryConverter {

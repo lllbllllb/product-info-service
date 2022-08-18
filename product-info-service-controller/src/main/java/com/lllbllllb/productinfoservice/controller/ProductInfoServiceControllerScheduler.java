@@ -13,6 +13,9 @@ public class ProductInfoServiceControllerScheduler {
 
     private final ProductInfoServiceControllerConfigurationProperties properties;
 
+    /**
+     * Local scheduler to run the scanning process.
+     */
     @Scheduled(
         initialDelayString = "#{@productInfoServiceControllerConfigurationProperties.roundDelay}",
         fixedDelayString = "#{@productInfoServiceControllerConfigurationProperties.roundInterval}"

@@ -13,12 +13,21 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
+/**
+ * Entities to dto and vice-versa converter.
+ */
 @Service
 @RequiredArgsConstructor
 public class ProductInfoServiceControllerConverterService {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * Convert {@link BuildInfoAware<Round>} to {@link BuildInfoDto}.
+     *
+     * @param buildInfoAware source
+     * @return {@link BuildInfoDto} as result
+     */
     public BuildInfoDto toBuildInfoDto(BuildInfoAware<Round> buildInfoAware) {
         var buildInfo = buildInfoAware.buildInfo();
         var metadata = buildInfo.buildMetadata();
@@ -38,6 +47,12 @@ public class ProductInfoServiceControllerConverterService {
         );
     }
 
+    /**
+     * Convert {@link BuildInfoAware} to {@link ActiveRoundDataDto}.
+     *
+     * @param buildInfoAware source
+     * @return {@link ActiveRoundDataDto} as result
+     */
     public ActiveRoundDataDto toActiveRoundDataDto(BuildInfoAware<Pair<Status, Round>> buildInfoAware) {
         var buildInfo = buildInfoAware.buildInfo();
         var metadata = buildInfo.buildMetadata();

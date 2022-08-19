@@ -5,10 +5,10 @@ spring:
   codec:
     max-in-memory-size: 1MB
   r2dbc:
-    url: r2dbc:postgresql://localhost:5433/productinfoservice
-    username: postgres
-    password: password
+    url: r2dbc:postgresql://${POSTGRES_DB_URI}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   liquibase:
-    url: jdbc:postgresql://localhost:5433/productinfoservice
-    user: postgres
-    password: password
+    url: jdbc:postgresql://product-info-service-db:5433/${POSTGRES_DB}
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}

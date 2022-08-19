@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  product-info-service-db:
+    container_name: product-info-service-db
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=productinfoservice
+    restart: always

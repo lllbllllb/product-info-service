@@ -1,8 +1,17 @@
 product-info-service:
   core:
-    path-to-save-tmp: C:\blackhole
+    path-to-save-tmp: blackhole
     cleanup-policy: none
     concurrent-courtesy-period: 20ms
   controller:
-    round-delay: 24h
-    round-interval: 24h
+    round-delay: 1m
+    round-interval: 1h
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/productinfoservice
+    username: postgres
+    password: password
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/productinfoservice
+    user: postgres
+    password: password

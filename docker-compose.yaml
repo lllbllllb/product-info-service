@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  product-info-service-db:
+    container_name: product-info-service-db
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=postgresql
+    restart: always
+  product-info-service-runner:
+    container_name: product-info-service-runner
+    depends_on:
+      - product-info-service-db
+    image: mbllllb/product-info-service-runner
+    ports:
+      - "8080-9083:8080"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=postgresql
+      - POSTGRES_DB_URI=product-info-service-db:5432/${POSTGRES_DB}
+    restart: always
+    deploy:
+      replicas: 4

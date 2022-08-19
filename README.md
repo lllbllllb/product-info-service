@@ -50,6 +50,17 @@ the example of the target file:
 ## How to run
 The most convenient way to run service as cluster just run docker-compose.yaml below:
 [docker-compose.yaml](docker-compose.yaml)
+> pay attention about awailable ports on your host 
+> ```yaml
+>    ports:
+>      - "8080-8081:8080"
+>```
+> also you can change number of replical with
+> ```yaml
+>    deploy:
+>      mode: replicated
+>      replicas: 2
+>```
 
 or
 

@@ -9,6 +9,6 @@ spring:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
   liquibase:
-    url: jdbc:postgresql://product-info-service-db:5433/${POSTGRES_DB}
+    url: jdbc:postgresql://${POSTGRES_DB_URI}
     user: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}

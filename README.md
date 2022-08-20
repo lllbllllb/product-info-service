@@ -47,7 +47,7 @@ the example of the target file:
 * GET /code/{productCode} - get all 'product-info.json' files by provided product
 * GET /code/{productCode}/build/{buildNumber} - get uniq 'product-info.json' file for specified build
 
-> **Swagger UI** is available by the link [/v3/api-docs](/v3/api-docs)
+> **Swagger UI** is available by the link [/swagger-ui.html](/swagger-ui.html)
 > 
 > **api-docs** are available by the link [/v3/api-docs](/v3/api-docs)
 

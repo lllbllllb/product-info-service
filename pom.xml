@@ -18,7 +18,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <revision>1.0.1</revision>
+        <revision>1.0.2</revision>
         <java.version>17</java.version>
         <spring-cloud.version>2021.0.3</spring-cloud.version>
         <embedded-postgresql.version>2.2.5</embedded-postgresql.version>

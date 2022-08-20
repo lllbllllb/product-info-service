@@ -17,10 +17,9 @@ services:
     ports:
       - "8080-8081:8080"
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgresql
-      - POSTGRES_DB_URI=product-info-service-db:5432/${POSTGRES_DB}
+      - DB_PASSWORD=password
+      - DB_USER=postgres
+      - DB_URI=product-info-service-db:5432/${POSTGRES_DB}
     restart: always
     deploy:
       mode: replicated

@@ -43,6 +43,11 @@ public class ProductInfoServiceRepositoryRemoteServiceImpl implements ProductInf
         return process(buildsMetadataService.getBuildsMetadataByProduct(productCode));
     }
 
+    @Override
+    public void rollbackLastCheck() {
+        buildsMetadataService.rollbackLastCheck();
+    }
+
     private Flux<BuildInfo> process(Mono<Collection<Map.Entry<String, Set<BuildMetadata>>>> pub) {
         return pub
             .flatMapMany(Flux::fromIterable)
@@ -74,7 +79,7 @@ public class ProductInfoServiceRepositoryRemoteServiceImpl implements ProductInf
             return StreamSupport
                 .stream(releases.get(productCode).spliterator(), false)
                 .filter(child -> buildNumberToBuildMetadataMap.containsKey(child.get("build").asText())
-                    && child.get("downloads").get(properties.getLinuxDistroKey()) != null)
+                    && child.get("downloads").get(properties.getTargetPlatform()) != null)
                 .map(child -> parseChildJsonNode(child, buildNumberToBuildMetadataMap));
         } else {
             return Stream.empty();
@@ -83,7 +88,7 @@ public class ProductInfoServiceRepositoryRemoteServiceImpl implements ProductInf
 
     private Mono<BuildInfo> parseChildJsonNode(JsonNode child, Map<String, BuildMetadata> buildNumberToBuildMetadataMap) {
         var build = child.get("build").asText();
-        var linuxDownload = child.get("downloads").get(properties.getLinuxDistroKey());
+        var linuxDownload = child.get("downloads").get(properties.getTargetPlatform());
         var checksumLink = linuxDownload.get("checksumLink").textValue();
 
         return getExpectedChecksum(checksumLink)

@@ -95,7 +95,7 @@ public class ProductInfoServiceControllerHttpRequestHandler {
     }
 
     /**
-     * Handler for {@code GET} to {@link ProductInfoServiceControllerHttpRoutes#BUILD_NUMBER_URL}.
+     * Handler for {@code GET} to {@link ProductInfoServiceControllerHttpRoutes#PRODUCT_CODE_BUILD_NUMBER_URL}.
      *
      * @param request {@link ServerRequest}
      * @return {@link Mono<ServerResponse>}

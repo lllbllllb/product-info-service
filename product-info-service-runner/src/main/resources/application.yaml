@@ -4,6 +4,8 @@ server:
 spring:
   codec:
     max-in-memory-size: 1MB
+  lifecycle:
+    timeout-per-shutdown-phase: 1m
   r2dbc:
     url: r2dbc:postgresql://${POSTGRES_DB_URI}
     username: ${POSTGRES_USER}
@@ -12,3 +14,11 @@ spring:
     url: jdbc:postgresql://${POSTGRES_DB_URI}
     user: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+springdoc:
+  show-actuator: true

@@ -7,7 +7,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductInfoServiceCoreInstanceService {
 
+    private volatile String instanceId;
+
     public String getInstanceId() {
-        return UUID.randomUUID().toString();
+        if (instanceId == null) {
+            synchronized (ProductInfoServiceCoreInstanceService.class) {
+                if (instanceId == null) {
+                    instanceId = UUID.randomUUID().toString();
+                }
+            }
+        }
+
+        return instanceId;
     }
 }

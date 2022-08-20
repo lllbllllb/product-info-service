@@ -3,6 +3,8 @@ package com.lllbllllb.productinfoservice.core;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.annotation.PreDestroy;
+
 import com.lllbllllb.productinfoservice.ProductInfoServiceRepositoryRemoteService;
 import com.lllbllllb.productinfoservice.model.BuildInfo;
 import com.lllbllllb.productinfoservice.model.BuildInfoAware;
@@ -19,7 +21,7 @@ public class ProductInfoServiceCoreEtlPipelineService {
 
     private final ProductInfoServiceCoreFileCacheService fileCacheService;
 
-    private final ProductInfoServiceCoreTarGzService tarGzService;
+    private final ProductInfoServiceCoreFileExtractionService fileExtractionService;
 
     private final ProductInfoServiceCoreBuildInfoService buildInfoService;
 
@@ -32,6 +34,10 @@ public class ProductInfoServiceCoreEtlPipelineService {
     private final ProductInfoServiceCoreFinalizeService finalizeService;
 
     private final ProductInfoServiceCoreRoundService roundService;
+
+    @PreDestroy
+    public void onDestroy() {
+    }
 
     public Flux<BuildInfoAware<Round>> startRound() {
         return process(repositoryRemoteService.getAllBuildInfo());
@@ -58,7 +64,7 @@ public class ProductInfoServiceCoreEtlPipelineService {
             .flatMap(buildInfoAware -> buildDownloadService.downloadBuild(buildInfoAware.buildInfo(), round))
             .flatMap(buildInfoAware -> fileCacheService.writeToFile(buildInfoAware.buildInfo(), buildInfoAware.obj(), round))
             .flatMap(buildInfoAware -> checksumService.validateFileChecksum(buildInfoAware.buildInfo(), buildInfoAware.obj(), round))
-            .flatMap(buildInfoAware -> tarGzService.extractFileFromPath(buildInfoAware.buildInfo(), buildInfoAware.obj(), round))
+            .flatMap(buildInfoAware -> fileExtractionService.extractFileFromPath(buildInfoAware.buildInfo(), buildInfoAware.obj(), round))
             .flatMap(buildInfoAware -> productInfoService.saveProductInfo(buildInfoAware.buildInfo(), buildInfoAware.obj()))
             .flatMap(buildInfoAware -> finalizeService.finalize(buildInfoAware.buildInfo(), round))
             .subscribe();

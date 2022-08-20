@@ -9,6 +9,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 
 import com.lllbllllb.productinfoservice.core.model.CleanupPolicy;
+import com.lllbllllb.productinfoservice.core.model.FileExtractorLabel;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -38,6 +39,9 @@ public class ProductInfoServiceCoreConfigurationProperties {
 
     @NotNull
     private Duration concurrentCourtesyPeriod = Duration.ofSeconds(1);
+
+    @NotNull
+    private FileExtractorLabel fileExtractorLabel = FileExtractorLabel.TAR_GZ;
 
     @Data
     public static class RetryOptions {

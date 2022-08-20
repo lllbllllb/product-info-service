@@ -18,7 +18,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <revision>1.0.0</revision>
+        <revision>1.0.1</revision>
         <java.version>17</java.version>
         <spring-cloud.version>2021.0.3</spring-cloud.version>
         <embedded-postgresql.version>2.2.5</embedded-postgresql.version>
@@ -29,6 +29,7 @@
         <rest-assured.version>5.1.1</rest-assured.version>
         <testcontainers.version>2.1.8</testcontainers.version>
         <jna.version>5.12.1</jna.version>
+        <springdoc-openapi-webflux-ui.version>1.6.10</springdoc-openapi-webflux-ui.version>
     </properties>
 
     <modules>
@@ -56,6 +57,16 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
                 <version>${commons-compress.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>${jna.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-webflux-ui</artifactId>
+                <version>${springdoc-openapi-webflux-ui.version}</version>
             </dependency>
 
             <dependency>
@@ -93,11 +104,6 @@
                 <groupId>com.lllbllllb</groupId>
                 <artifactId>product-info-service-repository-remote</artifactId>
                 <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna</artifactId>
-                <version>${jna.version}</version>
             </dependency>
 
             <!-- test -->

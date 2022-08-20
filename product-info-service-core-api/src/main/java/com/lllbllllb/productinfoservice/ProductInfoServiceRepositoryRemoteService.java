@@ -22,4 +22,5 @@ public interface ProductInfoServiceRepositoryRemoteService {
      */
     Flux<BuildInfo> getBuildInfoByProductCode(String productCode);
 
+    void rollbackLastCheck();
 }

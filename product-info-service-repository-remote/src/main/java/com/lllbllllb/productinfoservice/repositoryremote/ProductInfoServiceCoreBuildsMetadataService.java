@@ -36,30 +36,35 @@ public class ProductInfoServiceCoreBuildsMetadataService {
 
     @PostConstruct
     public void init() {
+        prevCheck = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), clock.getZone());
         lastCheck = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), clock.getZone());
     }
+
+    private volatile ZonedDateTime prevCheck;
 
     private volatile ZonedDateTime lastCheck;
 
     public Mono<Collection<Map.Entry<String, Set<BuildMetadata>>>> getBuildsMetadataByProduct(String productCode) {
         return getProducts()
-            .map(products -> {
+            .handle((products, sink) -> {
                 var codeToBuildNumbersMap = new HashMap<String, Set<BuildMetadata>>();
-                var targetProduct = products.getProduct().stream()
+                var targetProductOpt = products.getProduct().stream()
                     .filter(product -> product.getCode().contains(productCode))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown product code [%s]", productCode)));
-                var builds = extractBuildMetadata(targetProduct, productCode);
+                    .findAny();
 
-                codeToBuildNumbersMap.put(productCode, builds);
-
-                return codeToBuildNumbersMap.entrySet();
+                if (targetProductOpt.isPresent()) {
+                    var builds = extractBuildMetadata(targetProductOpt.get(), productCode);
+                    codeToBuildNumbersMap.put(productCode, builds);
+                    sink.next(codeToBuildNumbersMap.entrySet());
+                } else {
+                    sink.error(new IllegalArgumentException("Unknown product code [%s]".formatted(productCode)));
+                }
             });
     }
 
     public Mono<Collection<Map.Entry<String, Set<BuildMetadata>>>> getAllBuildsMetadata() {
         return getProducts()
-            .doOnNext(products -> fireLastCheck()) // fixme: move to end of the flow
+            .doOnNext(products -> fixLastCheck())
             .map(products -> {
                 var codeToBuildNumbersMap = new HashMap<String, Set<BuildMetadata>>();
 
@@ -73,8 +78,13 @@ public class ProductInfoServiceCoreBuildsMetadataService {
             });
     }
 
-    public void fireLastCheck() {
+    public void fixLastCheck() {
+        prevCheck = lastCheck;
         lastCheck = ZonedDateTime.now(clock);
+    }
+
+    public void rollbackLastCheck() {
+        lastCheck = prevCheck;
     }
 
     private Mono<Products> getProducts() {

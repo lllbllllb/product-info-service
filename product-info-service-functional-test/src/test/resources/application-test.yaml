@@ -38,5 +38,5 @@ product-info-service:
     remote:
       updates-xml-url: http://localhost:${wiremock.server.port}/updates/updates.xml
       releases-code-url: http://localhost:${wiremock.server.port}/products/releases
-      linux-distro-key: linux
+      target-platform: linux
       build-max-age: 1y

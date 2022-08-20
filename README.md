@@ -40,12 +40,16 @@ the example of the target file:
 }
 ```
 ## Main API
-*  GET http://localhost:8080/ - simple INFO-panel
-* GET http://localhost:8080/status - service status as json
-* POST http://localhost:8080/refresh - run full rescan
-* POST http://localhost:8080/refresh/<product-code> - rescan by product
-* GET http://localhost:8080/<product-code> - get all 'product-info.json' files by product
-* GET http://localhost:8080/<product-code>/<full-build-number> - get uniq 'product-info.json' file for specified build
+*  GET / - simple INFO-panel
+* GET /status - service status as json
+* POST /refresh - run full rescan
+* POST /refresh/code/{productCode} - rescan by product
+* GET /code/{productCode} - get all 'product-info.json' files by provided product
+* GET /code/{productCode}/build/{buildNumber} - get uniq 'product-info.json' file for specified build
+
+> **Swagger UI** is available by the link [/v3/api-docs](/v3/api-docs)
+> 
+> **api-docs** are available by the link [/v3/api-docs](/v3/api-docs)
 
 ## How to run
 The most convenient way to run service as cluster just run docker-compose.yaml below:

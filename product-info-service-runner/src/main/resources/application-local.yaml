@@ -1,11 +1,14 @@
+server:
+  shutdown: graceful
+
 product-info-service:
   core:
     path-to-save-tmp: blackhole
     cleanup-policy: none
     concurrent-courtesy-period: 20ms
   controller:
-    round-delay: 1m
-    round-interval: 1h
+    round-delay: 24h
+    round-interval: 24h
 spring:
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/productinfoservice

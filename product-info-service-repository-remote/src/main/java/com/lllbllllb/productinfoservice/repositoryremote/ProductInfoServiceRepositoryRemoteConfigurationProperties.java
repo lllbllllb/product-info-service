@@ -31,10 +31,10 @@ public class ProductInfoServiceRepositoryRemoteConfigurationProperties {
     private String releasesCodeUrl = "https://data.services.jetbrains.com/products/releases";
 
     /**
-     * Key of the linux build.
+     * Name of the target platform.
      */
     @NotBlank
-    private String linuxDistroKey = "linux";
+    private String targetPlatform = "linux";
 
     /**
      * Max age of the builds for processing.

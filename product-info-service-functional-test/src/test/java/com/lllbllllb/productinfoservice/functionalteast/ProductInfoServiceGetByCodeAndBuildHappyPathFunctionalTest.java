@@ -7,7 +7,7 @@ import com.lllbllllb.productinfoservice.model.Status;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 
-import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.BUILD_NUMBER_URL;
+import static com.lllbllllb.productinfoservice.controller.ProductInfoServiceControllerHttpRoutes.PRODUCT_CODE_BUILD_NUMBER_URL;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -42,7 +42,7 @@ public class ProductInfoServiceGetByCodeAndBuildHappyPathFunctionalTest extends 
         // when
         var actual = given()
             .when()
-            .get(BUILD_NUMBER_URL, sixthBid.getProductCode(), sixthBid.getFullNumber())
+            .get(PRODUCT_CODE_BUILD_NUMBER_URL, sixthBid.getProductCode(), sixthBid.getFullNumber())
             .then()
             .statusCode(200)
             .and().log().all()
@@ -57,7 +57,7 @@ public class ProductInfoServiceGetByCodeAndBuildHappyPathFunctionalTest extends 
     void shouldReturn404() {
         given()
             .when()
-            .get(BUILD_NUMBER_URL, "IU", "42")
+            .get(PRODUCT_CODE_BUILD_NUMBER_URL, "IU", "42")
             .then()
             .statusCode(404);
     }

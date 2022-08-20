@@ -6,10 +6,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import com.lllbllllb.productinfoservice.model.BuildInfo;
-import com.lllbllllb.productinfoservice.model.BuildInfoAware;
-import com.lllbllllb.productinfoservice.model.Round;
-import com.lllbllllb.productinfoservice.model.Status;
+import com.lllbllllb.productinfoservice.core.model.FileExtractorLabel;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -19,26 +16,18 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-/**
- * TarGzDecompressor.
- *
- * @author Yahor Pashkouski
- * @since 10.08.2022
- */
 @Service
 @RequiredArgsConstructor
-public class ProductInfoServiceCoreTarGzService {
+public class ProductInfoServiceCoreTarGzFileExtractor implements ProductInfoServiceCoreFileExtractor {
 
     private final ProductInfoServiceCoreConfigurationProperties properties;
 
-    private final ProductInfoServiceCoreFailureService failureService;
-
-    public Mono<BuildInfoAware<byte[]>> extractFileFromPath(BuildInfo buildInfo, Path path, Round round) {
-        return extractFileFromPath(path)
-            .onErrorResume(ex -> failureService.onErrorResume(ex, buildInfo, Status.INVALID_DATA, round, Mono.empty()))
-            .map(bytes -> new BuildInfoAware<>(buildInfo, bytes));
+    @Override
+    public FileExtractorLabel getLabel() {
+        return FileExtractorLabel.TAR_GZ;
     }
 
+    @Override
     public Mono<byte[]> extractFileFromPath(Path path) {
         var fileName = properties.getTargetFileName();
 
@@ -71,5 +60,4 @@ public class ProductInfoServiceCoreTarGzService {
             })
             .subscribeOn(Schedulers.boundedElastic());
     }
-
 }
